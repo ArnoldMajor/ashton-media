@@ -1,0 +1,91 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap');
+@import "tailwindcss";
+
+:root {
+  /* Surfaces */
+  --bg:                    #080808;
+  --bg-card:               #0D0D0D;
+  --bg-card-alt:           #111111;
+  --bg-raised:             #0A0A0A;
+  --bg-footer:             #050505;
+  --bg-sheet:              #0F0F0F;
+  --bg-stat:               #161616;
+  --bg-placeholder-start:  #242424;
+  --bg-placeholder-shape:  #1a1a1a;
+  --bg-placeholder-inner:  #141414;
+  --bg-nav-scrolled:       rgba(6, 6, 6, 0.97);
+
+  /* Text */
+  --text:         #ffffff;
+  --on-accent:    #000000;
+  --text-muted:   rgba(255, 255, 255, 0.45);
+
+  /* Accents */
+  --lime: #C8FF00;
+
+  /* Borders */
+  --border: rgba(255, 255, 255, 0.07);
+
+  /* White opacity scale (rgba(255,255,255,X)), lightest to strongest */
+  --white-ghost:        rgba(255, 255, 255, 0.03);
+  --white-whisper:      rgba(255, 255, 255, 0.04);
+  --white-faintest:     rgba(255, 255, 255, 0.05);
+  --white-faint:        rgba(255, 255, 255, 0.06);
+  --white-hushed:       rgba(255, 255, 255, 0.08);
+  --white-soft:         rgba(255, 255, 255, 0.1);
+  --white-mild:         rgba(255, 255, 255, 0.12);
+  --white-light:        rgba(255, 255, 255, 0.15);
+  --white-pale:         rgba(255, 255, 255, 0.18);
+  --white-dim:          rgba(255, 255, 255, 0.2);
+  --white-dimmer:       rgba(255, 255, 255, 0.22);
+  --white-muted-label:  rgba(255, 255, 255, 0.25);
+  --white-subdued:      rgba(255, 255, 255, 0.3);
+  --white-subtle:       rgba(255, 255, 255, 0.35);
+  --white-gentle:       rgba(255, 255, 255, 0.38);
+  --white-quiet:        rgba(255, 255, 255, 0.4);
+  --white-moderate:     rgba(255, 255, 255, 0.5);
+  --white-medium:       rgba(255, 255, 255, 0.55);
+  --white-secondary:    rgba(255, 255, 255, 0.6);
+  --white-tertiary:     rgba(255, 255, 255, 0.65);
+  --white-semi:         rgba(255, 255, 255, 0.7);
+  --white-strong:       rgba(255, 255, 255, 0.85);
+
+  /* Black opacity scale (rgba(0,0,0,X)) */
+  --black-hint:    rgba(0, 0, 0, 0.1);
+  --black-soft:    rgba(0, 0, 0, 0.25);
+  --black-medium:  rgba(0, 0, 0, 0.55);
+  --black-heavy:   rgba(0, 0, 0, 0.6);
+  --black-strong:  rgba(0, 0, 0, 0.65);
+  --black-shadow:  rgba(0, 0, 0, 0.8);
+  --black-scrim:   rgba(0, 0, 0, 0.88);
+
+  /* Lime opacity scale (rgba(200,255,0,X)) */
+  --lime-tint:          rgba(200, 255, 0, 0.07);
+  --lime-wash:          rgba(200, 255, 0, 0.08);
+  --lime-glow-soft:     rgba(200, 255, 0, 0.1);
+  --lime-glow:          rgba(200, 255, 0, 0.15);
+  --lime-border-soft:   rgba(200, 255, 0, 0.2);
+  --lime-border:        rgba(200, 255, 0, 0.25);
+  --lime-border-strong: rgba(200, 255, 0, 0.3);
+  --lime-label:         rgba(200, 255, 0, 0.6);
+
+  --font: 'Montserrat', sans-serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: #222; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #333; }
+
+button, a { min-height: 44px; }
+nav button, nav a { min-height: unset; }
