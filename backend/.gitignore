@@ -1,0 +1,16 @@
+# environments
+venv/
+.env
+
+# python
+__pycache__/
+*.pyc
+*.pyo
+
+# django
+*.log
+staticfiles/
+media/
+
+# misc
+.DS_Store
