@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'billboards',
     'clients',
     'contracts',
+    'jobs',
 ]
 
 AUTH_USER_MODEL = "users.User"
