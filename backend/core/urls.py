@@ -20,6 +20,8 @@ from rest_framework.routers import DefaultRouter
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView 
 
 from billboards.views import BillboardViewSet
+from clients.views import ClientViewSet
+from contracts.views import ContractViewSet
 
 from django.conf import settings
 from django.conf.urls.static import static
@@ -27,6 +29,8 @@ from django.conf.urls.static import static
 
 router = DefaultRouter()
 router.register("billboards", BillboardViewSet, basename="billboard")
+router.register("clients", ClientViewSet, basename="client")
+router.register("contracts", ContractViewSet, basename="contract")
 
 urlpatterns = [
     path('admin/', admin.site.urls),
