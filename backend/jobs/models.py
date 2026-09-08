@@ -31,7 +31,7 @@ class Job(models.Model):
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
-        related_name="assigned_jobs",
+        related_name="jobs",
     )
 
     created_by = models.ForeignKey(
@@ -41,6 +41,17 @@ class Job(models.Model):
         blank=True,
         related_name="jobs_created",
     )
+
+    assigned_to = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="assigned_jobs",
+    )
+
+    estimated_hours = models.DecimalField(max_digits=5, decimal_places=2, blank=True, null=True)
+    actual_hours = models.DecimalField(max_digits=5, decimal_places=2, blank=True, null=True)
 
     job_type = models.CharField(max_length=20, choices=JobType.choices)
     status = models.CharField(max_length=20, choices=Status.choices, default=Status.PENDING)
