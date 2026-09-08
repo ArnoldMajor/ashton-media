@@ -32,7 +32,7 @@ class Billboard(models.Model):
     image = models.ImageField(upload_to="billboards/", blank=True, null=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
-    update_at = models.DateTimeField(auto_now=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         ordering = ["site_code"]
