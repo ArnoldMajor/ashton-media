@@ -27,6 +27,7 @@ from contracts.views import ContractViewSet
 from jobs.views import JobViewSet
 from blog.views import BlogPostViewSet
 from inquiries.views import InquiryViewSet
+from notifications.views import NotificationViewSet, PushSubscriptionViewSet
 
 router = DefaultRouter()
 router.register("billboards", BillboardViewSet, basename="billboard")
@@ -35,6 +36,9 @@ router.register("contracts", ContractViewSet, basename="contract")
 router.register("jobs", JobViewSet, basename="job")
 router.register("blog", BlogPostViewSet, basename="blogpost")
 router.register("inquiries", InquiryViewSet, basename="inquiry")
+router.register("notifications", NotificationViewSet, basename="notification")
+router.register("push-subscriptions", PushSubscriptionViewSet, basename="pushsubscription")
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
