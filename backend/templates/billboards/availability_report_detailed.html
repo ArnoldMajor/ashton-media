@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+    @page { size: 1920px 1080px; margin: 0; }
+    html, body { margin: 0; padding: 0; }
+    body { font-family: sans-serif; color: #111; }
+
+    .report-page {
+        width: 1920px;
+        height: 1080px;
+        box-sizing: border-box;
+        break-after: page;
+        border-top: 6px solid #000;
+        border-bottom: 6px solid #000;
+        overflow: hidden;
+    }
+    .report-page:last-child { break-after: auto; }
+
+    .hero-image {
+        width: 1920px;
+        height: 860px;
+        object-fit: cover;
+        display: block;
+    }
+    .no-image-placeholder {
+        width: 1920px;
+        height: 860px;
+        box-sizing: border-box;
+        background: #eee;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #999;
+        font-size: 28px;
+    }
+
+    .info-bar {
+        height: 220px;
+        box-sizing: border-box;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 60px;
+    }
+
+    .site-name { font-size: 52px; font-weight: bold; margin: 0; }
+    .side-label { font-size: 30px; color: #444; margin: 4px 0 0; }
+    .site-code { font-size: 22px; color: #888; margin: 8px 0 0; text-transform: uppercase; letter-spacing: 2px; }
+
+    .specs { text-align: right; font-size: 24px; line-height: 1.6; }
+    .specs .label { font-weight: bold; }
+
+    .logo-badge {
+        display: inline-block;
+        background: #000;
+        color: #fff;
+        padding: 10px 24px;
+        margin-top: 12px;
+        font-size: 20px;
+        font-weight: bold;
+        letter-spacing: 5px;
+    }
+</style>
+</head>
+<body>
+    {% for billboard in billboards %}
+    <div class="report-page">
+        {% if billboard.image %}
+        <img class="hero-image" src="{{ billboard.image.url }}">
+        {% else %}
+        <div class="no-image-placeholder">No creative mockup uploaded</div>
+        {% endif %}
+
+        <div class="info-bar">
+            <div>
+                <p class="site-name">{{ billboard.name }}</p>
+                {% if billboard.side %}
+                <p class="side-label">Side {{ billboard.side }}</p>
+                {% endif %}
+                <p class="site-code">{{ billboard.site_code }}</p>
+            </div>
+            <div class="specs">
+                <p><span class="label">Size:</span> {{ billboard.height_meters }}m (h) x {{ billboard.width_meters }}m (w)</p>
+                <p><span class="label">Type:</span>
+                    {% if billboard.backlit %}Backlit{% elif billboard.illuminated %}Frontlit{% else %}Non-illuminated{% endif %} Billboard
+                </p>
+                <p><span class="label">Location:</span> {{ billboard.region }}</p>
+                <span class="logo-badge">ASHTON</span>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <p style="padding: 60px; font-size: 28px;">No billboards available for this date range.</p>
+    {% endfor %}
+</body>
+</html>

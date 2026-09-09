@@ -20,3 +20,7 @@ class AvailabilityQuerySerializer(serializers.Serializer):
         if data["start"] >= data["end"]:
             raise serializers.ValidationError("start must be before end.")
         return data
+
+
+class AvailabilityPDFQuerySerializer(AvailabilityQuerySerializer):
+    report_type = serializers.ChoiceField(choices=["list", "detailed"], default="list")

@@ -28,6 +28,8 @@ class Billboard(models.Model):
     height_meters = models.DecimalField(max_digits=5, decimal_places=2)
     illuminated = models.BooleanField(default=False)
     backlit = models.BooleanField(default=False)
+    structure_code = models.CharField(max_length=20, blank=True, db_index=True)
+    side = models.CharField(max_length=10, blank=True)
 
     image = models.ImageField(upload_to="billboards/", blank=True, null=True)
 
