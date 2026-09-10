@@ -1,3 +1,5 @@
+from typing import Optional
+
 from rest_framework import serializers
 from .models import Job
 
@@ -14,7 +16,7 @@ class JobSerializer(serializers.ModelSerializer):
         fields = "__all__"
         read_only_fields = ["created_by", "created_at", "updated_at"]
 
-    def get_assigned_to_name(self, obj):
+    def get_assigned_to_name(self, obj) -> Optional[str]:
         if not obj.assigned_to:
             return None
         return obj.assigned_to.get_full_name() or obj.assigned_to.username
