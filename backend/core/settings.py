@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'django_filters',
     'rest_framework',
     'rest_framework_simplejwt.token_blacklist',
+    'drf_spectacular',
     'users',
     'billboards',
     'clients',
@@ -107,6 +108,7 @@ REST_FRAMEWORK = {
     "DEFAULT_THROTTLE_RATES": {
         "inquiries": "5/hour",
     },
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
 }
 
 SIMPLE_JWT = {
@@ -163,4 +165,11 @@ MAILERS = {
     'default': {
         'BACKEND': 'django.core.mail.backends.console.EmailBackend',
     },
+}
+
+
+SPECTACULAR_SETTINGS = {
+    "TITLE": "Ashton Media API",
+    "DESCRIPTION": "Backend API for billboard inventory, bookings, jobs, and content.",
+    "VERSION": "1.0.0",
 }
