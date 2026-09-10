@@ -1,0 +1,262 @@
+[
+{
+  "model": "billboards.billboard",
+  "pk": 1,
+  "fields": {
+    "site_code": "DSM-001",
+    "name": "Kariakoo Junction",
+    "format": "digital",
+    "status": "available",
+    "region": "Dar es Salaam",
+    "address": "Kariakoo",
+    "latitude": "-6.816000",
+    "longitude": "39.278000",
+    "width_meters": "6.00",
+    "height_meters": "3.00",
+    "illuminated": false,
+    "backlit": false,
+    "structure_code": "",
+    "side": "",
+    "image": "",
+    "created_at": "2026-09-08T12:03:18.852Z",
+    "updated_at": "2026-09-08T12:03:18.852Z"
+  }
+},
+{
+  "model": "billboards.billboard",
+  "pk": 2,
+  "fields": {
+    "site_code": "DSM-002",
+    "name": "Ubungo Interchange",
+    "format": "static",
+    "status": "available",
+    "region": "Dar es Salaam",
+    "address": "Ubungo",
+    "latitude": "-6.799000",
+    "longitude": "39.208000",
+    "width_meters": "10.00",
+    "height_meters": "5.00",
+    "illuminated": false,
+    "backlit": false,
+    "structure_code": "",
+    "side": "",
+    "image": "",
+    "created_at": "2026-09-08T12:55:28.061Z",
+    "updated_at": "2026-09-08T12:55:28.061Z"
+  }
+},
+{
+  "model": "billboards.billboard",
+  "pk": 3,
+  "fields": {
+    "site_code": "TZF-001-A",
+    "name": "Tazara Flyover",
+    "format": "static",
+    "status": "available",
+    "region": "Dar es Salaam",
+    "address": "Tazara Flyover, Kurasini",
+    "latitude": "-6.835500",
+    "longitude": "39.269500",
+    "width_meters": "12.00",
+    "height_meters": "22.00",
+    "illuminated": true,
+    "backlit": false,
+    "structure_code": "TZF-001",
+    "side": "A",
+    "image": "",
+    "created_at": "2026-09-09T11:25:29.567Z",
+    "updated_at": "2026-09-09T11:25:29.567Z"
+  }
+},
+{
+  "model": "billboards.billboard",
+  "pk": 4,
+  "fields": {
+    "site_code": "TZF-001-B",
+    "name": "Tazara Flyover",
+    "format": "static",
+    "status": "available",
+    "region": "Dar es Salaam",
+    "address": "Tazara Flyover, Kurasini",
+    "latitude": "-6.835500",
+    "longitude": "39.269500",
+    "width_meters": "12.00",
+    "height_meters": "22.00",
+    "illuminated": true,
+    "backlit": false,
+    "structure_code": "TZF-001",
+    "side": "B",
+    "image": "",
+    "created_at": "2026-09-09T11:25:37.256Z",
+    "updated_at": "2026-09-09T11:25:37.256Z"
+  }
+},
+{
+  "model": "clients.client",
+  "pk": 1,
+  "fields": {
+    "company_name": "Test Co",
+    "contact_name": "Jane Doe",
+    "email": "jane@test.com",
+    "phone": "",
+    "industry": "",
+    "address": "",
+    "status": "prospect",
+    "account_manager": null,
+    "notes": "",
+    "created_at": "2026-09-08T12:15:13.615Z",
+    "updated_at": "2026-09-08T12:15:13.615Z"
+  }
+},
+{
+  "model": "clients.client",
+  "pk": 2,
+  "fields": {
+    "company_name": "Test Co",
+    "contact_name": "Jane Doe",
+    "email": "jane@test.com",
+    "phone": "",
+    "industry": "",
+    "address": "",
+    "status": "prospect",
+    "account_manager": null,
+    "notes": "",
+    "created_at": "2026-09-08T12:21:34.972Z",
+    "updated_at": "2026-09-08T12:21:34.972Z"
+  }
+},
+{
+  "model": "contracts.contract",
+  "pk": 1,
+  "fields": {
+    "billboard": 1,
+    "client": 2,
+    "created_by": null,
+    "date_range": "{\"bounds\": \"[)\", \"lower\": \"2026-10-01\", \"upper\": \"2026-10-15\"}",
+    "status": "active",
+    "notes": "",
+    "created_at": "2026-09-08T12:21:34.976Z",
+    "updated_at": "2026-09-08T12:21:34.976Z"
+  }
+},
+{
+  "model": "contracts.contract",
+  "pk": 2,
+  "fields": {
+    "billboard": 2,
+    "client": 1,
+    "created_by": 1,
+    "date_range": "{\"bounds\": \"[)\", \"lower\": \"2026-10-05\", \"upper\": \"2026-10-10\"}",
+    "status": "active",
+    "notes": "",
+    "created_at": "2026-09-08T13:06:18.167Z",
+    "updated_at": "2026-09-08T13:06:18.167Z"
+  }
+},
+{
+  "model": "jobs.job",
+  "pk": 1,
+  "fields": {
+    "billboard": 1,
+    "contract": null,
+    "created_by": 1,
+    "assigned_to": 1,
+    "estimated_hours": "4.00",
+    "actual_hours": "5.50",
+    "job_type": "installation",
+    "status": "completed",
+    "priority": "medium",
+    "scheduled_date": "2026-09-01",
+    "completed_at": null,
+    "description": "",
+    "created_at": "2026-09-08T13:17:42.647Z",
+    "updated_at": "2026-09-08T13:17:42.647Z"
+  }
+},
+{
+  "model": "jobs.job",
+  "pk": 2,
+  "fields": {
+    "billboard": 1,
+    "contract": null,
+    "created_by": 1,
+    "assigned_to": 1,
+    "estimated_hours": null,
+    "actual_hours": null,
+    "job_type": "maintanance",
+    "status": "pending",
+    "priority": "high",
+    "scheduled_date": "2026-09-15",
+    "completed_at": null,
+    "description": "",
+    "created_at": "2026-09-09T10:40:55.042Z",
+    "updated_at": "2026-09-09T10:40:55.042Z"
+  }
+},
+{
+  "model": "blog.blogpost",
+  "pk": 1,
+  "fields": {
+    "title": "Welcome to Ashton Media",
+    "slug": "welcome-to-ashton-media",
+    "author": 1,
+    "excerpt": "",
+    "content": "Our first post.",
+    "featured_image": "",
+    "status": "published",
+    "published_at": null,
+    "created_at": "2026-09-08T13:29:19.782Z",
+    "updated_at": "2026-09-08T13:29:19.782Z"
+  }
+},
+{
+  "model": "inquiries.inquiry",
+  "pk": 1,
+  "fields": {
+    "name": "John Mwakalinga",
+    "email": "john@example.com",
+    "phone": "",
+    "company": "",
+    "inquiry_type": "general",
+    "billboard": null,
+    "message": "Interested in advertising with you.",
+    "status": "new",
+    "created_at": "2026-09-08T13:29:40.569Z"
+  }
+},
+{
+  "model": "notifications.notification",
+  "pk": 1,
+  "fields": {
+    "recipient": 1,
+    "title": "New Job Assigned",
+    "message": "You've been assigned a Maintanance job for DSM-001.",
+    "link_url": "/jobs/2/",
+    "is_read": true,
+    "created_at": "2026-09-09T10:40:55.046Z"
+  }
+},
+{
+  "model": "users.user",
+  "pk": 1,
+  "fields": {
+    "password": "pbkdf2_sha256$1500000$LO8ztVmnvbqk6tJaQJHMzr$AG4WlGRajS18DIJs8H++ObeDkU0eQVrybVFMZ/L+434=",
+    "last_login": "2026-09-08T12:59:18.919Z",
+    "is_superuser": true,
+    "username": "backendadmin",
+    "first_name": "",
+    "last_name": "",
+    "email": "arnoldmwangakala@gmail.com",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2026-08-24T12:57:07.893Z",
+    "role": "admin",
+    "department": "",
+    "position": "",
+    "employee_id": null,
+    "avatar": "",
+    "groups": [],
+    "user_permissions": []
+  }
+}
+]

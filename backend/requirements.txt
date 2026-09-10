@@ -5,11 +5,13 @@ cffi==2.1.1
 cssselect2==0.10.1
 dj-database-url==3.1.2
 Django==6.1
+django-cors-headers==4.9.0
 django-filter==26.1
 djangorestframework==3.18.0
 djangorestframework_simplejwt==5.5.1
 drf-spectacular==0.30.0
 fonttools==4.64.0
+gunicorn==26.2.0
 inflection==0.5.1
 iniconfig==2.3.0
 jsonschema==4.26.0
@@ -36,4 +38,5 @@ tinyhtml5==2.1.0
 uritemplate==4.2.0
 weasyprint==70.0
 webencodings==0.6.1
+whitenoise==6.12.0
 zopfli==0.4.3
