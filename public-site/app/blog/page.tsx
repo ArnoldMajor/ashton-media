@@ -1,4 +1,3 @@
-"use client";
 import { PageHero } from "@/components/PageSections";
 import PhotoPlaceholder from "@/components/PhotoPlaceholder";
 import FormatBadge from "@/components/FormatBadge";
@@ -14,40 +13,38 @@ const POSTS = [
 
 export default function BlogPage() {
   return (
-    <div style={{ background: "var(--bg)", color: "var(--text)", fontFamily: "'Montserrat',sans-serif" }}>
+    <div className="bg-canvas text-white">
       <PageHero title="Insights & News" tag="Blog" sub="Industry analysis, campaign data, and OOH advertising insights from Tanzania's leading media company." />
 
-      <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "60px clamp(20px,5vw,64px)", boxSizing: "border-box" }}>
+      <div className="max-w-300 mx-auto py-15 px-2.5 sm:px-4 md:px-6 lg:px-8">
 
-        {/* Featured post */}
-        <div style={{ marginBottom: "48px", background: "var(--bg-card)", border: "1px solid var(--border)", borderRadius: "12px", overflow: "hidden", display: "grid", gridTemplateColumns: "1fr 1fr" }}>
+        <div className="mb-12 bg-card border border-white/7 rounded-xl overflow-hidden grid grid-cols-2">
           <PhotoPlaceholder ratio="4/3" overlay photoIndex={POSTS[0].photoIndex} />
-          <div style={{ padding: "40px 48px", display: "flex", flexDirection: "column", justifyContent: "center" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "16px" }}>
+          <div className="py-10 px-12 flex flex-col justify-center">
+            <div className="flex items-center gap-3 mb-4">
               <FormatBadge type={POSTS[0].category} small />
-              <span style={{ fontSize: "12px", color: "var(--white-subtle)" }}>{POSTS[0].date} · {POSTS[0].read} read</span>
+              <span className="text-xs text-white/35">{POSTS[0].date} · {POSTS[0].read} read</span>
             </div>
-            <h2 style={{ fontFamily: "'Montserrat',sans-serif", fontWeight: 900, fontSize: "clamp(18px,2.5vw,26px)", margin: "0 0 16px", letterSpacing: "-0.5px", lineHeight: 1.2 }}>{POSTS[0].title}</h2>
-            <p style={{ fontSize: "14px", color: "var(--text-muted)", lineHeight: 1.75, margin: 0 }}>{POSTS[0].desc}</p>
-            <div style={{ marginTop: "24px", fontSize: "13px", fontWeight: 700, color: "var(--white-moderate)" }}>Read article →</div>
+            <h2 className="font-black text-[18px] sm:text-[22px] lg:text-[26px] mb-4 tracking-[-0.5px] leading-[1.2]">{POSTS[0].title}</h2>
+            <p className="text-sm text-white/45 leading-[1.75]">{POSTS[0].desc}</p>
+            <div className="mt-6 text-[13px] font-bold text-white/50">Read article →</div>
           </div>
         </div>
 
-        {/* Post grid */}
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))", gap: "20px" }}>
+        <div className="grid grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-5">
           {POSTS.slice(1).map((post) => (
-            <div key={post.title} style={{ background: "var(--bg-card)", border: "1px solid var(--border)", borderRadius: "10px", overflow: "hidden", cursor: "pointer" }}
-              onMouseEnter={(e) => (e.currentTarget.style.borderColor = "var(--white-pale)")}
-              onMouseLeave={(e) => (e.currentTarget.style.borderColor = "var(--border)")}
+            <div
+              key={post.title}
+              className="bg-card border border-white/7 rounded-[10px] overflow-hidden cursor-pointer transition-colors hover:border-white/18"
             >
               <PhotoPlaceholder ratio="16/9" overlay photoIndex={post.photoIndex} />
-              <div style={{ padding: "20px" }}>
-                <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "12px" }}>
+              <div className="p-5">
+                <div className="flex items-center gap-2.5 mb-3">
                   <FormatBadge type={post.category} small />
-                  <span style={{ fontSize: "11px", color: "var(--white-subdued)" }}>{post.date} · {post.read}</span>
+                  <span className="text-[11px] text-white/30">{post.date} · {post.read}</span>
                 </div>
-                <h3 style={{ fontWeight: 700, fontSize: "15px", margin: "0 0 8px", lineHeight: 1.35, letterSpacing: "-0.3px" }}>{post.title}</h3>
-                <p style={{ fontSize: "13px", color: "var(--white-quiet)", lineHeight: 1.6, margin: 0 }}>{post.desc}</p>
+                <h3 className="font-bold text-[15px] mb-2 leading-[1.35] tracking-[-0.3px]">{post.title}</h3>
+                <p className="text-[13px] text-white/40 leading-[1.6]">{post.desc}</p>
               </div>
             </div>
           ))}

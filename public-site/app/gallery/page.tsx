@@ -8,10 +8,10 @@ import SiteModal from "@/components/SiteModal";
 import TanzaniaMap from "@/components/TanzaniaMap";
 
 const FILTERS = [
-  { key: "all",       label: "All Locations" },
-  { key: "digital",   label: "Digital" },
+  { key: "all", label: "All Locations" },
+  { key: "digital", label: "Digital" },
   { key: "traditional", label: "Traditional" },
-  { key: "airport",   label: "Airport" },
+  { key: "airport", label: "Airport" },
   { key: "available", label: "Available Now" },
 ];
 
@@ -27,86 +27,71 @@ export default function GalleryPage() {
   });
 
   return (
-    <div style={{ background: "var(--bg)", color: "var(--text)", fontFamily: "'Montserrat', sans-serif" }}>
+    <div className="bg-canvas text-white">
       <PageHero
         title="Locations & Sites"
         tag="Billboard Gallery"
         sub="Browse our full inventory of premium billboard sites across Tanzania. Click any site to see availability, traffic data and pricing."
       />
 
-      <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "60px clamp(20px,5vw,64px)", boxSizing: "border-box" }}>
-        {/* Filter controls */}
-        <div style={{ display: "flex", gap: "12px", marginBottom: "40px", flexWrap: "wrap", alignItems: "center" }}>
+      <div className="max-w-300 mx-auto py-15 px-2.5 sm:px-4 md:px-6 lg:px-8">
+        <div className="flex gap-3 mb-10 flex-wrap items-center">
           {FILTERS.map((f) => (
             <button
               key={f.key}
               onClick={() => setFilter(f.key)}
-              style={{ background: filter === f.key ? "var(--text)" : "transparent", border: `1px solid ${filter === f.key ? "var(--text)" : "var(--white-light)"}`, color: filter === f.key ? "var(--on-accent)" : "var(--white-secondary)", padding: "9px 20px", borderRadius: "100px", fontSize: "12px", fontWeight: 700, fontFamily: "'Montserrat',sans-serif", cursor: "pointer", transition: "all 0.2s", minHeight: "unset" }}
+              className={`border py-2.25 px-5 rounded-full text-xs font-bold cursor-pointer transition-all min-h-0 ${
+                filter === f.key ? "bg-white border-text text-black" : "bg-transparent border-white/15 text-white/60"
+              }`}
             >
               {f.label}
             </button>
           ))}
 
-          {/* Search */}
-          <div style={{ marginLeft: "auto", position: "relative" }}>
+          <div className="ml-auto relative">
             <input
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search locations..."
-              style={{ background: "var(--bg-card-alt)", border: "1px solid var(--white-mild)", borderRadius: "8px", color: "var(--text)", fontSize: "13px", fontFamily: "'Montserrat',sans-serif", padding: "10px 16px 10px 36px", outline: "none", width: "220px" }}
+              className="bg-card-alt border border-white/12 rounded-lg text-white text-[13px] py-2.5 pl-9 pr-4 outline-none w-55"
             />
-            <svg style={{ position: "absolute", left: "12px", top: "50%", transform: "translateY(-50%)", opacity: 0.4, pointerEvents: "none" }} width="14" height="14" viewBox="0 0 14 14" fill="none">
+            <svg className="absolute left-3 top-1/2 -translate-y-1/2 opacity-40 pointer-events-none" width="14" height="14" viewBox="0 0 14 14" fill="none">
               <circle cx="6" cy="6" r="4.5" stroke="white" strokeWidth="1.2" />
               <line x1="9.5" y1="9.5" x2="13" y2="13" stroke="white" strokeWidth="1.2" strokeLinecap="round" />
             </svg>
           </div>
         </div>
 
-        <p style={{ fontSize: "13px", color: "var(--white-subdued)", marginBottom: "24px" }}>
+        <p className="text-[13px] text-white/30 mb-6">
           {filtered.length} {filtered.length === 1 ? "site" : "sites"} found
         </p>
 
-        {/* Site grid */}
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: "12px", marginBottom: "60px" }}>
+        <div className="grid grid-cols-[repeat(auto-fill,minmax(280px,1fr))] gap-3 mb-15">
           {filtered.map((site) => (
             <button
               key={site.id}
               onClick={() => setSelected(site)}
-              style={{ background: "var(--bg-card)", border: "1px solid var(--border)", borderRadius: "10px", overflow: "hidden", textAlign: "left", cursor: "pointer", color: "var(--text)", width: "100%", padding: 0, transition: "border-color 0.2s" }}
-              onMouseEnter={(e) => (e.currentTarget.style.borderColor = "var(--white-pale)")}
-              onMouseLeave={(e) => (e.currentTarget.style.borderColor = "var(--border)")}
+              className="bg-card border border-white/7 rounded-[10px] overflow-hidden text-left cursor-pointer text-white w-full p-0 transition-colors hover:border-white/18"
             >
-              <div style={{ position: "relative" }}>
-                <PhotoPlaceholder ratio="16/9" overlay photoIndex={site.photoIndex} />
-                {site.available && (
-                  <div style={{ position: "absolute", top: "12px", right: "12px", background: "var(--lime-glow)", border: "1px solid var(--lime-border-strong)", borderRadius: "100px", padding: "3px 10px", fontSize: "10px", fontWeight: 700, letterSpacing: "1px", textTransform: "uppercase", color: "var(--lime)" }}>
-                    Available
-                  </div>
-                )}
-              </div>
-              <div style={{ padding: "16px" }}>
-                <div style={{ marginBottom: "10px" }}><FormatBadge type={site.type} small /></div>
-                <h4 style={{ fontWeight: 700, fontSize: "14px", margin: "0 0 4px", letterSpacing: "-0.3px" }}>{site.name}</h4>
-                <p style={{ fontSize: "12px", color: "var(--white-subtle)", margin: "0 0 12px" }}>{site.city}</p>
-                <div style={{ display: "flex", justifyContent: "space-between", fontSize: "12px", color: "var(--white-subtle)" }}>
-                  <span>{site.traffic}</span>
-                  <span style={{ fontWeight: 700, color: "var(--white-secondary)" }}>{site.rate}/mo</span>
-                </div>
+              <PhotoPlaceholder ratio="16/9" overlay photoIndex={site.photoIndex} />
+              <div className="p-4">
+                <div className="mb-2.5"><FormatBadge type={site.type} small /></div>
+                <h4 className="font-bold text-sm mb-1 tracking-[-0.3px]">{site.name}</h4>
+                <p className="text-xs text-white/35">{site.city} · {site.size}</p>
               </div>
             </button>
           ))}
         </div>
 
-        {/* Map section */}
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "40px", alignItems: "start" }}>
+        <div className="grid grid-cols-2 gap-10 items-start">
           <div>
-            <div style={{ fontSize: "11px", fontWeight: 600, letterSpacing: "3px", color: "var(--white-quiet)", textTransform: "uppercase", marginBottom: "12px" }}>Map View</div>
-            <h2 style={{ fontFamily: "'Montserrat',sans-serif", fontWeight: 900, fontSize: "clamp(22px,3vw,36px)", margin: "0 0 16px", letterSpacing: "-1px" }}>Tanzania Coverage</h2>
-            <p style={{ fontSize: "14px", color: "var(--white-quiet)", lineHeight: 1.7, maxWidth: "320px" }}>
+            <div className="text-[11px] font-semibold tracking-[3px] text-white/40 uppercase mb-3">Map View</div>
+            <h2 className="font-black text-[22px] sm:text-[28px] lg:text-[36px] mb-4 tracking-[-1px]">Tanzania Coverage</h2>
+            <p className="text-sm text-white/40 leading-[1.7] max-w-80">
               Yellow dots = Digital LED screens. White dots = Traditional billboards and airport sites. Bright dots = currently available.
             </p>
           </div>
-          <div style={{ background: "var(--bg-card)", borderRadius: "10px", border: "1px solid var(--white-hushed)", padding: "24px", display: "flex", alignItems: "center", justifyContent: "center", minHeight: "320px" }}>
+          <div className="bg-card rounded-[10px] border border-white/8 p-6 flex items-center justify-center min-h-80">
             <TanzaniaMap />
           </div>
         </div>

@@ -11,24 +11,24 @@ const CASE_STUDIES = [
 
 export default function CaseStudiesPage() {
   return (
-    <div style={{ background: "var(--bg)", color: "var(--text)", fontFamily: "'Montserrat',sans-serif" }}>
+    <div className="bg-canvas text-white">
       <PageHero title="Case Studies" tag="Results" sub="Real campaigns. Real results. See how Tanzania's leading brands have used Ashton Media's network to drive measurable impact." />
 
-      <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "60px clamp(20px,5vw,64px)", boxSizing: "border-box" }}>
-        <div style={{ display: "flex", flexDirection: "column", gap: "40px", marginBottom: "60px" }}>
+      <div className="max-w-300 mx-auto py-15 px-2.5 sm:px-4 md:px-6 lg:px-8">
+        <div className="flex flex-col gap-10 mb-15">
           {CASE_STUDIES.map((cs, i) => (
             <div
               key={cs.brand}
-              style={{ display: "grid", gridTemplateColumns: i % 2 === 0 ? "1fr 1fr" : "1fr 1fr", gap: "0", background: "var(--bg-card)", border: "1px solid var(--border)", borderRadius: "12px", overflow: "hidden" }}
+              className="grid grid-cols-2 gap-0 bg-card border border-white/7 rounded-xl overflow-hidden"
             >
               {i % 2 !== 0 && (
-                <div style={{ padding: "40px 48px", display: "flex", flexDirection: "column", justifyContent: "center" }}>
+                <div className="py-10 px-12 flex flex-col justify-center">
                   <CaseStudyContent cs={cs} />
                 </div>
               )}
               <PhotoPlaceholder ratio="4/3" overlay label={cs.brand} photoIndex={cs.photoIndex} />
               {i % 2 === 0 && (
-                <div style={{ padding: "40px 48px", display: "flex", flexDirection: "column", justifyContent: "center" }}>
+                <div className="py-10 px-12 flex flex-col justify-center">
                   <CaseStudyContent cs={cs} />
                 </div>
               )}
@@ -44,15 +44,15 @@ export default function CaseStudiesPage() {
 function CaseStudyContent({ cs }: { cs: typeof CASE_STUDIES[0] }) {
   return (
     <>
-      <div style={{ marginBottom: "12px" }}><FormatBadge type={cs.type} /></div>
-      <div style={{ fontSize: "12px", fontWeight: 600, color: "var(--white-subtle)", marginBottom: "8px" }}>{cs.brand}</div>
-      <h2 style={{ fontFamily: "'Montserrat',sans-serif", fontWeight: 900, fontSize: "clamp(20px,2.5vw,28px)", margin: "0 0 16px", letterSpacing: "-0.5px", lineHeight: 1.2 }}>{cs.headline}</h2>
-      <p style={{ fontSize: "14px", color: "var(--white-moderate)", lineHeight: 1.75, margin: "0 0 28px" }}>{cs.desc}</p>
-      <div style={{ display: "flex", gap: "32px" }}>
+      <div className="mb-3"><FormatBadge type={cs.type} /></div>
+      <div className="text-xs font-semibold text-white/35 mb-2">{cs.brand}</div>
+      <h2 className="font-black text-[20px] sm:text-[24px] lg:text-[28px] mb-4 tracking-[-0.5px] leading-[1.2]">{cs.headline}</h2>
+      <p className="text-sm text-white/50 leading-[1.75] mb-7">{cs.desc}</p>
+      <div className="flex gap-8">
         {[cs.metric1, cs.metric2].map((m) => (
           <div key={m.l}>
-            <div style={{ fontFamily: "'Montserrat',sans-serif", fontWeight: 900, fontSize: "28px", letterSpacing: "-1px" }}>{m.n}</div>
-            <div style={{ fontSize: "11px", fontWeight: 600, letterSpacing: "1.5px", textTransform: "uppercase", color: "var(--white-subdued)", marginTop: "4px" }}>{m.l}</div>
+            <div className="font-black text-[28px] tracking-[-1px]">{m.n}</div>
+            <div className="text-[11px] font-semibold tracking-[1.5px] uppercase text-white/30 mt-1">{m.l}</div>
           </div>
         ))}
       </div>

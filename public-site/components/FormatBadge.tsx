@@ -1,31 +1,33 @@
-import { SiteType, FORMAT_CONFIG } from "@/lib/data";
+import { SiteType } from "@/lib/data";
 
 interface Props {
   type: SiteType;
   small?: boolean;
 }
 
-// Server Component — zero JS, renders to pure HTML span.
+const VARIANT_CLASSES: Record<SiteType, string> = {
+  digital: "text-lime bg-lime/10 border-lime/25",
+  traditional: "text-white/85 bg-white/7 border-white/15",
+  airport: "text-white/55 bg-white/5 border-white/10",
+};
+
+const LABELS: Record<SiteType, string> = {
+  digital: "Digital",
+  traditional: "Traditional",
+  airport: "Airport",
+};
+
 export default function FormatBadge({ type, small = false }: Props) {
-  const c = FORMAT_CONFIG[type] ?? FORMAT_CONFIG.traditional;
+  const variant = VARIANT_CLASSES[type] ?? VARIANT_CLASSES.traditional;
+  const label = LABELS[type] ?? LABELS.traditional;
+
   return (
     <span
-      style={{
-        fontSize: small ? "10px" : "11px",
-        fontWeight: 700,
-        letterSpacing: "1.5px",
-        textTransform: "uppercase",
-        color: c.color,
-        background: c.bg,
-        padding: small ? "3px 8px" : "4px 10px",
-        borderRadius: "4px",
-        fontFamily: "'Montserrat',sans-serif",
-        border: `1px solid ${c.border}`,
-        whiteSpace: "nowrap",
-        flexShrink: 0,
-      }}
+      className={`font-bold uppercase tracking-[1.5px] rounded whitespace-nowrap shrink-0 border ${
+        small ? "text-[10px] py-[3px] px-2" : "text-[11px] py-1 px-2.5"
+      } ${variant}`}
     >
-      {c.label}
+      {label}
     </span>
   );
 }

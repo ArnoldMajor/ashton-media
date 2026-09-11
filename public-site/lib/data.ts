@@ -1,6 +1,3 @@
-// ── Types ────────────────────────────────────────────────────────────────────
-// TypeScript interfaces define the "shape" of our data.
-// Any component that uses Site data will get autocomplete + type errors.
 export type SiteType = "digital" | "traditional" | "airport";
 
 export interface Site {
@@ -19,7 +16,6 @@ export interface Site {
   photoIndex: number;
 }
 
-// ── Real photos from CDN ──────────────────────────────────────────────────────
 export const REAL_PHOTOS: string[] = [
   "https://www.ashtonmedia.net/uploads/1/4/4/1/144182232/campaign-2-2x.png",
   "https://www.ashtonmedia.net/uploads/1/4/4/1/144182232/campaign-3-2x.png",
@@ -29,7 +25,6 @@ export const REAL_PHOTOS: string[] = [
   "https://www.ashtonmedia.net/uploads/1/4/4/1/144182232/slp-1219-copy.jpg",
 ];
 
-// ── Site inventory ─────────────────────────────────────────────────────────────
 export const SITES: Site[] = [
   { id: 1,  name: "New Bagamoyo Rd — Screen 01",  city: "Dar es Salaam", type: "digital",     size: "10×5m",        traffic: "85,000/day",  illuminated: true,  faces: "1", rate: "USD 2,400", available: true,  bookedUntil: null,             coords: { x: 232, y: 192 }, photoIndex: 0 },
   { id: 2,  name: "Msasani Peninsula",             city: "Dar es Salaam", type: "digital",     size: "8×4m",         traffic: "52,000/day",  illuminated: true,  faces: "1", rate: "USD 1,800", available: false, bookedUntil: "Until Aug 2025", coords: { x: 246, y: 202 }, photoIndex: 1 },
@@ -44,10 +39,3 @@ export const SITES: Site[] = [
   { id: 11, name: "Mlimani City Mall",             city: "Dar es Salaam", type: "digital",     size: "6×3m",         traffic: "30,000/day",  illuminated: true,  faces: "1", rate: "USD 1,600", available: false, bookedUntil: "Until Sep 2025", coords: { x: 211, y: 206 }, photoIndex: 1 },
   { id: 12, name: "Dodoma — Main Rd",              city: "Dodoma",        type: "traditional", size: "12×4m",        traffic: "28,000/day",  illuminated: false, faces: "1", rate: "USD 600",   available: true,  bookedUntil: null,             coords: { x: 201, y: 253 }, photoIndex: 5 },
 ];
-
-// ── Format badge config ────────────────────────────────────────────────────────
-export const FORMAT_CONFIG = {
-  digital:     { label: "Digital",     color: "var(--lime)",              bg: "var(--lime-glow-soft)",   border: "var(--lime-border)" },
-  traditional: { label: "Traditional", color: "var(--white-strong)", bg: "var(--border)", border: "var(--white-light)" },
-  airport:     { label: "Airport",     color: "var(--white-medium)", bg: "var(--white-faintest)", border: "var(--white-soft)" },
-} as const;
