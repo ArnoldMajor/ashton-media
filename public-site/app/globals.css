@@ -28,6 +28,30 @@
      change it, and the suffix is the literal opacity. */
 }
 
+/*
+ * Map tokens — read directly via var(--x) on raw SVG fill/stroke attributes
+ * in components/map/*, not through Tailwind's color-utility classes.
+ *
+ * Monochrome only for now: every value below is grey/white/black. Format
+ * (digital/traditional/airport) is encoded with SHAPE, not color — see
+ * FORMAT_STYLE in components/map/MapMarkers.tsx. A later "add colour" pass
+ * should only need to touch the values here plus that one lookup map.
+ */
+:root {
+  --map-land: #1c1c1c;
+  --map-land-stroke: rgba(255, 255, 255, 0.15);
+
+  /* Matches the panel the map is always mounted in (bg-card), so a lake
+     "cut out" of the landmass blends seamlessly into its container. */
+  --map-lake: var(--color-card);
+  --map-lake-stroke: rgba(255, 255, 255, 0.08);
+
+  --map-marker: #ffffff;
+  --map-marker-muted: rgba(255, 255, 255, 0.4);
+  --map-marker-label: var(--color-canvas);
+  --map-label: rgba(255, 255, 255, 0.55);
+}
+
 @layer base {
   html { scroll-behavior: smooth; }
   body {
