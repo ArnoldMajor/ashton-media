@@ -1,0 +1,56 @@
+{% extends 'admin/base.html' %}
+{% load i18n %}
+
+{% block title %}{{ site_title|default:_('Ashton Media Admin') }}{% endblock %}
+
+{% block branding %}
+    {% include "unfold/helpers/site_branding.html" %}
+{% endblock %}
+
+{% block content %}
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; padding: 24px;">
+    <div style="background: #111; color: #fff; padding: 20px; border-radius: 8px;">
+        <p style="font-size: 13px; opacity: 0.7; margin: 0;">Available Billboards</p>
+        <p style="font-size: 32px; font-weight: bold; margin: 4px 0 0;">{{ available_billboards }} / {{ total_billboards }}</p>
+    </div>
+    <div style="background: #111; color: #fff; padding: 20px; border-radius: 8px;">
+        <p style="font-size: 13px; opacity: 0.7; margin: 0;">Active Contracts</p>
+        <p style="font-size: 32px; font-weight: bold; margin: 4px 0 0;">{{ active_contracts }}</p>
+    </div>
+    <div style="background: #111; color: #fff; padding: 20px; border-radius: 8px;">
+        <p style="font-size: 13px; opacity: 0.7; margin: 0;">Jobs This Week</p>
+        <p style="font-size: 32px; font-weight: bold; margin: 4px 0 0;">{{ jobs_this_week }}</p>
+        <p style="font-size: 12px; opacity: 0.6; margin: 4px 0 0;">{{ pending_jobs }} pending overall</p>
+    </div>
+    <div style="background: #111; color: #fff; padding: 20px; border-radius: 8px;">
+        <p style="font-size: 13px; opacity: 0.7; margin: 0;">New Inquiries</p>
+        <p style="font-size: 32px; font-weight: bold; margin: 4px 0 0;">{{ new_inquiries }}</p>
+    </div>
+</div>
+
+<div style="padding: 0 24px 24px;">
+    <h2 style="font-size: 16px; margin-bottom: 12px;">Recent Inquiries</h2>
+    <table style="width: 100%; border-collapse: collapse;">
+        <thead>
+            <tr style="text-align: left; border-bottom: 1px solid #333;">
+                <th style="padding: 8px;">Name</th>
+                <th style="padding: 8px;">Type</th>
+                <th style="padding: 8px;">Status</th>
+                <th style="padding: 8px;">Received</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for inquiry in recent_inquiries %}
+            <tr style="border-bottom: 1px solid #222;">
+                <td style="padding: 8px;">{{ inquiry.name }}</td>
+                <td style="padding: 8px;">{{ inquiry.get_inquiry_type_display }}</td>
+                <td style="padding: 8px;">{{ inquiry.get_status_display }}</td>
+                <td style="padding: 8px;">{{ inquiry.created_at|date:"M d, H:i" }}</td>
+            </tr>
+            {% empty %}
+            <tr><td style="padding: 8px;" colspan="4">No inquiries yet.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

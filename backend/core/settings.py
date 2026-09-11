@@ -14,6 +14,8 @@ from pathlib import Path
 from decouple import config
 import dj_database_url
 from datetime import timedelta
+from django.urls import reverse_lazy
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -33,6 +35,7 @@ ALLOWED_HOSTS = config("ALLOWED_HOSTS", default="", cast=lambda v: [s.strip() fo
 # Application definition
 
 INSTALLED_APPS = [
+    "unfold",
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -188,3 +191,16 @@ SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 CSRF_TRUSTED_ORIGINS = config(
     "CSRF_TRUSTED_ORIGINS", default="", cast=lambda v: [s.strip() for s in v.split(",") if s]
 )
+
+UNFOLD = {
+    "SITE_TITLE": "Ashton Media",
+    "SITE_HEADER": "Ashton Media",
+    "SITE_URL": "/",
+    "DASHBOARD_CALLBACK": "core.dashboard.dashboard_callback",
+    "ENVIRONMENT": "core.dashboard.environment_callback",
+    "COLORS": {
+        "primary": {
+            "500": "17 17 17",
+        },
+    },
+}
