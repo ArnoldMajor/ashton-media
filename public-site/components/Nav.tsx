@@ -7,6 +7,8 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import Image from "next/image";
+import AshtonWhiteLogo from "@/public/ashton-logo-white.svg"
 
 // Next.js <Link> is like <a> but does client-side navigation (no full page reload).
 // usePathname() gives us the current URL path so we can highlight the active link.
@@ -81,13 +83,11 @@ export default function Nav() {
           gap: "10px",
         }}
       >
-        <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
-          <rect width="28" height="28" rx="5" fill="var(--text)" />
-          <text x="14" y="20" textAnchor="middle" fill="var(--on-accent)" fontSize="13" fontWeight="900" fontFamily="Montserrat,sans-serif">
-            A
-          </text>
-        </svg>
-        ASHTON MEDIA
+        <Image
+          src={AshtonWhiteLogo}
+          width={200}
+          alt="Ashton Media Logo"
+        />
       </Link>
 
       {/* ── Desktop nav ── */}
