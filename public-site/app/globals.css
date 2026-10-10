@@ -1,8 +1,16 @@
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap');
 @import "tailwindcss";
 
 @theme {
-  --font-sans: 'Montserrat', sans-serif;
+  /* Font files are loaded with next/font in app/layout.tsx, which sets the
+     --font-montserrat / --font-syne / --font-inter / --font-playfair variables. */
+  --font-sans: var(--font-montserrat), sans-serif;
+
+  /* Editorial sections (network showcase, campaign process, CTA block):
+     Syne for headings, Inter for body, Playfair Display italic for the
+     accent line of a two-line heading. */
+  --font-display: var(--font-syne), sans-serif;
+  --font-body: var(--font-inter), sans-serif;
+  --font-accent: var(--font-playfair), serif;
 
   /* Surfaces — every dark panel in the UI is one of these, each a distinct
      shade rather than an opacity of another, so each gets its own token. */
@@ -21,6 +29,10 @@
   /* Brand accent */
   --color-lime: #C8FF00;
 
+  /* Editorial sections: warm accent and the ground it sits on. */
+  --color-amber: #D4A853;
+  --color-ground: #0A0807;
+
   /* Everything else (text, borders, overlays, glows) is white/black/lime at
      some opacity — use Tailwind's own `white`/`black` + this `lime` token
      with an opacity modifier (e.g. `text-white/40`, `border-lime/25`)
@@ -38,6 +50,9 @@
  * should only need to touch the values here plus that one lookup map.
  */
 :root {
+  --amber: var(--color-amber);
+  --bg: var(--color-ground);
+
   --map-land: #1c1c1c;
   --map-land-stroke: rgba(255, 255, 255, 0.15);
 

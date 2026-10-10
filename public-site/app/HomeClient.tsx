@@ -4,7 +4,6 @@ import Link from "next/link";
 import PhotoPlaceholder from "@/components/PhotoPlaceholder";
 import TanzaniaMap from "@/components/map/TanzaniaMap";
 import SiteModal from "@/components/SiteModal";
-import FormatBadge from "@/components/FormatBadge";
 import BillboardCard from "@/components/BillboardCard";
 import { billboardToLocation } from "@/lib/locations";
 import type { Billboard } from "@/types/billboard";
@@ -18,12 +17,6 @@ const HERO_SLIDES = [
 const STAT_TARGETS = [500, 20, 8, 2005];
 const STAT_LABELS = ["Billboard Sites", "LED Screens", "Cities Covered", "Est. Year"];
 const STAT_SUFFIX = ["+", "", "", ""];
-
-const SOLUTIONS_CARDS = [
-  { type: "static" as const, title: "Traditional OOH", desc: "Static and illuminated billboards at Tanzania's busiest roads, intersections, and malls.", href: "/traditional", photoIndex: 4 },
-  { type: "digital" as const, title: "Digital OOH", desc: "20 high-resolution LED screens with dynamic content, real-time scheduling, and traffic data.", href: "/digital", photoIndex: 0 },
-  { type: "airport" as const, title: "Airport Advertising", desc: "Premium placements inside Julius Nyerere International Airport Terminal 3.", href: "/airport", photoIndex: 3 },
-];
 
 const COVERAGE = [
   { city: "Dar es Salaam", count: "300+ sites — digital, traditional, airport" },
@@ -45,9 +38,11 @@ const BRANDS = ["Vodacom", "Airtel", "CRDB Bank", "Azam", "NMB Bank", "TBL", "Co
 interface Props {
   billboards: Billboard[];
   usingFallback: boolean;
+  /** Server-rendered "Our network" section, slotted in below the stats bar. */
+  networkShowcase: React.ReactNode;
 }
 
-export default function HomeClient({ billboards, usingFallback }: Props) {
+export default function HomeClient({ billboards, usingFallback, networkShowcase }: Props) {
   const [heroIdx, setHeroIdx] = useState(0);
   const [counts, setCounts] = useState([0, 0, 0, 0]);
   const [countVisible, setCountVisible] = useState(false);
@@ -131,25 +126,7 @@ export default function HomeClient({ billboards, usingFallback }: Props) {
         </div>
       </section>
 
-      <section className="py-15 sm:py-18 md:py-22 lg:py-25 px-2.5 sm:px-4 md:px-6 lg:px-8 max-w-300 mx-auto">
-        <div className="text-center mb-9 sm:mb-12 lg:mb-14">
-          <div className="text-[11px] font-semibold tracking-[3px] text-white/40 uppercase mb-3">Our Solutions</div>
-          <h2 className="font-black text-[28px] sm:text-[40px] lg:text-[52px] tracking-[-1.5px] leading-[1.05]">Every Format.<br />Every Location.</h2>
-        </div>
-        <div className="grid grid-cols-[repeat(auto-fit,minmax(280px,1fr))] gap-4">
-          {SOLUTIONS_CARDS.map((s) => (
-            <Link key={s.href} href={s.href} className="block bg-card border border-white/7 rounded-xl overflow-hidden no-underline text-white hover:border-white/18">
-              <PhotoPlaceholder ratio="16/9" overlay photoIndex={s.photoIndex} />
-              <div className="p-6">
-                <div className="mb-2.5"><FormatBadge format={s.type} /></div>
-                <h3 className="font-extrabold text-[17px] mb-2 tracking-[-0.5px]">{s.title}</h3>
-                <p className="text-[13px] text-white/40 leading-[1.65] mb-4">{s.desc}</p>
-                <div className="text-xs font-bold text-white/50">Explore →</div>
-              </div>
-            </Link>
-          ))}
-        </div>
-      </section>
+      {networkShowcase}
 
       <section className="py-15 sm:py-18 md:py-22 lg:py-25 px-2.5 sm:px-4 md:px-6 lg:px-8 max-w-300 mx-auto">
         <div className="grid grid-cols-[repeat(auto-fit,minmax(300px,1fr))] gap-10 sm:gap-14 lg:gap-20 items-start">
