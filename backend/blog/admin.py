@@ -8,6 +8,7 @@ from .models import BlogPost
 @admin.register(BlogPost)
 class BlogPostAdmin(RoleBasedAdminMixin, ModelAdmin):
     list_display = ("title", "author", "status", "published_at", "created_at")
+    list_display_links = ["title"]
     list_filter = ("status",)
     search_fields = ("title", "excerpt", "content")
     prepopulated_fields = {"slug": ("title",)}

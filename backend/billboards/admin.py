@@ -8,6 +8,7 @@ from .models import Billboard
 @admin.register(Billboard)
 class BillboardAdmin(RoleBasedAdminMixin, ModelAdmin):
     list_display = ("site_code", "name", "format", "status", "region", "illuminated")
+    list_display_links = ["name"]
     list_filter = ("format", "status", "region", "illuminated")
     search_fields = ("site_code", "name", "region", "address", "structure_code")
 

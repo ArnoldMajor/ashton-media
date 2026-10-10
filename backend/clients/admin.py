@@ -8,6 +8,7 @@ from .models import Client
 @admin.register(Client)
 class ClientAdmin(RoleBasedAdminMixin, ModelAdmin):
     list_display = ("company_name", "contact_name", "email", "status", "account_manager")
+    list_display_links = ["company_name"]
     list_filter = ("status", "industry")
     search_fields = ("company_name", "contact_name", "email", "phone")
     autocomplete_fields = ("account_manager",)

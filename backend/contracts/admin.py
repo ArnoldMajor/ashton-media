@@ -8,6 +8,7 @@ from .models import Contract
 @admin.register(Contract)
 class ContractAdmin(RoleBasedAdminMixin, ModelAdmin):
     list_display = ("client", "billboard", "date_range", "status", "created_by")
+    list_display_links = ["billboard"]
     list_filter = ("status",)
     search_fields = ("client__company_name", "billboard__site_code", "billboard__name")
     autocomplete_fields = ("billboard", "client", "created_by")

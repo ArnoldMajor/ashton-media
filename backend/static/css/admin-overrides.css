@@ -139,3 +139,87 @@ html.dark .delete-blocked-notice__list a {
 html.dark .delete-blocked-notice__list a:hover {
     color: var(--color-orange-100);
 }
+
+/*
+ * Changelist link cells. Unfold renders the row link as a direct-child <a>
+ * of its field-* cell, styled like body text. The selector is limited to
+ * that anchor, so filters, pagination, row actions and the action bar are
+ * untouched. Blue-700 / blue-400 keep at least 4.5:1 against both row
+ * stripes in each theme.
+ */
+#result_list tr.data-row > :is(th, td)[class*="field-"] > a[href] {
+    color: var(--color-blue-700);
+    font-weight: 500;
+    border-radius: 2px;
+}
+
+#result_list tr.data-row > :is(th, td)[class*="field-"] > a[href]:hover,
+#result_list tr.data-row > :is(th, td)[class*="field-"] > a[href]:focus-visible {
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+
+#result_list tr.data-row > :is(th, td)[class*="field-"] > a[href]:focus-visible {
+    outline: 2px solid var(--color-blue-700);
+    outline-offset: 2px;
+}
+
+html.dark #result_list tr.data-row > :is(th, td)[class*="field-"] > a[href] {
+    color: var(--color-blue-400);
+}
+
+html.dark #result_list tr.data-row > :is(th, td)[class*="field-"] > a[href]:focus-visible {
+    outline-color: var(--color-blue-400);
+}
+
+/*
+ * Dismiss button on message banners (templates/unfold/helpers/messages.html).
+ * The button sits over the right edge of Unfold's banner and takes the
+ * banner's own text colour for its level.
+ */
+.ashton-message {
+    position: relative;
+}
+
+.ashton-message > div {
+    padding-right: 2.75rem;
+}
+
+.ashton-message__dismiss {
+    position: absolute;
+    top: 50%;
+    right: 0.5rem;
+    transform: translateY(-50%);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.75rem;
+    height: 1.75rem;
+    border-radius: var(--border-radius, 6px);
+    color: var(--color-base-700);
+    cursor: pointer;
+}
+
+.ashton-message__dismiss .material-symbols-outlined {
+    font-size: 18px;
+}
+
+.ashton-message__dismiss:hover {
+    background-color: color-mix(in oklab, currentColor 15%, transparent);
+}
+
+.ashton-message__dismiss:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 1px;
+}
+
+.ashton-message--success .ashton-message__dismiss { color: var(--color-green-700); }
+.ashton-message--info .ashton-message__dismiss { color: var(--color-blue-700); }
+.ashton-message--warning .ashton-message__dismiss { color: var(--color-orange-700); }
+.ashton-message--error .ashton-message__dismiss { color: var(--color-red-700); }
+
+html.dark .ashton-message__dismiss { color: var(--color-base-400); }
+html.dark .ashton-message--success .ashton-message__dismiss { color: var(--color-green-400); }
+html.dark .ashton-message--info .ashton-message__dismiss { color: var(--color-blue-400); }
+html.dark .ashton-message--warning .ashton-message__dismiss { color: var(--color-orange-400); }
+html.dark .ashton-message--error .ashton-message__dismiss { color: var(--color-red-400); }

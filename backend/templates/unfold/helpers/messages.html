@@ -1,0 +1,30 @@
+{% comment %}
+Copy of django-unfold 0.105.0's unfold/helpers/messages.html with a dismiss
+button added to each banner. The per-level banner templates are still
+Unfold's own. Button styles: static/css/admin-overrides.css (.ashton-message).
+On an Unfold upgrade, check this loop against the packaged file for drift.
+{% endcomment %}
+{% load i18n %}
+{% if messages %}
+    <ul class="flex flex-col gap-3 mb-4">
+        {% for message in messages %}
+            <li class="*:mb-0! ashton-message ashton-message--{{ message.level_tag|default:"debug" }}">
+                {% if message.level == DEFAULT_MESSAGE_LEVELS.INFO %}
+                    {% include "unfold/helpers/messages/info.html" with message=message %}
+                {% elif message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
+                    {% include "unfold/helpers/messages/success.html" with message=message %}
+                {% elif message.level == DEFAULT_MESSAGE_LEVELS.WARNING %}
+                    {% include "unfold/helpers/messages/warning.html" with message=message %}
+                {% elif message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+                    {% include "unfold/helpers/messages/error.html" with message=message %}
+                {% else %}
+                    {% include "unfold/helpers/messages/debug.html" with message=message %}
+                {% endif %}
+
+                <button type="button" class="ashton-message__dismiss" aria-label="{% translate "Dismiss message" %}" onclick="var list = this.closest('ul'); this.closest('li').remove(); if (!list.children.length) list.remove();">
+                    <span class="material-symbols-outlined" aria-hidden="true">close</span>
+                </button>
+            </li>
+        {% endfor %}
+    </ul>
+{% endif %}

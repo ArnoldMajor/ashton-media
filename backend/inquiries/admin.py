@@ -8,6 +8,7 @@ from .models import Inquiry
 @admin.register(Inquiry)
 class InquiryAdmin(RoleBasedAdminMixin, ModelAdmin):
     list_display = ("name", "email", "inquiry_type", "status", "billboard", "created_at")
+    list_display_links = ["name"]
     list_filter = ("inquiry_type", "status")
     search_fields = ("name", "email", "company", "message")
     autocomplete_fields = ("billboard",)
