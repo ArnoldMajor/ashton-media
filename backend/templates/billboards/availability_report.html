@@ -32,7 +32,7 @@
                 <td>{{ billboard.name }}</td>
                 <td>{{ billboard.region }}</td>
                 <td>{{ billboard.get_format_display }}</td>
-                <td>{{ billboard.width_meters }}m × {{ billboard.height_meters }}m</td>
+                <td>{% if billboard.width_meters and billboard.height_meters %}{{ billboard.width_meters }}m × {{ billboard.height_meters }}m{% else %}—{% endif %}</td>
             </tr>
             {% empty %}
             <tr><td colspan="5">No billboards available for this date range.</td></tr>

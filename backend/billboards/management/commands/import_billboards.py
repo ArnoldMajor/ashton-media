@@ -10,6 +10,12 @@ from billboards.models import Billboard
 TRUE_VALUES = {"1", "true", "yes", "y"}
 
 
+def optional_decimal(value):
+    """Blank cell (or missing column) -> None; anything else must parse."""
+    value = (value or "").strip()
+    return Decimal(value) if value else None
+
+
 class Command(BaseCommand):
     help = "Import billboards from a CSV and attach images from a folder."
 
@@ -55,8 +61,8 @@ class Command(BaseCommand):
         obj.address = row["address"].strip()
         obj.latitude = Decimal(row["latitude"])
         obj.longitude = Decimal(row["longitude"])
-        obj.width_meters = Decimal(row["width_meters"])
-        obj.height_meters = Decimal(row["height_meters"])
+        obj.width_meters = optional_decimal(row.get("width_meters"))
+        obj.height_meters = optional_decimal(row.get("height_meters"))
         obj.illuminated = row.get("illuminated", "").strip().lower() in TRUE_VALUES
         obj.backlit = row.get("backlit", "").strip().lower() in TRUE_VALUES
         obj.full_clean(exclude=["image"])  # validates choices and lengths like the API would

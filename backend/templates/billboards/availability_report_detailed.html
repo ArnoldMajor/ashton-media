@@ -81,7 +81,9 @@
                 <p class="site-code">{{ billboard.site_code }}</p>
             </div>
             <div class="specs">
+                {% if billboard.width_meters and billboard.height_meters %}
                 <p><span class="label">Size:</span> {{ billboard.height_meters }}m (h) x {{ billboard.width_meters }}m (w)</p>
+                {% endif %}
                 <p><span class="label">Type:</span>
                     {% if billboard.backlit %}Backlit{% elif billboard.illuminated %}Frontlit{% else %}Non-illuminated{% endif %} Billboard
                 </p>
