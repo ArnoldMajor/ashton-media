@@ -1,0 +1,29 @@
+{% extends "admin/delete_confirmation.html" %}
+{% comment %}
+Extends Unfold's template (written against django-unfold 0.105.0) and only
+replaces its two "blocked" branches with a warning card and a Back button.
+The normal confirmation is Unfold's own, via block.super. Unfold keeps all
+three branches in one content block, so on upgrade check that it still
+branches on perms_lacking / protected.
+{% endcomment %}
+{% load i18n admin_urls %}
+
+{% block content %}
+    {% if perms_lacking or protected %}
+        {% url opts|admin_urlname:'change' object.pk|admin_urlquote as change_url %}
+        {% if is_popup %}
+            {% firstof change_url|add:"?"|add:is_popup_var|add:"=1" as back_url %}
+        {% else %}
+            {% firstof change_url as back_url %}
+        {% endif %}
+
+        {% if perms_lacking %}
+            {% blocktranslate with escaped_object=object asvar message %}Deleting the {{ object_name }} '{{ escaped_object }}' would result in deleting related objects, but your account doesn't have permission to delete the following types of objects:{% endblocktranslate %}
+            {% include "admin/includes/delete_blocked_notice.html" with heading=_("Can't delete") message=message items=perms_lacking %}
+        {% else %}
+            {% include "admin/includes/delete_blocked_notice.html" with heading=_("Can't delete yet") items=protected %}
+        {% endif %}
+    {% else %}
+        {{ block.super }}
+    {% endif %}
+{% endblock %}

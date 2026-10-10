@@ -230,6 +230,7 @@ UNFOLD = {
     "SITE_ICON": lambda request: static("branding/ashton-logo-white.svg"),
     "STYLES": [
         lambda request: static("admin/sidebar-collapse.css"),
+        lambda request: static("css/admin-overrides.css"),
     ],
     "SIDEBAR": {
         "show_search": False,

@@ -1,0 +1,40 @@
+{% comment %}
+Warning card shown when a delete is blocked (protected relations or missing
+permissions). Used by delete_confirmation.html and
+delete_selected_confirmation.html. Colours live in
+static/css/admin-overrides.css under .delete-blocked-notice.
+
+Expects: heading, items, back_url, and either `permissions=True` (the caller
+supplies `message`) or nothing (the protected-relations sentence is used).
+{% endcomment %}
+{% load i18n unfold %}
+
+<div class="delete-blocked-notice" role="alert">
+    <div class="delete-blocked-notice__header">
+        <span class="material-symbols-outlined delete-blocked-notice__icon" aria-hidden="true">warning</span>
+
+        <div>
+            <h2 class="delete-blocked-notice__heading">{{ heading }}</h2>
+
+            <p class="delete-blocked-notice__message">
+                {% if message %}
+                    {{ message }}
+                {% else %}
+                    {% translate "The items below still depend on this record. Remove or reassign them first, then try again." %}
+                {% endif %}
+            </p>
+        </div>
+    </div>
+
+    <ul class="delete-blocked-notice__list">
+        {% for obj in items %}
+            <li>{{ obj }}</li>
+        {% endfor %}
+    </ul>
+
+    <div class="delete-blocked-notice__actions">
+        {% component "unfold/components/button.html" with href=back_url variant="default" icon="arrow_back" %}
+            {% translate "Back" %}
+        {% endcomponent %}
+    </div>
+</div>

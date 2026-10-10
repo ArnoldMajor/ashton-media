@@ -1,0 +1,141 @@
+/*
+ * Dark-mode colours for the changelist bulk-action bar (the floating bar
+ * with "Select action", "Run" and "N of M selected").
+ *
+ * Unfold paints the bar with dark:bg-primary-500, and UNFOLD["COLORS"]
+ * sets primary-500 to a light grey for this project, so the bar came out
+ * light grey with white text on it. Everything here is scoped to html.dark,
+ * the class Unfold's theme switcher puts on <html>; light mode is untouched.
+ *
+ * Colours only: no padding, sizing or layout changes.
+ */
+
+/* Bar surface: same as the changelist table card (dark:bg-base-900). The
+   inset ring stands in for the card's base-800 border without adding to the
+   bar's size, and replaces any shadow. */
+html.dark #changelist-actions > div {
+    background-color: var(--color-base-900);
+    box-shadow: inset 0 0 0 1px var(--color-base-800);
+}
+
+html.dark #changelist-actions select[name="action"] {
+    border-color: var(--color-base-700);
+    color-scheme: dark;
+}
+
+/*
+ * Unfold forces this select's background and text colour with !important
+ * (group-[.changelist-actions]:!bg-white/20 and :!text-current) from inside
+ * its Tailwind "utilities" cascade layer. A layered !important beats any
+ * unlayered !important whatever the specificity, so the only way to win is
+ * an !important in a layer declared before Unfold's. This file is linked
+ * ahead of unfold/css/styles.css, so this layer is.
+ */
+@layer ashton-overrides {
+    html.dark #changelist-actions select[name="action"] {
+        background-color: var(--color-base-800) !important;
+        color: var(--color-base-100) !important;
+    }
+}
+
+/* Unfold colours the options base-700 for a white popup; with a dark popup
+   that is unreadable. Chrome on Linux honours option colours. */
+html.dark #changelist-actions select[name="action"] option {
+    background-color: var(--color-base-800);
+    color: var(--color-base-100);
+}
+
+/* "N of M selected" / "All N selected" */
+html.dark #changelist-actions .action-counter,
+html.dark #changelist-actions .all {
+    color: var(--color-font-subtle-dark);
+}
+
+/*
+ * "Can't delete" notice on the delete confirmation screens
+ * (templates/admin/includes/delete_blocked_notice.html). Orange is the tone
+ * Unfold uses for its own warning messages. Light values first, html.dark
+ * overrides after.
+ */
+.delete-blocked-notice {
+    border: 1px solid var(--color-orange-300);
+    border-left-width: 4px;
+    border-left-color: var(--color-orange-500);
+    border-radius: var(--border-radius, 6px);
+    background-color: var(--color-orange-50);
+    color: var(--color-font-default-light);
+}
+
+.delete-blocked-notice__header {
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+    padding: 1rem;
+}
+
+.delete-blocked-notice__icon {
+    color: var(--color-orange-600);
+}
+
+.delete-blocked-notice__heading {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--color-font-important-light);
+}
+
+.delete-blocked-notice__message {
+    margin-top: 0.25rem;
+}
+
+.delete-blocked-notice__list {
+    margin: 0;
+    padding: 0.75rem 1rem 0.75rem 2.25rem;
+    border-top: 1px solid var(--color-orange-200);
+    list-style: disc;
+    line-height: 1.75;
+}
+
+/* Tailwind's reset makes links inherit colour with no underline. */
+.delete-blocked-notice__list a {
+    color: var(--color-orange-700);
+    font-weight: 500;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+
+.delete-blocked-notice__list a:hover {
+    color: var(--color-orange-900);
+}
+
+.delete-blocked-notice__actions {
+    padding: 0.75rem 1rem;
+    border-top: 1px solid var(--color-orange-200);
+}
+
+html.dark .delete-blocked-notice {
+    border-color: color-mix(in oklab, var(--color-orange-500) 40%, transparent);
+    border-left-color: var(--color-orange-500);
+    background-color: color-mix(in oklab, var(--color-orange-500) 10%, transparent);
+    color: var(--color-font-default-dark);
+}
+
+html.dark .delete-blocked-notice__icon {
+    color: var(--color-orange-400);
+}
+
+html.dark .delete-blocked-notice__heading {
+    color: var(--color-font-important-dark);
+}
+
+html.dark .delete-blocked-notice__list,
+html.dark .delete-blocked-notice__actions {
+    border-top-color: color-mix(in oklab, var(--color-orange-500) 25%, transparent);
+}
+
+html.dark .delete-blocked-notice__list a {
+    color: var(--color-orange-300);
+}
+
+html.dark .delete-blocked-notice__list a:hover {
+    color: var(--color-orange-100);
+}
