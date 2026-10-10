@@ -1,0 +1,66 @@
+/*
+ * Collapsing the admin sidebar (the dock_to_right toggle in the header)
+ * shrinks it to an icon-only rail instead of hiding it entirely.
+ * Pairs with the nav_sidebar.html override, which adds the
+ * ashton-sidebar-collapsed class and sets a fixed collapsed width.
+ *
+ * Below the xl breakpoint there isn't room for even a narrow rail, so the
+ * original full-hide/overlay behavior is kept there.
+ */
+
+@media (max-width: 1279.98px) {
+    .ashton-sidebar-wrapper.ashton-sidebar-collapsed {
+        display: none;
+    }
+}
+
+/* Hide the logo/wordmark header row; there's no compact mark to shrink it to. */
+#nav-sidebar.ashton-sidebar-collapsed #nav-sidebar-inner > div:first-child {
+    display: none;
+}
+
+#nav-sidebar.ashton-sidebar-collapsed #nav-sidebar-apps h2 {
+    display: none;
+}
+
+#nav-sidebar.ashton-sidebar-collapsed #nav-sidebar-apps ol {
+    padding-left: 0;
+    padding-right: 0;
+}
+
+#nav-sidebar.ashton-sidebar-collapsed #nav-sidebar-apps li a {
+    justify-content: center;
+    width: 44px;
+    margin: 0 auto;
+    padding-left: 0;
+    padding-right: 0;
+}
+
+#nav-sidebar.ashton-sidebar-collapsed #nav-sidebar-apps li a span.material-symbols-outlined {
+    margin-right: 0;
+}
+
+#nav-sidebar.ashton-sidebar-collapsed #nav-sidebar-apps li a span:not(.material-symbols-outlined),
+#nav-sidebar.ashton-sidebar-collapsed #nav-sidebar-apps li a .sidebar-badge {
+    display: none;
+}
+
+/* Footer user widget: keep just the avatar, centered. */
+#nav-sidebar.ashton-sidebar-collapsed #nav-sidebar-inner > div:last-child {
+    padding-left: 0;
+    padding-right: 0;
+}
+
+#nav-sidebar.ashton-sidebar-collapsed #nav-sidebar-inner > div:last-child > div:last-child {
+    justify-content: center;
+    gap: 0;
+    margin-left: 0;
+    margin-right: 0;
+    padding-left: 0;
+    padding-right: 0;
+}
+
+#nav-sidebar.ashton-sidebar-collapsed #nav-sidebar-inner > div:last-child > div:last-child > .flex-col,
+#nav-sidebar.ashton-sidebar-collapsed #nav-sidebar-inner > div:last-child > div:last-child > span.material-symbols-outlined {
+    display: none;
+}

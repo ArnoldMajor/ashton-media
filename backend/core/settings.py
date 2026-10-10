@@ -15,6 +15,7 @@ from decouple import config
 import dj_database_url
 from datetime import timedelta
 from django.urls import reverse_lazy
+from django.templatetags.static import static
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -165,7 +166,29 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR / "staticfiles"
-STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+STATICFILES_DIRS = [BASE_DIR / "static"]
+
+R2_BUCKET_NAME = config("R2_BUCKET_NAME", default="")
+
+STORAGES = {
+    "default": {"BACKEND": "django.core.files.storage.FileSystemStorage"},
+    "staticfiles": {"BACKEND": "whitenoise.storage.CompressedStaticFilesStorage"},
+}
+
+if R2_BUCKET_NAME:
+    STORAGES["default"] = {
+        "BACKEND": "storages.backends.s3.S3Storage",
+        "OPTIONS": {
+            "bucket_name": R2_BUCKET_NAME,
+            "endpoint_url": config("R2_ENDPOINT_URL"),
+            "access_key": config("R2_ACCESS_KEY_ID"),
+            "secret_key": config("R2_SECRET_ACCESS_KEY"),
+            "custom_domain": config("R2_PUBLIC_DOMAIN"),  # no https://
+            "region_name": "auto",
+            "querystring_auth": False,
+            "file_overwrite": False,
+        },
+    }
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
@@ -200,7 +223,91 @@ UNFOLD = {
     "ENVIRONMENT": "core.dashboard.environment_callback",
     "COLORS": {
         "primary": {
-            "500": "17 17 17",
+            "500": "229 229 229",
         },
+    },
+    "SITE_LOGO": lambda request: static("branding/ashton-logo-white.svg"),
+    "SITE_ICON": lambda request: static("branding/ashton-logo-white.svg"),
+    "STYLES": [
+        lambda request: static("admin/sidebar-collapse.css"),
+    ],
+    "SIDEBAR": {
+        "show_search": False,
+        "show_all_applications": False,
+        "navigation": [
+            {
+                "title": "Overview",
+                "separator": True,
+                "items": [
+                    {
+                        "title": "Dashboard",
+                        "icon": "dashboard",
+                        "link": reverse_lazy("admin:index"),
+                    },
+                ],
+            },
+            {
+                "title": "Sales & Bookings",
+                "separator": True,
+                "items": [
+                    {
+                        "title": "Billboards",
+                        "icon": "photo_size_select_large",
+                        "link": reverse_lazy("admin:billboards_billboard_changelist"),
+                    },
+                    {
+                        "title": "Clients",
+                        "icon": "groups",
+                        "link": reverse_lazy("admin:clients_client_changelist"),
+                    },
+                    {
+                        "title": "Contracts",
+                        "icon": "description",
+                        "link": reverse_lazy("admin:contracts_contract_changelist"),
+                    },
+                    {
+                        "title": "Inquiries",
+                        "icon": "mail",
+                        "link": reverse_lazy("admin:inquiries_inquiry_changelist"),
+                        "permission": "core.nav_permissions.can_view_inquiries",
+                    },
+                ],
+            },
+            {
+                "title": "Operations",
+                "separator": True,
+                "items": [
+                    {
+                        "title": "Jobs",
+                        "icon": "engineering",
+                        "link": reverse_lazy("admin:jobs_job_changelist"),
+                    },
+                ],
+            },
+            {
+                "title": "Marketing",
+                "separator": True,
+                "items": [
+                    {
+                        "title": "Blog Posts",
+                        "icon": "article",
+                        "link": reverse_lazy("admin:blog_blogpost_changelist"),
+                        "permission": "core.nav_permissions.can_view_blog",
+                    },
+                ],
+            },
+            {
+                "title": "Administration",
+                "separator": True,
+                "items": [
+                    {
+                        "title": "Staff Accounts",
+                        "icon": "admin_panel_settings",
+                        "link": reverse_lazy("admin:users_user_changelist"),
+                        "permission": "core.nav_permissions.can_view_users",
+                    },
+                ],
+            },
+        ],
     },
 }
