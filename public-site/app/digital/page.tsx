@@ -1,4 +1,5 @@
-import { PageHero, CTABar } from "@/components/PageSections";
+import { PageHero } from "@/components/PageSections";
+import CTABlock from "@/components/CTABlock";
 import PhotoPlaceholder from "@/components/PhotoPlaceholder";
 import BillboardCard from "@/components/BillboardCard";
 import { getBillboardsByFormat } from "@/lib/api/billboards";
@@ -76,8 +77,9 @@ export default async function DigitalPage() {
           </>
         )}
 
-        <CTABar />
       </div>
+
+      <CTABlock />
     </div>
   );
 }

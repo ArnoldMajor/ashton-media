@@ -3,6 +3,7 @@ import { useMemo, useState } from "react";
 import { PageHero } from "@/components/PageSections";
 import BillboardCard from "@/components/BillboardCard";
 import SiteModal from "@/components/SiteModal";
+import CTABlock from "@/components/CTABlock";
 import TanzaniaMap from "@/components/map/TanzaniaMap";
 import { billboardToLocation } from "@/lib/locations";
 import type { Billboard } from "@/types/billboard";
@@ -107,6 +108,8 @@ export default function GalleryClient({ billboards, usingFallback }: Props) {
           </div>
         </div>
       </div>
+
+      <CTABlock />
 
       {selected && <SiteModal site={selected} onClose={() => setSelected(null)} />}
     </div>

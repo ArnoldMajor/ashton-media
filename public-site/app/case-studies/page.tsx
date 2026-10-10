@@ -1,4 +1,5 @@
-import { PageHero, CTABar } from "@/components/PageSections";
+import { PageHero } from "@/components/PageSections";
+import CTABlock from "@/components/CTABlock";
 import PhotoPlaceholder from "@/components/PhotoPlaceholder";
 import FormatBadge from "@/components/FormatBadge";
 
@@ -35,8 +36,9 @@ export default function CaseStudiesPage() {
             </div>
           ))}
         </div>
-        <CTABar />
       </div>
+
+      <CTABlock />
     </div>
   );
 }

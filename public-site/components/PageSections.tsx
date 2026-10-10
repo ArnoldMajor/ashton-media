@@ -24,26 +24,3 @@ export function PageHero({ title, sub, tag }: PageHeroProps) {
     </section>
   );
 }
-
-export function CTABar() {
-  return (
-    <div className="bg-card rounded-[10px] py-10 px-12 border border-white/8 flex items-center justify-between gap-10 flex-wrap">
-      <div>
-        <h3 className="font-extrabold text-[22px] mb-1.5 tracking-[-0.5px]">
-          Ready to launch your campaign?
-        </h3>
-        <p className="text-sm text-white/40">
-          Our team will build the perfect package for your brand and budget.
-        </p>
-      </div>
-      <div className="flex gap-3 flex-wrap">
-        <a
-          href="tel:+255758880088"
-          className="text-sm font-semibold text-white/60 no-underline py-3 px-6 border border-white/15 rounded-md"
-        >
-          +255 758 88 00 88
-        </a>
-      </div>
-    </div>
-  );
-}

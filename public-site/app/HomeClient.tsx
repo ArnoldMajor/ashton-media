@@ -5,6 +5,8 @@ import PhotoPlaceholder from "@/components/PhotoPlaceholder";
 import TanzaniaMap from "@/components/map/TanzaniaMap";
 import SiteModal from "@/components/SiteModal";
 import BillboardCard from "@/components/BillboardCard";
+import CampaignProcess from "@/components/campaign/CampaignProcess";
+import CTABlock from "@/components/CTABlock";
 import { billboardToLocation } from "@/lib/locations";
 import type { Billboard } from "@/types/billboard";
 
@@ -170,6 +172,8 @@ export default function HomeClient({ billboards, usingFallback, networkShowcase 
         </div>
       </section>
 
+      <CampaignProcess variant="condensed" />
+
       <section className="py-15 sm:py-18 md:py-22 lg:py-25 px-2.5 sm:px-4 md:px-6 lg:px-8 bg-raised">
         <div className="max-w-300 mx-auto">
           <div className="flex justify-between items-end mb-9 flex-wrap gap-4">
@@ -200,16 +204,7 @@ export default function HomeClient({ billboards, usingFallback, networkShowcase 
         </div>
       </section>
 
-      <section className="py-20 sm:py-24 lg:py-30 px-2.5 sm:px-4 md:px-6 lg:px-8 text-center">
-        <div className="max-w-140 mx-auto">
-          <h2 className="font-black text-[32px] sm:text-[48px] lg:text-[64px] mb-4.5 tracking-[-2px] leading-none">Ready to get<br />noticed?</h2>
-          <p className="text-base text-white/40 mb-9 leading-[1.7]">Talk to our team about locations, pricing and creative options.</p>
-          <div className="flex gap-3 justify-center flex-wrap">
-            <Link href="/contact" className="bg-white text-black text-sm font-bold py-3.75 px-6 sm:px-8 lg:px-9 rounded-md no-underline inline-flex items-center">Start a Campaign</Link>
-            <a href="tel:+255758880088" className="inline-flex items-center border border-white/20 text-white/70 no-underline text-sm font-semibold py-3.75 px-6 sm:px-8 lg:px-9 rounded-md">+255 758 88 00 88</a>
-          </div>
-        </div>
-      </section>
+      <CTABlock />
 
       {selectedSite && <SiteModal site={selectedSite} onClose={() => setSelectedSite(null)} />}
     </div>
