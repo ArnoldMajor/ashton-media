@@ -1,13 +1,15 @@
 "use client";
 import { useState } from "react";
 import Image from "next/image";
-import { REAL_PHOTOS } from "@/lib/data";
+import { REAL_PHOTOS } from "@/lib/photos";
 
 interface Props {
   label?: string | null;
   ratio?: string;
   overlay?: boolean;
   photoIndex?: number;
+  /** A specific photo to show instead of the stock one at `photoIndex`. */
+  src?: string | null;
   fill?: boolean;
   className?: string;
 }
@@ -17,12 +19,13 @@ export default function PhotoPlaceholder({
   ratio = "16/9",
   overlay = true,
   photoIndex = 0,
+  src = null,
   fill = false,
   className = "",
 }: Props) {
   const [loaded, setLoaded] = useState(false);
   const [failed, setFailed] = useState(false);
-  const src = REAL_PHOTOS[photoIndex % REAL_PHOTOS.length];
+  const photoSrc = src || REAL_PHOTOS[photoIndex % REAL_PHOTOS.length];
 
   return (
     <div
@@ -33,7 +36,7 @@ export default function PhotoPlaceholder({
     >
       {!failed && (
         <Image
-          src={src}
+          src={photoSrc}
           alt={label || "Billboard"}
           fill
           sizes="(max-width: 768px) 100vw, 50vw"

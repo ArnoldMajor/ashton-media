@@ -1,7 +1,7 @@
-import { getLocationsResult } from "@/lib/locations";
+import { getBillboardsResult } from "@/lib/api/billboards";
 import GalleryClient from "./GalleryClient";
 
 export default async function GalleryPage() {
-  const { locations, source } = await getLocationsResult();
-  return <GalleryClient locations={locations} usingFallback={source === "fallback"} />;
+  const { billboards, source } = await getBillboardsResult();
+  return <GalleryClient billboards={billboards} usingFallback={source === "fallback"} />;
 }

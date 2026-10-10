@@ -1,29 +1,30 @@
 "use client";
 import { useEffect } from "react";
-import { Site } from "@/lib/data";
+import type { Billboard } from "@/types/billboard";
 import PhotoPlaceholder from "./PhotoPlaceholder";
 import FormatBadge from "./FormatBadge";
+import { stockPhotoIndex } from "./BillboardCard";
 
 interface Props {
-  site: Site;
+  site: Billboard;
   onClose: () => void;
 }
 
-const STATS_ROW = (site: Site) => [
-  { label: "Daily Traffic", value: site.traffic },
-  { label: "Dimensions", value: site.size },
-  { label: "Illuminated", value: site.illuminated ? "Yes" : "No" },
-  { label: "Format", value: site.type.charAt(0).toUpperCase() + site.type.slice(1) },
-  { label: "Faces", value: site.faces },
-  { label: "Monthly Rate", value: site.rate },
-];
+// Rows the backend has no value for are left out rather than shown blank.
+const STATS_ROW = (site: Billboard) =>
+  [
+    { label: "Format", value: site.formatLabel },
+    { label: "Dimensions", value: site.size },
+    { label: "Illuminated", value: site.illuminated ? "Yes" : "No" },
+    { label: "Backlit", value: site.backlit ? "Yes" : "No" },
+    { label: "Site Code", value: site.siteCode },
+    { label: "Region", value: site.region },
+  ].filter((s): s is { label: string; value: string } => Boolean(s.value));
 
 const DAYS = ["M", "T", "W", "T", "F", "S", "S"];
 const WEEKLY_TRAFFIC = [65, 80, 75, 90, 95, 70, 55];
 
 export default function SiteModal({ site, onClose }: Props) {
-  const photoIdx = { digital: 1, airport: 3, traditional: 4 }[site.type] ?? 0;
-
   useEffect(() => {
     document.body.style.overflow = "hidden";
     return () => { document.body.style.overflow = ""; };
@@ -43,7 +44,7 @@ export default function SiteModal({ site, onClose }: Props) {
         </div>
 
         <div className="relative">
-          <PhotoPlaceholder label={site.name} ratio="16/7" overlay photoIndex={photoIdx} />
+          <PhotoPlaceholder label={site.name} ratio="16/7" overlay src={site.imageUrl} photoIndex={stockPhotoIndex(site.format)} />
           <button
             onClick={onClose}
             className="absolute top-3 right-3 bg-black/65 border border-white/15 rounded-full w-8.5 h-8.5 cursor-pointer text-white text-base flex items-center justify-center min-h-0"
@@ -51,7 +52,7 @@ export default function SiteModal({ site, onClose }: Props) {
             ×
           </button>
           <div className="absolute bottom-3 left-4">
-            <FormatBadge type={site.type} small />
+            <FormatBadge format={site.format} label={site.formatLabel} small />
           </div>
         </div>
 
@@ -59,14 +60,11 @@ export default function SiteModal({ site, onClose }: Props) {
           <div className="flex justify-between items-start gap-4 mb-6 flex-wrap">
             <div>
               <h2 className="font-extrabold text-xl mb-1 tracking-[-0.5px]">{site.name}</h2>
-              <div className="text-[13px] text-white/40">{site.city}, Tanzania</div>
+              <div className="text-[13px] text-white/40">{[site.address, site.region, "Tanzania"].filter(Boolean).join(", ")}</div>
             </div>
-            <div className={`rounded-lg py-2.5 px-4 text-center shrink-0 border ${site.available ? "bg-lime/8 border-lime/25" : "bg-white/4 border-white/8"}`}>
-              <div className={`text-[11px] font-bold tracking-[1px] uppercase ${site.available ? "text-lime" : "text-white/35"}`}>
-                {site.available ? "Available" : "Booked"}
-              </div>
-              <div className="text-[11px] text-white/35 mt-0.5">
-                {site.available ? "From next month" : site.bookedUntil}
+            <div className={`rounded-lg py-2.5 px-4 text-center shrink-0 border ${site.isAvailable ? "bg-lime/8 border-lime/25" : "bg-white/4 border-white/8"}`}>
+              <div className={`text-[11px] font-bold tracking-[1px] uppercase ${site.isAvailable ? "text-lime" : "text-white/35"}`}>
+                {site.statusLabel}
               </div>
             </div>
           </div>

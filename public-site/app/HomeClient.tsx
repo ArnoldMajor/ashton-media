@@ -1,12 +1,13 @@
 "use client";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import Link from "next/link";
 import PhotoPlaceholder from "@/components/PhotoPlaceholder";
 import TanzaniaMap from "@/components/map/TanzaniaMap";
 import SiteModal from "@/components/SiteModal";
 import FormatBadge from "@/components/FormatBadge";
-import { SITES, Site } from "@/lib/data";
-import type { Location } from "@/types/location";
+import BillboardCard from "@/components/BillboardCard";
+import { billboardToLocation } from "@/lib/locations";
+import type { Billboard } from "@/types/billboard";
 
 const HERO_SLIDES = [
   { tag: "Out-of-Home Advertising", headline: "Make Your\nBrand\nUnmissable.", sub: "Tanzania's largest OOH network — 500+ sites across roads, malls, bus stands and airports.", photoIndex: 4 },
@@ -19,7 +20,7 @@ const STAT_LABELS = ["Billboard Sites", "LED Screens", "Cities Covered", "Est. Y
 const STAT_SUFFIX = ["+", "", "", ""];
 
 const SOLUTIONS_CARDS = [
-  { type: "traditional" as const, title: "Traditional OOH", desc: "Static and illuminated billboards at Tanzania's busiest roads, intersections, and malls.", href: "/traditional", photoIndex: 4 },
+  { type: "static" as const, title: "Traditional OOH", desc: "Static and illuminated billboards at Tanzania's busiest roads, intersections, and malls.", href: "/traditional", photoIndex: 4 },
   { type: "digital" as const, title: "Digital OOH", desc: "20 high-resolution LED screens with dynamic content, real-time scheduling, and traffic data.", href: "/digital", photoIndex: 0 },
   { type: "airport" as const, title: "Airport Advertising", desc: "Premium placements inside Julius Nyerere International Airport Terminal 3.", href: "/airport", photoIndex: 3 },
 ];
@@ -42,15 +43,15 @@ const WHY_FEATURES = [
 const BRANDS = ["Vodacom", "Airtel", "CRDB Bank", "Azam", "NMB Bank", "TBL", "Coca-Cola"];
 
 interface Props {
-  locations: Location[];
+  billboards: Billboard[];
   usingFallback: boolean;
 }
 
-export default function HomeClient({ locations, usingFallback }: Props) {
+export default function HomeClient({ billboards, usingFallback }: Props) {
   const [heroIdx, setHeroIdx] = useState(0);
   const [counts, setCounts] = useState([0, 0, 0, 0]);
   const [countVisible, setCountVisible] = useState(false);
-  const [selectedSite, setSelectedSite] = useState<Site | null>(null);
+  const [selectedSite, setSelectedSite] = useState<Billboard | null>(null);
   const countRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -76,6 +77,7 @@ export default function HomeClient({ locations, usingFallback }: Props) {
     });
   }, [countVisible]);
 
+  const locations = useMemo(() => billboards.map(billboardToLocation), [billboards]);
   const slide = HERO_SLIDES[heroIdx];
 
   return (
@@ -139,7 +141,7 @@ export default function HomeClient({ locations, usingFallback }: Props) {
             <Link key={s.href} href={s.href} className="block bg-card border border-white/7 rounded-xl overflow-hidden no-underline text-white hover:border-white/18">
               <PhotoPlaceholder ratio="16/9" overlay photoIndex={s.photoIndex} />
               <div className="p-6">
-                <div className="mb-2.5"><FormatBadge type={s.type} /></div>
+                <div className="mb-2.5"><FormatBadge format={s.type} /></div>
                 <h3 className="font-extrabold text-[17px] mb-2 tracking-[-0.5px]">{s.title}</h3>
                 <p className="text-[13px] text-white/40 leading-[1.65] mb-4">{s.desc}</p>
                 <div className="text-xs font-bold text-white/50">Explore →</div>
@@ -201,14 +203,9 @@ export default function HomeClient({ locations, usingFallback }: Props) {
             <Link href="/gallery" className="text-[13px] font-semibold text-white/50 no-underline">View all sites →</Link>
           </div>
           <div className="grid grid-cols-[repeat(auto-fill,minmax(280px,1fr))] gap-3">
-            {SITES.filter((s) => s.available).slice(0, 3).map((site) => (
+            {billboards.filter((b) => b.isAvailable).slice(0, 3).map((site) => (
               <button key={site.id} onClick={() => setSelectedSite(site)} className="bg-card border border-white/7 rounded-[10px] overflow-hidden text-left cursor-pointer text-white w-full p-0 hover:border-white/18">
-                <PhotoPlaceholder ratio="16/9" overlay photoIndex={site.photoIndex} />
-                <div className="p-4">
-                  <div className="mb-2.5"><FormatBadge type={site.type} small /></div>
-                  <h4 className="font-bold text-sm mb-1 tracking-[-0.3px]">{site.name}</h4>
-                  <p className="text-xs text-white/35">{site.city} · {site.size}</p>
-                </div>
+                <BillboardCard billboard={site} />
               </button>
             ))}
           </div>

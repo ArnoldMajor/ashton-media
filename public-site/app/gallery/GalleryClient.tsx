@@ -1,39 +1,44 @@
 "use client";
-import { useState } from "react";
-import { SITES, Site } from "@/lib/data";
+import { useMemo, useState } from "react";
 import { PageHero } from "@/components/PageSections";
-import FormatBadge from "@/components/FormatBadge";
-import PhotoPlaceholder from "@/components/PhotoPlaceholder";
+import BillboardCard from "@/components/BillboardCard";
 import SiteModal from "@/components/SiteModal";
 import TanzaniaMap from "@/components/map/TanzaniaMap";
+import { billboardToLocation } from "@/lib/locations";
+import type { Billboard } from "@/types/billboard";
 import type { Location } from "@/types/location";
 
-const FILTERS = [
-  { key: "all", label: "All Locations" },
-  { key: "digital", label: "Digital" },
-  { key: "traditional", label: "Traditional" },
-  { key: "airport", label: "Airport" },
-  { key: "available", label: "Available Now" },
-];
-
 interface Props {
-  locations: Location[];
+  billboards: Billboard[];
   usingFallback: boolean;
 }
 
-export default function GalleryClient({ locations, usingFallback }: Props) {
+export default function GalleryClient({ billboards, usingFallback }: Props) {
   const [filter, setFilter] = useState("all");
   const [search, setSearch] = useState("");
-  const [selected, setSelected] = useState<Site | null>(null);
+  const [selected, setSelected] = useState<Billboard | null>(null);
 
-  const filtered = SITES.filter((s) => {
-    const matchType = filter === "all" ? true : filter === "available" ? s.available : s.type === filter;
-    const matchSearch = search === "" ? true : s.name.toLowerCase().includes(search.toLowerCase()) || s.city.toLowerCase().includes(search.toLowerCase());
+  const locations = useMemo(() => billboards.map(billboardToLocation), [billboards]);
+
+  // One filter per format actually on the network, labelled as the API names it.
+  const filters = useMemo(() => {
+    const labels = new Set(billboards.map((b) => b.formatLabel));
+    return [
+      { key: "all", label: "All Locations" },
+      ...Array.from(labels, (label) => ({ key: `format:${label}`, label })),
+      { key: "available", label: "Available Now" },
+    ];
+  }, [billboards]);
+
+  const query = search.trim().toLowerCase();
+  const filtered = billboards.filter((b) => {
+    const matchType = filter === "all" ? true : filter === "available" ? b.isAvailable : filter === `format:${b.formatLabel}`;
+    const matchSearch = query === "" ? true : [b.name, b.region, b.address].some((field) => field.toLowerCase().includes(query));
     return matchType && matchSearch;
   });
 
   const handleMarkerSelect = (loc: Location) => {
-    const site = SITES.find((s) => s.id === loc.id);
+    const site = billboards.find((b) => b.id === loc.id);
     if (site) setSelected(site);
   };
 
@@ -47,7 +52,7 @@ export default function GalleryClient({ locations, usingFallback }: Props) {
 
       <div className="max-w-300 mx-auto py-15 px-2.5 sm:px-4 md:px-6 lg:px-8">
         <div className="flex gap-3 mb-10 flex-wrap items-center">
-          {FILTERS.map((f) => (
+          {filters.map((f) => (
             <button
               key={f.key}
               onClick={() => setFilter(f.key)}
@@ -84,12 +89,7 @@ export default function GalleryClient({ locations, usingFallback }: Props) {
               onClick={() => setSelected(site)}
               className="bg-card border border-white/7 rounded-[10px] overflow-hidden text-left cursor-pointer text-white w-full p-0 transition-colors hover:border-white/18"
             >
-              <PhotoPlaceholder ratio="16/9" overlay photoIndex={site.photoIndex} />
-              <div className="p-4">
-                <div className="mb-2.5"><FormatBadge type={site.type} small /></div>
-                <h4 className="font-bold text-sm mb-1 tracking-[-0.3px]">{site.name}</h4>
-                <p className="text-xs text-white/35">{site.city} · {site.size}</p>
-              </div>
+              <BillboardCard billboard={site} />
             </button>
           ))}
         </div>
@@ -99,7 +99,7 @@ export default function GalleryClient({ locations, usingFallback }: Props) {
             <div className="text-[11px] font-semibold tracking-[3px] text-white/40 uppercase mb-3">Map View</div>
             <h2 className="font-black text-[22px] sm:text-[28px] lg:text-[36px] mb-4 tracking-[-1px]">Tanzania Coverage</h2>
             <p className="text-sm text-white/40 leading-[1.7] max-w-80">
-              Circles are digital screens, squares are traditional billboards, diamonds are airport positions. Numbered circles are clusters — click one to zoom in. Faded markers are currently booked.
+              Circles are digital screens, squares are static billboards, diamonds are airport positions. Numbered circles are clusters — click one to zoom in. Faded markers are currently booked.
             </p>
           </div>
           <div className="bg-card rounded-[10px] border border-white/8 p-6 flex items-center justify-center min-h-80">

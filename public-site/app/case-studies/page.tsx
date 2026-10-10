@@ -4,7 +4,7 @@ import FormatBadge from "@/components/FormatBadge";
 
 const CASE_STUDIES = [
   { brand: "Vodacom Tanzania", type: "digital" as const, headline: "15M+ Impressions in 30 Days", desc: "A 4-screen digital network campaign across Dar es Salaam's CBD drove brand recall up 38% among the target demographic.", metric1: { n: "15M+", l: "impressions" }, metric2: { n: "38%", l: "recall lift" }, photoIndex: 0 },
-  { brand: "CRDB Bank", type: "traditional" as const, headline: "Full-City Saturation Launch", desc: "20-billboard roadside takeover across Dar es Salaam to support a new product launch — campaign reached 2.4M people over 8 weeks.", metric1: { n: "2.4M", l: "reach" }, metric2: { n: "8 wks", l: "duration" }, photoIndex: 4 },
+  { brand: "CRDB Bank", type: "static" as const, headline: "Full-City Saturation Launch", desc: "20-billboard roadside takeover across Dar es Salaam to support a new product launch — campaign reached 2.4M people over 8 weeks.", metric1: { n: "2.4M", l: "reach" }, metric2: { n: "8 wks", l: "duration" }, photoIndex: 4 },
   { brand: "Azam FC", type: "airport" as const, headline: "Terminal 3 Sponsorship", desc: "Season-long airport takeover targeting arriving business travellers, positioning Azam as Tanzania's premium brand.", metric1: { n: "12", l: "positions" }, metric2: { n: "365d", l: "campaign" }, photoIndex: 3 },
   { brand: "Airtel Tanzania", type: "digital" as const, headline: "Dynamic Daypart Campaign", desc: "Time-of-day targeted content on 8 LED screens — morning commute messages drove 24% higher response rate vs. static creative.", metric1: { n: "24%", l: "higher CTR" }, metric2: { n: "8", l: "screens" }, photoIndex: 1 },
 ];
@@ -44,7 +44,7 @@ export default function CaseStudiesPage() {
 function CaseStudyContent({ cs }: { cs: typeof CASE_STUDIES[0] }) {
   return (
     <>
-      <div className="mb-3"><FormatBadge type={cs.type} /></div>
+      <div className="mb-3"><FormatBadge format={cs.type} /></div>
       <div className="text-xs font-semibold text-white/35 mb-2">{cs.brand}</div>
       <h2 className="font-black text-[20px] sm:text-[24px] lg:text-[28px] mb-4 tracking-[-0.5px] leading-[1.2]">{cs.headline}</h2>
       <p className="text-sm text-white/50 leading-[1.75] mb-7">{cs.desc}</p>

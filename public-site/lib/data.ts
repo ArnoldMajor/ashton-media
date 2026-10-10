@@ -1,3 +1,8 @@
+/**
+ * Static sample sites. FALLBACK ONLY — the live site reads billboards from the
+ * Django API via lib/api/billboards.ts, which maps these to `Billboard` when
+ * the API is unreachable. Don't import this from pages or components.
+ */
 export type SiteType = "digital" | "traditional" | "airport";
 
 export interface Site {
@@ -15,15 +20,6 @@ export interface Site {
   photoIndex: number;
 }
 
-export const REAL_PHOTOS: string[] = [
-  "https://www.ashtonmedia.net/uploads/1/4/4/1/144182232/campaign-2-2x.png",
-  "https://www.ashtonmedia.net/uploads/1/4/4/1/144182232/campaign-3-2x.png",
-  "https://www.ashtonmedia.net/uploads/1/4/4/1/144182232/campaign-4-2x.png",
-  "https://www.ashtonmedia.net/uploads/1/4/4/1/144182232/campaign-5-2x.png",
-  "https://www.ashtonmedia.net/uploads/1/4/4/1/144182232/slp-1144-copy.jpg",
-  "https://www.ashtonmedia.net/uploads/1/4/4/1/144182232/slp-1219-copy.jpg",
-];
-
 export const SITES: Site[] = [
   { id: 1,  name: "New Bagamoyo Rd — Screen 01",  city: "Dar es Salaam", type: "digital",     size: "10×5m",        traffic: "85,000/day",  illuminated: true,  faces: "1", rate: "USD 2,400", available: true,  bookedUntil: null, photoIndex: 0 },
   { id: 2,  name: "Msasani Peninsula",             city: "Dar es Salaam", type: "digital",     size: "8×4m",         traffic: "52,000/day",  illuminated: true,  faces: "1", rate: "USD 1,800", available: false, bookedUntil: "Until Aug 2025", photoIndex: 1 },
@@ -38,3 +34,19 @@ export const SITES: Site[] = [
   { id: 11, name: "Mlimani City Mall",             city: "Dar es Salaam", type: "digital",     size: "6×3m",         traffic: "30,000/day",  illuminated: true,  faces: "1", rate: "USD 1,600", available: false, bookedUntil: "Until Sep 2025", photoIndex: 1 },
   { id: 12, name: "Dodoma — Main Rd",              city: "Dodoma",        type: "traditional", size: "12×4m",        traffic: "28,000/day",  illuminated: false, faces: "1", rate: "USD 600",   available: true,  bookedUntil: null, photoIndex: 5 },
 ];
+
+/** [longitude, latitude] for each sample site, keyed by site id. */
+export const SITE_COORDINATES: Record<number, [number, number]> = {
+  1: [39.243, -6.759], // New Bagamoyo Rd — Screen 01
+  2: [39.279, -6.745], // Msasani Peninsula
+  3: [39.228, -6.818], // Morogoro Rd Gantry
+  4: [39.202, -6.878], // JNIA T3 — Escalator Screen
+  5: [39.267, -6.776], // Ali Hassan Mwinyi Rd
+  6: [36.683, -3.367], // Arusha Town Centre
+  7: [32.9, -2.517], // Mwanza Lakefront
+  8: [39.205, -6.881], // JNIA T3 — Baggage Reclaim
+  9: [39.257, -6.85], // Changombe Rd
+  10: [39.269, -6.818], // Kariakoo CBD
+  11: [39.208, -6.774], // Mlimani City Mall
+  12: [35.742, -6.163], // Dodoma — Main Rd
+};

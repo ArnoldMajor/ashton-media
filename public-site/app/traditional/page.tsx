@@ -1,6 +1,7 @@
 import { PageHero, CTABar } from "@/components/PageSections";
 import PhotoPlaceholder from "@/components/PhotoPlaceholder";
-import { SITES } from "@/lib/data";
+import BillboardCard from "@/components/BillboardCard";
+import { getBillboardsByFormat } from "@/lib/api/billboards";
 import Link from "next/link";
 
 const FEATURES = [
@@ -10,8 +11,8 @@ const FEATURES = [
   { icon: "📊", title: "Traffic Verified", desc: "Independent traffic counts at every location so you can plan campaigns with confidence." },
 ];
 
-export default function TraditionalPage() {
-  const traditionalSites = SITES.filter((s) => s.type === "traditional");
+export default async function TraditionalPage() {
+  const traditionalSites = (await getBillboardsByFormat()).static;
 
   return (
     <div className="bg-canvas text-white">
@@ -37,6 +38,7 @@ export default function TraditionalPage() {
           ))}
         </div>
 
+        {traditionalSites.length > 0 && (
         <div className="mb-15">
           <h2 className="font-black text-[22px] sm:text-[28px] lg:text-[36px] mb-6 tracking-[-1px]">Traditional Sites</h2>
           <div className="grid grid-cols-[repeat(auto-fill,minmax(280px,1fr))] gap-3">
@@ -46,15 +48,12 @@ export default function TraditionalPage() {
                 href="/gallery"
                 className="block bg-card border border-white/7 rounded-[10px] overflow-hidden no-underline text-white"
               >
-                <PhotoPlaceholder ratio="16/9" overlay photoIndex={site.photoIndex} />
-                <div className="p-4">
-                  <h4 className="font-bold text-sm mb-1">{site.name}</h4>
-                  <p className="text-xs text-white/35 mt-2">{site.city} · {site.size}</p>
-                </div>
+                <BillboardCard billboard={site} showBadge={false} />
               </Link>
             ))}
           </div>
         </div>
+        )}
 
         <CTABar />
       </div>

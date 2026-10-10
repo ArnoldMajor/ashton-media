@@ -1,6 +1,7 @@
 import { PageHero, CTABar } from "@/components/PageSections";
 import PhotoPlaceholder from "@/components/PhotoPlaceholder";
-import { SITES } from "@/lib/data";
+import BillboardCard from "@/components/BillboardCard";
+import { getBillboardsByFormat } from "@/lib/api/billboards";
 import Link from "next/link";
 
 const ADVANTAGES = [
@@ -17,8 +18,8 @@ const SCHEDULE = [
   ["Weekend All-Day", "Mall & leisure traffic"],
 ];
 
-export default function DigitalPage() {
-  const digitalSites = SITES.filter((s) => s.type === "digital");
+export default async function DigitalPage() {
+  const digitalSites = (await getBillboardsByFormat()).digital;
 
   return (
     <div className="bg-canvas text-white">
@@ -62,18 +63,18 @@ export default function DigitalPage() {
           </div>
         </div>
 
+        {digitalSites.length > 0 && (
+          <>
         <h2 className="font-black text-[22px] sm:text-[28px] lg:text-[36px] mb-6 tracking-[-1px]">Digital Screens</h2>
         <div className="grid grid-cols-[repeat(auto-fill,minmax(280px,1fr))] gap-3 mb-15">
           {digitalSites.map((site) => (
             <Link key={site.id} href="/gallery" className="block bg-card border border-lime/10 rounded-[10px] overflow-hidden no-underline text-white">
-              <PhotoPlaceholder ratio="16/9" overlay photoIndex={site.photoIndex} />
-              <div className="p-4">
-                <h4 className="font-bold text-sm mb-1">{site.name}</h4>
-                <p className="text-xs text-white/35 mt-2">{site.city} · {site.size}</p>
-              </div>
+              <BillboardCard billboard={site} showBadge={false} />
             </Link>
           ))}
         </div>
+          </>
+        )}
 
         <CTABar />
       </div>
