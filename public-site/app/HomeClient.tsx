@@ -4,6 +4,7 @@ import Link from "next/link";
 import PhotoPlaceholder from "@/components/PhotoPlaceholder";
 import TanzaniaMap from "@/components/map/TanzaniaMap";
 import SiteModal from "@/components/SiteModal";
+import SectionHeading from "@/components/SectionHeading";
 import BillboardCard from "@/components/BillboardCard";
 import CampaignProcess from "@/components/campaign/CampaignProcess";
 import CTABlock from "@/components/CTABlock";
@@ -134,7 +135,7 @@ export default function HomeClient({ billboards, usingFallback, networkShowcase 
         <div className="grid grid-cols-[repeat(auto-fit,minmax(300px,1fr))] gap-10 sm:gap-14 lg:gap-20 items-start">
           <div>
             <div className="text-[11px] font-semibold tracking-[3px] text-white/40 uppercase mb-3">Coverage</div>
-            <h2 className="font-black text-[26px] sm:text-[36px] lg:text-[48px] mb-5 tracking-[-1.5px] leading-[1.05]">Nationwide<br />Network</h2>
+            <SectionHeading lead="Nationwide" accent="Network" className="text-[26px] sm:text-[36px] lg:text-[48px] mb-5 tracking-[-1.5px] leading-[1.05]" />
             <p className="text-[15px] text-white/45 leading-[1.8] mb-8 max-w-95">From Dar es Salaam to Arusha, Mwanza to Dodoma — Ashton Media covers Tanzania's most important markets.</p>
             <div className="border-t border-t-white/8">
               {COVERAGE.map((loc) => (
@@ -156,7 +157,7 @@ export default function HomeClient({ billboards, usingFallback, networkShowcase 
         <div className="grid grid-cols-[repeat(auto-fit,minmax(300px,1fr))] gap-10 sm:gap-14 lg:gap-20 items-start">
           <div>
             <div className="text-[11px] font-semibold tracking-[3px] text-white/40 uppercase mb-3">Why Choose Us</div>
-            <h2 className="font-black text-[26px] sm:text-[36px] lg:text-[48px] mb-5 tracking-[-1.5px] leading-[1.05]">Tanzania's #1<br />OOH Company</h2>
+            <SectionHeading lead="Tanzania's #1" accent="OOH Company" className="text-[26px] sm:text-[36px] lg:text-[48px] mb-5 tracking-[-1.5px] leading-[1.05]" />
             <p className="text-[15px] text-white/45 leading-[1.8] mb-8 max-w-95">Founded in 2005, Ashton Media has built Tanzania's most comprehensive out-of-home network — award-winning creative, strategy and execution under one roof.</p>
             <Link href="/contact" className="inline-block bg-white text-black text-[13px] font-bold py-3.25 px-6.5 rounded-md no-underline">Request a Proposal</Link>
           </div>

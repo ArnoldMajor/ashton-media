@@ -1,16 +1,9 @@
 @import "tailwindcss";
 
 @theme {
-  /* Font files are loaded with next/font in app/layout.tsx, which sets the
-     --font-montserrat / --font-syne / --font-inter / --font-playfair variables. */
+  /* The font file is loaded with next/font in app/layout.tsx, which sets
+     the --font-montserrat variable. */
   --font-sans: var(--font-montserrat), sans-serif;
-
-  /* Editorial sections (network showcase, campaign process, CTA block):
-     Syne for headings, Inter for body, Playfair Display italic for the
-     accent line of a two-line heading. */
-  --font-display: var(--font-syne), sans-serif;
-  --font-body: var(--font-inter), sans-serif;
-  --font-accent: var(--font-playfair), serif;
 
   /* Surfaces — every dark panel in the UI is one of these, each a distinct
      shade rather than an opacity of another, so each gets its own token. */
@@ -26,16 +19,13 @@
   --color-placeholder-inner:    #141414;
   --color-nav-scrolled:         rgba(6, 6, 6, 0.97);
 
-  /* Brand accent */
-  --color-lime: #C8FF00;
+  /* Brand accent — undecided. Monochrome until a colour is chosen;
+     changing this one value is the whole switch. Candidate: #C8FF00 */
+  --color-accent: #ffffff;
 
-  /* Editorial sections: warm accent and the ground it sits on. */
-  --color-amber: #D4A853;
-  --color-ground: #0A0807;
-
-  /* Everything else (text, borders, overlays, glows) is white/black/lime at
-     some opacity — use Tailwind's own `white`/`black` + this `lime` token
-     with an opacity modifier (e.g. `text-white/40`, `border-lime/25`)
+  /* Everything else (text, borders, overlays, glows) is white/black/accent
+     at some opacity — use Tailwind's own `white`/`black` + this `accent`
+     token with an opacity modifier (e.g. `text-white/40`, `border-accent/25`)
      instead of a separate named shade per value. One color, one place to
      change it, and the suffix is the literal opacity. */
 }
@@ -50,8 +40,7 @@
  * should only need to touch the values here plus that one lookup map.
  */
 :root {
-  --amber: var(--color-amber);
-  --bg: var(--color-ground);
+  --bg: var(--color-canvas);
 
   --map-land: #1c1c1c;
   --map-land-stroke: rgba(255, 255, 255, 0.15);

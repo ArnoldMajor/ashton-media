@@ -62,8 +62,8 @@ export default function SiteModal({ site, onClose }: Props) {
               <h2 className="font-extrabold text-xl mb-1 tracking-[-0.5px]">{site.name}</h2>
               <div className="text-[13px] text-white/40">{[site.address, site.region, "Tanzania"].filter(Boolean).join(", ")}</div>
             </div>
-            <div className={`rounded-lg py-2.5 px-4 text-center shrink-0 border ${site.isAvailable ? "bg-lime/8 border-lime/25" : "bg-white/4 border-white/8"}`}>
-              <div className={`text-[11px] font-bold tracking-[1px] uppercase ${site.isAvailable ? "text-lime" : "text-white/35"}`}>
+            <div className={`rounded-lg py-2.5 px-4 text-center shrink-0 border ${site.isAvailable ? "bg-white border-white" : "bg-white/4 border-white/8"}`}>
+              <div className={`text-[11px] font-bold tracking-[1px] uppercase ${site.isAvailable ? "text-black" : "text-white/35"}`}>
                 {site.statusLabel}
               </div>
             </div>

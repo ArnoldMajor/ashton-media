@@ -34,7 +34,7 @@ export default function ContactPage() {
             <h2 className="font-black text-[28px] mb-8 tracking-[-1px]">Start a Campaign</h2>
 
             {submitted ? (
-              <div className="bg-lime/7 border border-lime/20 rounded-xl p-10 text-center">
+              <div className="bg-white/7 border border-white/20 rounded-xl p-10 text-center">
                 <div className="text-[32px] mb-4">✓</div>
                 <h3 className="font-extrabold text-xl mb-2">Message sent!</h3>
                 <p className="text-white/50 text-sm">Our team will be in touch within 24 hours.</p>
