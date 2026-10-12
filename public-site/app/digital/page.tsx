@@ -34,7 +34,7 @@ export default async function DigitalPage() {
         sub="20 high-resolution LED screens across Tanzania's highest-traffic corridors. Dynamic content, real-time scheduling, and verified traffic data."
       />
 
-      <div className="max-w-300 mx-auto py-15 px-2.5 sm:px-4 md:px-6 lg:px-8">
+      <div className="max-w-300 mx-auto py-15 px-(--gutter) md:px-6 lg:px-8">
 
         <div className="rounded-xl overflow-hidden mb-15 border border-accent/15">
           <PhotoPlaceholder ratio="21/9" overlay label="Digital LED Screen — New Bagamoyo Road" photoIndex={0} src={banner?.url} alt={banner?.alt || undefined} sizes="(max-width: 1200px) 100vw, 1136px" />

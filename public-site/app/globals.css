@@ -56,6 +56,21 @@
   --map-label: rgba(255, 255, 255, 0.55);
 }
 
+/*
+ * Page gutter on phones (below md): the space between the screen edge and the
+ * content. One value, used as `px-(--gutter)` by every page wrapper, the nav,
+ * the footer and the mobile menu, so their edges line up. From md up each
+ * wrapper sets its own padding (md:px-6 lg:px-8) and this is not read.
+ */
+:root {
+  --gutter: 0.78125rem; /* 12.5px */
+}
+@media (width >= 40rem) {
+  :root {
+    --gutter: 1.25rem; /* 20px, from sm up to md */
+  }
+}
+
 @layer base {
   html { scroll-behavior: smooth; }
   body {

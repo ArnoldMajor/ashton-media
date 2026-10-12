@@ -66,7 +66,7 @@ export default async function CaseStudiesPage() {
     <div className="bg-canvas text-white">
       <PageHero title="Case Studies" tag="Results" sub="Real campaigns. Real results. See how Tanzania's leading brands have used Ashton Media's network to drive measurable impact." />
 
-      <div className="max-w-300 mx-auto py-15 px-2.5 sm:px-4 md:px-6 lg:px-8">
+      <div className="max-w-300 mx-auto py-15 px-(--gutter) md:px-6 lg:px-8">
         {cards.length === 0 ? (
           <div className="bg-card border border-white/7 rounded-xl py-14 px-6 mb-15 text-center">
             <h2 className="font-black text-[20px] sm:text-[24px] lg:text-[28px] mb-3 tracking-[-0.5px] leading-[1.2]">New case studies are on the way.</h2>

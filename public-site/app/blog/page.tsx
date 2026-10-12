@@ -16,7 +16,7 @@ export default function BlogPage() {
     <div className="bg-canvas text-white">
       <PageHero title="Insights & News" tag="Blog" sub="Industry analysis, campaign data, and OOH advertising insights from Tanzania's leading media company." />
 
-      <div className="max-w-300 mx-auto py-15 px-2.5 sm:px-4 md:px-6 lg:px-8">
+      <div className="max-w-300 mx-auto py-15 px-(--gutter) md:px-6 lg:px-8">
 
         <div className="mb-12 bg-card border border-white/7 rounded-xl overflow-hidden grid grid-cols-1 md:grid-cols-2">
           <PhotoPlaceholder ratio="4/3" overlay photoIndex={POSTS[0].photoIndex} />

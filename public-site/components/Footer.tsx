@@ -18,7 +18,7 @@ const COMPANY = [
 export default function Footer() {
   return (
     <footer className="bg-footer border-t border-t-white/7 pt-18 pb-10">
-      <div className="max-w-300 mx-auto px-2.5 sm:px-4 md:px-6 lg:px-8">
+      <div className="max-w-300 mx-auto px-(--gutter) md:px-6 lg:px-8">
         <div className="grid grid-cols-[repeat(auto-fit,minmax(180px,1fr))] gap-10 mb-14">
           <div>
             <div className="mb-4">

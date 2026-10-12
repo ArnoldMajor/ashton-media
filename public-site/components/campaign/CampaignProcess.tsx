@@ -30,7 +30,7 @@ export default function CampaignProcess({ variant = "full" }: Props) {
   const condensed = variant === "condensed";
 
   return (
-    <section className="bg-canvas text-white py-15 sm:py-18 md:py-22 lg:py-25 px-2.5 sm:px-4 md:px-6 lg:px-8">
+    <section className="bg-canvas text-white py-15 sm:py-18 md:py-22 lg:py-25 px-(--gutter) md:px-6 lg:px-8">
       <div className="max-w-300 mx-auto">
         <div className="flex justify-between items-end flex-wrap gap-x-10 gap-y-5 mb-9 sm:mb-12">
           <div>

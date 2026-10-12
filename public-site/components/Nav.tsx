@@ -59,7 +59,7 @@ export default function Nav() {
       className={`fixed top-0 left-0 right-0 z-1000 flex items-center transition-all duration-300 ${scrolled ? "h-15 bg-nav-scrolled backdrop-blur-[20px] border-b-white/7" : "h-18 bg-transparent"
         }`}
     >
-      <div className="w-full max-w-300 mx-auto px-2.5 sm:px-4 md:px-6 lg:px-8 flex items-center justify-between">
+      <div className="w-full max-w-300 mx-auto px-(--gutter) md:px-6 lg:px-8 flex items-center justify-between">
         <Link href="/" className="font-extrabold text-lg text-white tracking-[0.5px] no-underline flex items-center gap-2.5 min-h-11">
           <Image src={AshtonWhiteLogo} width={150} alt="Ashton Media Logo" />
         </Link>
@@ -136,7 +136,7 @@ export default function Nav() {
       </div>
 
       {menuOpen && (
-        <div className="fixed top-15 left-0 right-0 max-h-[calc(100dvh-3.75rem)] overflow-y-auto bg-raised border-b border-b-white/7 pt-4 px-8 pb-7 flex flex-col gap-0.5 z-999">
+        <div className="fixed top-15 left-0 right-0 max-h-[calc(100dvh-3.75rem)] overflow-y-auto bg-raised border-b border-b-white/7 pt-4 px-(--gutter) pb-7 flex flex-col gap-0.5 z-999">
           {MOBILE_LINKS.map(({ label, href }) => (
             <Link
               key={href}

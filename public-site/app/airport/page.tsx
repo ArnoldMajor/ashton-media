@@ -34,7 +34,7 @@ export default async function AirportPage() {
         sub="Exclusive advertising rights at Julius Nyerere International Airport Terminal 3 — Tanzania's gateway to the world."
       />
 
-      <div className="max-w-300 mx-auto py-15 px-2.5 sm:px-4 md:px-6 lg:px-8">
+      <div className="max-w-300 mx-auto py-15 px-(--gutter) md:px-6 lg:px-8">
 
         <div className="rounded-xl overflow-hidden mb-15">
           <PhotoPlaceholder ratio="21/9" overlay label="JNIA Terminal 3" photoIndex={3} src={banner?.url} alt={banner?.alt || undefined} sizes="(max-width: 1200px) 100vw, 1136px" />

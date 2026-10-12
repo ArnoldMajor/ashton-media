@@ -104,33 +104,37 @@ export default function HomeClient({ billboards, usingFallback, heroImages, netw
                   fill
                 />
               </div>
-              {/* On a phone the text runs the full width, so the scrim stays dark to the right edge; from md up it fades out as designed. */}
-              <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(0,0,0,0.88)_0%,rgba(0,0,0,0.72)_100%)] md:bg-[linear-gradient(90deg,rgba(0,0,0,0.88)_0%,rgba(0,0,0,0.55)_55%,rgba(0,0,0,0.25)_100%)]" />
+              {/* On a phone the text is centred across the full width, so the scrim is even: 76% black is the
+                  lightest that keeps the sub text (white at 55%) at 4.5:1 over a pure white photo. From md up
+                  the text sits on the left and the scrim fades out to the right, as designed. */}
+              <div className="absolute inset-0 bg-black/76 md:bg-transparent md:bg-[linear-gradient(90deg,rgba(0,0,0,0.88)_0%,rgba(0,0,0,0.55)_55%,rgba(0,0,0,0.25)_100%)]" />
             </div>
           ))}
         </div>
 
-        <div className="relative z-1 min-h-svh flex flex-col justify-center pt-25 sm:pt-30 md:pt-35 lg:pt-40 px-2.5 sm:px-4 md:px-6 lg:px-8 pb-20 max-w-300 mx-auto">
-          <div className="max-w-140">
-            <div className="flex items-center gap-2.5 mb-7">
+        <div className="relative z-1 min-h-svh flex flex-col justify-center pt-25 sm:pt-30 md:pt-35 lg:pt-40 px-(--gutter) md:px-6 lg:px-8 pb-20 max-w-300 mx-auto">
+          {/* Centred below md, left-aligned from md up. */}
+          <div className="max-w-140 mx-auto text-center md:mx-0 md:text-left">
+            <div className="flex items-center justify-center md:justify-start gap-2.5 mb-7">
               <div className="w-6 h-px bg-white/45" />
               <span className="text-[12px] md:text-[11px] font-semibold tracking-[3px] text-white/50 uppercase">{slide.tag}</span>
             </div>
-            <h1 className="font-black text-[44px] sm:text-[64px] lg:text-[88px] leading-none mb-6 tracking-[-2px] whitespace-pre-line">{slide.headline}</h1>
-            <p className="text-[14px] sm:text-[15px] lg:text-[17px] font-normal text-white/55 leading-[1.75] mb-10 max-w-105">{slide.sub}</p>
-            <div className="flex gap-3 flex-wrap mb-15">
-              <Link href="/contact" className="bg-white text-black text-[13px] font-bold py-3.5 px-5 sm:px-6 lg:px-7 rounded-md no-underline inline-flex items-center">Start a Campaign</Link>
-              <Link href="/gallery" className="bg-transparent border border-white/30 text-white/85 text-[13px] font-semibold py-3.5 px-5 sm:px-6 lg:px-7 rounded-md no-underline inline-flex items-center">View Locations →</Link>
+            <h1 className="font-black text-[44px] sm:text-[64px] lg:text-[88px] leading-none mb-6 tracking-[-2px] whitespace-pre-line text-balance md:text-wrap">{slide.headline}</h1>
+            <p className="text-[14px] sm:text-[15px] lg:text-[17px] font-normal text-white/55 leading-[1.75] mb-10 max-w-105 mx-auto md:mx-0">{slide.sub}</p>
+            {/* Below md the two buttons share the row equally; if they can't fit side by side they stack, each full width. */}
+            <div className="flex gap-3 flex-wrap justify-center mb-15 max-w-88 mx-auto md:justify-start md:max-w-none md:mx-0">
+              <Link href="/contact" className="bg-white text-black text-[13px] font-bold py-3.5 px-5 sm:px-6 lg:px-7 rounded-md no-underline inline-flex items-center grow basis-[calc(50%-0.375rem)] justify-center whitespace-nowrap md:grow-0 md:basis-auto md:justify-start md:whitespace-normal">Start a Campaign</Link>
+              <Link href="/gallery" className="bg-transparent border border-white/30 text-white/85 text-[13px] font-semibold py-3.5 px-5 sm:px-6 lg:px-7 rounded-md no-underline inline-flex items-center grow basis-[calc(50%-0.375rem)] justify-center whitespace-nowrap md:grow-0 md:basis-auto md:justify-start md:whitespace-normal">View Locations →</Link>
             </div>
             {/* Below md each dot sits in a 44px tap area; from md up the button is just the bar, as before. */}
-            <div className="flex md:gap-2">
+            <div className="flex justify-center md:justify-start md:gap-2">
               {[0, 1, 2].map((i) => (
                 <button
                   key={i}
                   onClick={() => setHeroIdx(i)}
                   aria-label={`Show slide ${i + 1}`}
                   aria-current={i === heroIdx ? "true" : undefined}
-                  className="flex items-center h-11 min-w-11 md:h-auto md:min-w-0 bg-transparent border-none cursor-pointer p-0 min-h-0"
+                  className="flex items-center justify-center h-11 min-w-11 md:justify-start md:h-auto md:min-w-0 bg-transparent border-none cursor-pointer p-0 min-h-0"
                 >
                   <span className={`block h-1 rounded-sm transition-all duration-350 ${i === heroIdx ? "w-7 bg-white" : "w-2 bg-white/25"}`} />
                 </button>
@@ -140,7 +144,7 @@ export default function HomeClient({ billboards, usingFallback, heroImages, netw
         </div>
       </section>
 
-      <section ref={countRef} className="bg-raised border-t border-t-white/6 border-b border-b-white/6 py-14 px-2.5 sm:px-4 md:px-6 lg:px-8">
+      <section ref={countRef} className="bg-raised border-t border-t-white/6 border-b border-b-white/6 py-14 px-(--gutter) md:px-6 lg:px-8">
         <div className="max-w-300 mx-auto grid grid-cols-[repeat(auto-fit,minmax(140px,1fr))] gap-8">
           {counts.map((count, i) => (
             <div key={i} className="text-center">
@@ -153,7 +157,7 @@ export default function HomeClient({ billboards, usingFallback, heroImages, netw
 
       {networkShowcase}
 
-      <section className="py-15 sm:py-18 md:py-22 lg:py-25 px-2.5 sm:px-4 md:px-6 lg:px-8 max-w-300 mx-auto">
+      <section className="py-15 sm:py-18 md:py-22 lg:py-25 px-(--gutter) md:px-6 lg:px-8 max-w-300 mx-auto">
         <div className="grid grid-cols-[repeat(auto-fit,minmax(300px,1fr))] gap-10 sm:gap-14 lg:gap-20 items-start">
           <div>
             <div className="text-[12px] md:text-[11px] font-semibold tracking-[3px] text-white/40 uppercase mb-3">Coverage</div>
@@ -175,7 +179,7 @@ export default function HomeClient({ billboards, usingFallback, heroImages, netw
         </div>
       </section>
 
-      <section className="py-15 sm:py-18 md:py-22 lg:py-25 px-2.5 sm:px-4 md:px-6 lg:px-8 max-w-300 mx-auto">
+      <section className="py-15 sm:py-18 md:py-22 lg:py-25 px-(--gutter) md:px-6 lg:px-8 max-w-300 mx-auto">
         <div className="grid grid-cols-[repeat(auto-fit,minmax(300px,1fr))] gap-10 sm:gap-14 lg:gap-20 items-start">
           <div>
             <div className="text-[12px] md:text-[11px] font-semibold tracking-[3px] text-white/40 uppercase mb-3">Why Choose Us</div>
@@ -197,7 +201,7 @@ export default function HomeClient({ billboards, usingFallback, heroImages, netw
 
       <CampaignProcess variant="condensed" />
 
-      <section className="py-15 sm:py-18 md:py-22 lg:py-25 px-2.5 sm:px-4 md:px-6 lg:px-8 bg-raised">
+      <section className="py-15 sm:py-18 md:py-22 lg:py-25 px-(--gutter) md:px-6 lg:px-8 bg-raised">
         <div className="max-w-300 mx-auto">
           <div className="flex justify-between items-end mb-9 flex-wrap gap-4">
             <div>
@@ -216,7 +220,7 @@ export default function HomeClient({ billboards, usingFallback, heroImages, netw
         </div>
       </section>
 
-      <section className="py-14 px-2.5 sm:px-4 md:px-6 lg:px-8 border-t border-t-white/6 bg-raised">
+      <section className="py-14 px-(--gutter) md:px-6 lg:px-8 border-t border-t-white/6 bg-raised">
         <div className="max-w-300 mx-auto text-center">
           <p className="text-[12px] md:text-[11px] font-semibold tracking-[3px] text-white/22 uppercase mb-8">Trusted by Tanzania&apos;s leading brands</p>
           <div className="flex gap-6 sm:gap-10 lg:gap-14 justify-center flex-wrap items-center">

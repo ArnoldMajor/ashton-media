@@ -54,7 +54,7 @@ export default async function NetworkShowcase() {
 
   return (
     <section className="bg-canvas py-15 sm:py-18 md:py-22 lg:py-25">
-      <div className="text-center px-2.5 sm:px-4 md:px-6 lg:px-8 mb-9 sm:mb-12 lg:mb-14">
+      <div className="text-center px-(--gutter) md:px-6 lg:px-8 mb-9 sm:mb-12 lg:mb-14">
         <div className="text-[12px] md:text-[11px] font-semibold tracking-[3px] text-white/40 uppercase mb-4">Our network</div>
         <SectionHeading lead="Every format." accent="Every city." className="text-[30px] sm:text-[44px] lg:text-[58px] tracking-[-1.5px] leading-[1.05]" />
       </div>
@@ -93,7 +93,7 @@ export default async function NetworkShowcase() {
         })}
       </div>
 
-      <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-2.5 px-2.5 sm:px-4 md:px-6 lg:px-8 mt-8 sm:mt-10">
+      <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-2.5 px-(--gutter) md:px-6 lg:px-8 mt-8 sm:mt-10">
         {/* <span className="text-xs text-white/40 mr-1">Also on the network</span> */}
         {/* {OVERFLOW_LINKS.map((link) => (
           <Link key={link.label} href={link.href} className={`${PILL_CLASSES} border-white/15 text-white/65 hover:border-white/40 hover:text-white`}>

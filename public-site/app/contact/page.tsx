@@ -28,7 +28,7 @@ export default function ContactPage() {
     <div className="bg-canvas text-white">
       <PageHero title="Get in Touch" tag="Contact" sub="Ready to put your brand in front of millions? Tell us about your campaign and we'll build the perfect package." />
 
-      <div className="max-w-300 mx-auto py-15 px-2.5 sm:px-4 md:px-6 lg:px-8">
+      <div className="max-w-300 mx-auto py-15 px-(--gutter) md:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10 sm:gap-14 lg:gap-20 items-start">
 
           <div>

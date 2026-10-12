@@ -51,7 +51,7 @@ export default function GalleryClient({ billboards, usingFallback }: Props) {
         sub="Browse our full inventory of premium billboard sites across Tanzania. Click any site to see availability, traffic data and pricing."
       />
 
-      <div className="max-w-300 mx-auto py-15 px-2.5 sm:px-4 md:px-6 lg:px-8">
+      <div className="max-w-300 mx-auto py-15 px-(--gutter) md:px-6 lg:px-8">
         <div className="flex gap-3 mb-10 flex-wrap items-center">
           {filters.map((f) => (
             <button
