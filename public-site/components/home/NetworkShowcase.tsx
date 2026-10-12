@@ -82,7 +82,7 @@ export default async function NetworkShowcase() {
                 <div className="font-extrabold uppercase text-[17px] sm:text-[22px] lg:text-[26px] tracking-[0.5px] leading-none">{tile.label}</div>
                 <div className="h-px w-5.5 bg-accent mt-3.5 transition-[width] duration-400 ease-out group-hover:w-11.5 group-focus-visible:w-11.5" />
                 <div className="mt-3 text-xs text-white/50 opacity-0 translate-y-2 transition-[opacity,translate] duration-400 ease-out group-hover:opacity-100 group-hover:translate-y-0 group-focus-visible:opacity-100 group-focus-visible:translate-y-0 motion-reduce:translate-y-0 motion-reduce:transition-opacity [@media(hover:none)]:opacity-100 [@media(hover:none)]:translate-y-0">
-                  {count > 0 ? `${count} ${count === 1 ? "site" : "sites"}` : tile.descriptor}
+                  {tile.descriptor}
                 </div>
               </div>
 
