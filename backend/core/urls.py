@@ -22,12 +22,14 @@ from rest_framework.routers import DefaultRouter
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView 
 
 from billboards.views import BillboardViewSet
+from casestudies.views import CaseStudyListView
 from clients.views import ClientViewSet
 from contracts.views import ContractViewSet
 from jobs.views import JobViewSet
 from blog.views import BlogPostViewSet
 from inquiries.views import InquiryViewSet
 from notifications.views import NotificationViewSet, PushSubscriptionViewSet
+from sitecontent.views import SiteContentView
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView, SpectacularRedocView
 
 
@@ -46,6 +48,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path("api/token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
     path("api/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
+    path("api/site-content/", SiteContentView.as_view(), name="site-content"),
+    path("api/case-studies/", CaseStudyListView.as_view(), name="case-studies"),
     path("api/", include(router.urls)),
 ]
 

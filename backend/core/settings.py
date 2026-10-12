@@ -57,6 +57,8 @@ INSTALLED_APPS = [
     'blog',
     'inquiries',
     'notifications',
+    'sitecontent',
+    'casestudies',
 ]
 
 AUTH_USER_MODEL = "users.User"
@@ -294,6 +296,18 @@ UNFOLD = {
                         "icon": "article",
                         "link": reverse_lazy("admin:blog_blogpost_changelist"),
                         "permission": "core.nav_permissions.can_view_blog",
+                    },
+                    {
+                        "title": "Site Images",
+                        "icon": "image",
+                        "link": reverse_lazy("admin:sitecontent_siteimage_changelist"),
+                        "permission": "core.nav_permissions.can_view_site_images",
+                    },
+                    {
+                        "title": "Case Studies",
+                        "icon": "workspace_premium",
+                        "link": reverse_lazy("admin:casestudies_casestudy_changelist"),
+                        "permission": "core.nav_permissions.can_view_case_studies",
                     },
                 ],
             },
