@@ -223,9 +223,47 @@ UNFOLD = {
     "SITE_URL": "/",
     "DASHBOARD_CALLBACK": "core.dashboard.dashboard_callback",
     "ENVIRONMENT": "core.dashboard.environment_callback",
+    # Strictly neutral: every shade is a grey with no hue, matching the public
+    # site. Unfold turns each hex into a --color-<name>-<shade> variable.
+    #
+    # Unfold uses ONE primary scale in both modes (a primary button is
+    # bg-primary-600 with white text either way), so "primary" here is the
+    # light-mode scale: near-black fills. The dark-mode inversion, near-white
+    # fills with near-black text, is in static/css/admin-overrides.css.
     "COLORS": {
+        "base": {
+            "50": "#fafafa",
+            "100": "#f5f5f5",
+            "200": "#e5e5e5",
+            "300": "#d4d4d4",
+            "400": "#a3a3a3",
+            "500": "#737373",
+            "600": "#525252",
+            "700": "#404040",
+            "800": "#262626",
+            "900": "#171717",
+            "950": "#080808",
+        },
         "primary": {
-            "500": "229 229 229",
+            "50": "#fafafa",
+            "100": "#f5f5f5",
+            "200": "#e5e5e5",
+            "300": "#d4d4d4",
+            "400": "#737373",
+            "500": "#404040",
+            "600": "#171717",
+            "700": "#080808",
+            "800": "#080808",
+            "900": "#080808",
+            "950": "#080808",
+        },
+        "font": {
+            "subtle-light": "#636363",
+            "subtle-dark": "#a3a3a3",
+            "default-light": "#525252",
+            "default-dark": "#d4d4d4",
+            "important-light": "#171717",
+            "important-dark": "#f5f5f5",
         },
     },
     "SITE_LOGO": lambda request: static("branding/ashton-logo-white.svg"),

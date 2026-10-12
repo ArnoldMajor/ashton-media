@@ -1,4 +1,191 @@
 /*
+ * MONOCHROME THEME
+ *
+ * The palette itself is UNFOLD["COLORS"] in core/settings.py: neutral greys
+ * for base, primary and font. This block covers what COLORS cannot reach.
+ * Everything is scoped to Unfold's own dark-mode switch, the "dark" class its
+ * theme toggle puts on <html>. Colours only: no sizes, spacing or layout.
+ *
+ * Unfold's stylesheet lives in cascade layers, so the plain rules here win
+ * over its utilities whatever their specificity.
+ *
+ * Colour that remains is state only: success, warning and error banners,
+ * field errors, the delete button and the Development badge.
+ */
+
+/* --- Dark mode: the primary scale turned over.
+   Unfold has one primary scale for both modes and fills a primary button
+   with primary-600 either way. settings.py makes that near-black for light
+   mode; here it becomes near-white, with the text flipped to near-black. */
+html.dark {
+    --color-primary-50: #171717;
+    --color-primary-100: #262626;
+    --color-primary-200: #404040;
+    --color-primary-300: #525252;
+    --color-primary-400: #d4d4d4;
+    --color-primary-500: #e5e5e5;
+    --color-primary-600: #f5f5f5;
+    --color-primary-700: #fafafa;
+    --color-primary-800: #ffffff;
+    --color-primary-900: #ffffff;
+    --color-primary-950: #ffffff;
+    color-scheme: dark;
+}
+
+html.dark :is(.bg-primary-600, .bg-primary-500, .bg-primary-700),
+html.dark :is(.bg-primary-600, .bg-primary-500, .bg-primary-700) .text-white {
+    color: var(--color-base-950);
+}
+
+/* The tick in a ticked checkbox is white in Unfold's dark mode; on the
+   near-white fill above it has to be dark. */
+html.dark input[type="checkbox"]:checked::after {
+    color: var(--color-base-950);
+}
+
+/* --- Dark mode: the canvas.
+   Unfold paints every dark surface with base-900. The public site's canvas
+   is #080808, which is base-950, so that is used for those surfaces. */
+html.dark .dark\:bg-base-900 {
+    background-color: var(--color-base-950);
+}
+
+/* --- Rules on the dashboard (templates/admin/index.html). */
+:root {
+    --ashton-rule: var(--color-base-200);
+    --ashton-rule-strong: var(--color-base-300);
+}
+
+html.dark {
+    --ashton-rule: var(--color-base-800);
+    --ashton-rule-strong: var(--color-base-700);
+}
+
+/* --- Hues Unfold hard-codes for things that are not a state. */
+
+/* "Info" blue: labels and the info message banner. */
+[class~="bg-blue-100"] {
+    background-color: color-mix(in oklab, var(--color-base-500) 10%, transparent);
+    color: var(--color-base-700);
+}
+
+html.dark [class~="bg-blue-100"] {
+    background-color: color-mix(in oklab, var(--color-base-500) 22%, transparent);
+    color: var(--color-base-200);
+}
+
+/* Status labels and yes/no icons in a list. A row's status is read from its
+   word, not its colour. The Development badge is outside the list and keeps
+   its amber. */
+#result_list :is([class~="bg-green-100"], [class~="bg-orange-100"], [class~="bg-red-100"]) {
+    background-color: color-mix(in oklab, var(--color-base-500) 10%, transparent);
+    color: var(--color-base-700);
+}
+
+html.dark #result_list :is([class~="bg-green-100"], [class~="bg-orange-100"], [class~="bg-red-100"]) {
+    background-color: color-mix(in oklab, var(--color-base-500) 22%, transparent);
+    color: var(--color-base-200);
+}
+
+/* On/off switches: green when on, in Unfold. */
+input[type="checkbox"].rounded-full.w-8:checked {
+    background-color: var(--color-base-900);
+}
+
+input[type="checkbox"].rounded-full.w-8::after {
+    background-color: #ffffff;
+}
+
+html.dark input[type="checkbox"].rounded-full.w-8:checked {
+    background-color: var(--color-base-100);
+}
+
+html.dark input[type="checkbox"].rounded-full.w-8:checked::after {
+    background-color: var(--color-base-950);
+}
+
+/* The asterisk on a required field is a marker, not an error. Field error
+   text keeps its red. */
+label .text-red-600,
+th.required .text-red-600 {
+    color: inherit;
+}
+
+/* --- Browser-drawn colours. */
+html {
+    accent-color: var(--color-base-900);
+    scrollbar-color: var(--color-base-300) transparent;
+}
+
+html.dark {
+    accent-color: var(--color-base-100);
+    scrollbar-color: var(--color-base-700) transparent;
+}
+
+::selection {
+    background-color: var(--color-base-300);
+    color: var(--color-base-950);
+}
+
+html.dark ::selection {
+    background-color: var(--color-base-600);
+    color: #ffffff;
+}
+
+/* Autofill: browsers tint a filled-in field blue or yellow. */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus {
+    -webkit-text-fill-color: var(--color-base-900);
+    box-shadow: inset 0 0 0 1000px var(--color-base-100);
+    caret-color: var(--color-base-900);
+}
+
+html.dark input:-webkit-autofill,
+html.dark input:-webkit-autofill:hover,
+html.dark input:-webkit-autofill:focus {
+    -webkit-text-fill-color: var(--color-base-100);
+    box-shadow: inset 0 0 0 1000px var(--color-base-900);
+    caret-color: var(--color-base-100);
+}
+
+/* Unfold's faintest text and icon grey is base-400 in light mode and base-500
+   in dark. Neither is readable enough on these canvases (2.5:1 on white,
+   4.2:1 on #080808), so each moves one step towards the text colour. */
+html:not(.dark) :is(.text-base-400, .text-icon, .text-icon-action) {
+    color: var(--color-base-500);
+}
+
+html.dark :is(.dark\:text-base-500, .text-icon, .text-icon-action) {
+    color: var(--color-base-400);
+}
+
+/* Action icons keep a hover step, as Unfold gives them. */
+html:not(.dark) .text-icon-action:hover {
+    color: var(--color-base-700);
+}
+
+html.dark .text-icon-action:hover {
+    color: var(--color-base-200);
+}
+
+/* Placeholder text: Unfold's base-400 is too faint on white. */
+::placeholder {
+    color: var(--color-base-500);
+    opacity: 1;
+}
+
+html.dark ::placeholder {
+    color: var(--color-base-400);
+}
+
+/* --- Logo. The only logo file is white, which vanishes on the light
+   sidebar, so it is inverted there. */
+html:not(.dark) img[src*="ashton-logo-white"] {
+    filter: invert(1);
+}
+
+/*
  * Dark-mode colours for the changelist bulk-action bar (the floating bar
  * with "Select action", "Run" and "N of M selected").
  *
@@ -144,32 +331,39 @@ html.dark .delete-blocked-notice__list a:hover {
  * Changelist link cells. Unfold renders the row link as a direct-child <a>
  * of its field-* cell, styled like body text. The selector is limited to
  * that anchor, so filters, pagination, row actions and the action bar are
- * untouched. Blue-700 / blue-400 keep at least 4.5:1 against both row
- * stripes in each theme.
+ * untouched.
+ *
+ * With no colour to mark it, the link is told apart by weight and an
+ * underline: faint at rest, full strength and thicker on hover and keyboard
+ * focus, which also gets a ring.
  */
 #result_list tr.data-row > :is(th, td)[class*="field-"] > a[href] {
-    color: var(--color-blue-700);
+    color: var(--color-font-important-light);
     font-weight: 500;
     border-radius: 2px;
+    text-decoration-line: underline;
+    text-decoration-thickness: 1px;
+    text-decoration-color: color-mix(in oklab, currentColor 40%, transparent);
+    text-underline-offset: 3px;
 }
 
 #result_list tr.data-row > :is(th, td)[class*="field-"] > a[href]:hover,
 #result_list tr.data-row > :is(th, td)[class*="field-"] > a[href]:focus-visible {
-    text-decoration: underline;
-    text-underline-offset: 2px;
+    text-decoration-thickness: 2px;
+    text-decoration-color: currentColor;
 }
 
 #result_list tr.data-row > :is(th, td)[class*="field-"] > a[href]:focus-visible {
-    outline: 2px solid var(--color-blue-700);
+    outline: 2px solid var(--color-font-important-light);
     outline-offset: 2px;
 }
 
 html.dark #result_list tr.data-row > :is(th, td)[class*="field-"] > a[href] {
-    color: var(--color-blue-400);
+    color: var(--color-font-important-dark);
 }
 
 html.dark #result_list tr.data-row > :is(th, td)[class*="field-"] > a[href]:focus-visible {
-    outline-color: var(--color-blue-400);
+    outline-color: var(--color-font-important-dark);
 }
 
 /*
@@ -214,13 +408,13 @@ html.dark #result_list tr.data-row > :is(th, td)[class*="field-"] > a[href]:focu
 }
 
 .ashton-message--success .ashton-message__dismiss { color: var(--color-green-700); }
-.ashton-message--info .ashton-message__dismiss { color: var(--color-blue-700); }
+.ashton-message--info .ashton-message__dismiss { color: var(--color-base-700); }
 .ashton-message--warning .ashton-message__dismiss { color: var(--color-orange-700); }
 .ashton-message--error .ashton-message__dismiss { color: var(--color-red-700); }
 
 html.dark .ashton-message__dismiss { color: var(--color-base-400); }
 html.dark .ashton-message--success .ashton-message__dismiss { color: var(--color-green-400); }
-html.dark .ashton-message--info .ashton-message__dismiss { color: var(--color-blue-400); }
+html.dark .ashton-message--info .ashton-message__dismiss { color: var(--color-base-200); }
 html.dark .ashton-message--warning .ashton-message__dismiss { color: var(--color-orange-400); }
 html.dark .ashton-message--error .ashton-message__dismiss { color: var(--color-red-400); }
 

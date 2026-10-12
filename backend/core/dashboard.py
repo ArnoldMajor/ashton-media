@@ -34,6 +34,9 @@ def dashboard_callback(request, context):
 
 
 def environment_callback(request):
+    # A badge only where it is a warning: on a development server. In production
+    # there is none. Unfold draws the badge inside {% if environment %}, so None
+    # renders nothing at all, not an empty pill.
     if settings.DEBUG:
         return ["Development", "warning"]
-    return ["Production", "danger"]
+    return None
