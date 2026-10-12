@@ -9,8 +9,9 @@
  * Unfold's stylesheet lives in cascade layers, so the plain rules here win
  * over its utilities whatever their specificity.
  *
- * Colour that remains is state only: success, warning and error banners,
- * field errors, the delete button and the Development badge.
+ * Colour that remains is state only: info, success, warning and error
+ * banners, field errors, the required-field asterisk, the delete button and
+ * the Development badge.
  */
 
 /* --- Dark mode: the primary scale turned over.
@@ -63,26 +64,27 @@ html.dark {
 
 /* --- Hues Unfold hard-codes for things that are not a state. */
 
-/* "Info" blue: labels and the info message banner. */
-[class~="bg-blue-100"] {
+/* "Info" blue on labels and sidebar badges, which are spans or links. The
+   info message banner is a div and keeps its blue. */
+:is(span, a)[class~="bg-blue-100"] {
     background-color: color-mix(in oklab, var(--color-base-500) 10%, transparent);
     color: var(--color-base-700);
 }
 
-html.dark [class~="bg-blue-100"] {
+html.dark :is(span, a)[class~="bg-blue-100"] {
     background-color: color-mix(in oklab, var(--color-base-500) 22%, transparent);
     color: var(--color-base-200);
 }
 
 /* Status labels and yes/no icons in a list. A row's status is read from its
    word, not its colour. The Development badge is outside the list and keeps
-   its amber. */
-#result_list :is([class~="bg-green-100"], [class~="bg-orange-100"], [class~="bg-red-100"]) {
+   its amber, and an error banner keeps its red wherever it is. */
+#result_list :is([class~="bg-green-100"], [class~="bg-orange-100"], [class~="bg-red-100"]):not(.errornote) {
     background-color: color-mix(in oklab, var(--color-base-500) 10%, transparent);
     color: var(--color-base-700);
 }
 
-html.dark #result_list :is([class~="bg-green-100"], [class~="bg-orange-100"], [class~="bg-red-100"]) {
+html.dark #result_list :is([class~="bg-green-100"], [class~="bg-orange-100"], [class~="bg-red-100"]):not(.errornote) {
     background-color: color-mix(in oklab, var(--color-base-500) 22%, transparent);
     color: var(--color-base-200);
 }
@@ -102,13 +104,6 @@ html.dark input[type="checkbox"].rounded-full.w-8:checked {
 
 html.dark input[type="checkbox"].rounded-full.w-8:checked::after {
     background-color: var(--color-base-950);
-}
-
-/* The asterisk on a required field is a marker, not an error. Field error
-   text keeps its red. */
-label .text-red-600,
-th.required .text-red-600 {
-    color: inherit;
 }
 
 /* --- Browser-drawn colours. */
@@ -408,13 +403,13 @@ html.dark #result_list tr.data-row > :is(th, td)[class*="field-"] > a[href]:focu
 }
 
 .ashton-message--success .ashton-message__dismiss { color: var(--color-green-700); }
-.ashton-message--info .ashton-message__dismiss { color: var(--color-base-700); }
+.ashton-message--info .ashton-message__dismiss { color: var(--color-blue-700); }
 .ashton-message--warning .ashton-message__dismiss { color: var(--color-orange-700); }
 .ashton-message--error .ashton-message__dismiss { color: var(--color-red-700); }
 
 html.dark .ashton-message__dismiss { color: var(--color-base-400); }
 html.dark .ashton-message--success .ashton-message__dismiss { color: var(--color-green-400); }
-html.dark .ashton-message--info .ashton-message__dismiss { color: var(--color-base-200); }
+html.dark .ashton-message--info .ashton-message__dismiss { color: var(--color-blue-400); }
 html.dark .ashton-message--warning .ashton-message__dismiss { color: var(--color-orange-400); }
 html.dark .ashton-message--error .ashton-message__dismiss { color: var(--color-red-400); }
 
