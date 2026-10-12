@@ -89,3 +89,38 @@
   button, a { min-height: 44px; }
   nav button, nav a { min-height: unset; }
 }
+
+/*
+ * Brand logo banner — components/home/BrandMarquee.tsx. The track is two
+ * identical halves side by side; sliding it left by one half and starting
+ * again is seamless. The component sets both durations inline, from the
+ * width of a half, so the speed is the same however many logos there are.
+ */
+@keyframes brand-marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+@layer components {
+  .brand-marquee {
+    overflow: hidden;
+    mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
+  }
+  .brand-marquee-track {
+    display: flex;
+    width: max-content;
+    animation: brand-marquee var(--brand-marquee-duration) linear infinite;
+  }
+  @media (width >= 48rem) {
+    .brand-marquee-track { animation-duration: var(--brand-marquee-duration-md); }
+  }
+  /* Only where there is a real pointer: on a touch screen a tap would leave it stuck. */
+  @media (hover: hover) {
+    .brand-marquee:hover .brand-marquee-track { animation-play-state: paused; }
+  }
+  /* No motion: the component shows one run of the logos as a centred, wrapping row. */
+  @media (prefers-reduced-motion: reduce) {
+    .brand-marquee { mask-image: none; }
+    .brand-marquee-track { display: block; width: auto; animation: none; }
+  }
+}

@@ -8,6 +8,7 @@ import SectionHeading from "@/components/SectionHeading";
 import BillboardCard from "@/components/BillboardCard";
 import CampaignProcess from "@/components/campaign/CampaignProcess";
 import CTABlock from "@/components/CTABlock";
+import BrandMarquee from "@/components/home/BrandMarquee";
 import { billboardToLocation } from "@/lib/locations";
 import type { Billboard } from "@/types/billboard";
 import type { HeroSlot, SiteImage } from "@/types/site-content";
@@ -39,10 +40,10 @@ const WHY_FEATURES = [
   { n: "04", title: "Verified Data", desc: "Traffic counts at every site so you know your campaign's reach and ROI." },
 ];
 
-const BRANDS = ["Vodacom", "Airtel", "CRDB Bank", "Azam", "NMB Bank", "TBL", "Coca-Cola"];
-
 interface Props {
   billboards: Billboard[];
+  /** The "Available Now" cards, already chosen on the server (see app/page.tsx). */
+  previewSites: Billboard[];
   usingFallback: boolean;
   /** Hero photos set in the admin, fetched on the server. A null slide keeps its stock photo. */
   heroImages: Record<HeroSlot, SiteImage | null>;
@@ -50,7 +51,7 @@ interface Props {
   networkShowcase: React.ReactNode;
 }
 
-export default function HomeClient({ billboards, usingFallback, heroImages, networkShowcase }: Props) {
+export default function HomeClient({ billboards, previewSites, usingFallback, heroImages, networkShowcase }: Props) {
   const [heroIdx, setHeroIdx] = useState(0);
   const [counts, setCounts] = useState([0, 0, 0, 0]);
   const [countVisible, setCountVisible] = useState(false);
@@ -211,7 +212,7 @@ export default function HomeClient({ billboards, usingFallback, heroImages, netw
             <Link href="/gallery" className="text-[13px] font-semibold text-white/50 no-underline">View all sites →</Link>
           </div>
           <div className="grid grid-cols-[repeat(auto-fill,minmax(280px,1fr))] gap-3">
-            {billboards.filter((b) => b.isAvailable).slice(0, 3).map((site) => (
+            {previewSites.map((site) => (
               <button key={site.id} onClick={() => setSelectedSite(site)} className="bg-card border border-white/7 rounded-[10px] overflow-hidden text-left cursor-pointer text-white w-full p-0 hover:border-white/18">
                 <BillboardCard billboard={site} />
               </button>
@@ -220,15 +221,14 @@ export default function HomeClient({ billboards, usingFallback, heroImages, netw
         </div>
       </section>
 
-      <section className="py-14 px-(--gutter) md:px-6 lg:px-8 border-t border-t-white/6 bg-raised">
-        <div className="max-w-300 mx-auto text-center">
-          <p className="text-[12px] md:text-[11px] font-semibold tracking-[3px] text-white/22 uppercase mb-8">Trusted by Tanzania&apos;s leading brands</p>
-          <div className="flex gap-6 sm:gap-10 lg:gap-14 justify-center flex-wrap items-center">
-            {BRANDS.map((b) => (
-              <span key={b} className="font-extrabold text-[12px] sm:text-[13px] lg:text-[14px] text-white/18 transition-colors hover:text-white/60">{b}</span>
-            ))}
+      {/* The heading keeps the page gutter; the banner below it runs edge to edge. */}
+      <section className="py-14 border-t border-t-white/6 bg-raised">
+        <div className="px-(--gutter) md:px-6 lg:px-8">
+          <div className="max-w-300 mx-auto text-center">
+            <p className="text-[12px] md:text-[11px] font-semibold tracking-[3px] text-white/22 uppercase mb-8">Trusted by Tanzania&apos;s leading brands</p>
           </div>
         </div>
+        <BrandMarquee />
       </section>
 
       <CTABlock />
