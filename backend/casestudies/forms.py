@@ -2,7 +2,7 @@ from django import forms
 from django.core.files.uploadedfile import UploadedFile
 from django.utils.html import format_html
 
-from sitecontent.previews import CROP_HELP
+from sitecontent.previews import PHOTO_HELP
 from sitecontent.validation import upload_problems
 from .models import PHOTO_SPEC, CaseStudy
 
@@ -25,7 +25,7 @@ class CaseStudyForm(forms.ModelForm):
             self.fields["image"].help_text = format_html(
                 "{}. JPEG, PNG or WebP.<br>{}<br>{}",
                 PHOTO_SPEC.line,
-                CROP_HELP,
+                PHOTO_HELP,
                 "The brand name sits over the bottom-left corner on a dark fade, "
                 "so keep that corner clear of logos, faces and text.",
             )

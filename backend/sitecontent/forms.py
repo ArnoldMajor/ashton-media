@@ -3,7 +3,7 @@ from django.core.files.uploadedfile import UploadedFile
 from django.utils.html import format_html
 
 from .models import SiteImage
-from .previews import CROP_HELP
+from .previews import PHOTO_HELP
 from .validation import upload_problems
 
 
@@ -17,7 +17,7 @@ class SiteImageForm(forms.ModelForm):
         slot = self.instance
         if not slot.pk:
             return
-        self.fields["image"].help_text = format_html("{}. JPEG, PNG or WebP.<br>{}", slot.spec_line, CROP_HELP)
+        self.fields["image"].help_text = format_html("{}. JPEG, PNG or WebP.<br>{}", slot.spec_line, PHOTO_HELP)
         self.fields["alt_text"].help_text = (
             "A few words describing the photo, for screen readers and search engines."
             if slot.alt_required

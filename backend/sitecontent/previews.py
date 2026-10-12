@@ -1,10 +1,10 @@
 from django.utils.html import format_html
 
-# Shown under every photo field. The site never rejects a photo for its shape;
-# this is how an editor finds out what the crop does to it.
-CROP_HELP = (
-    "The site crops this photo to fit. Check the preview below. "
-    "If something important is cut off, adjust the photo and upload it again."
+# Shown under every photo field. The site never rejects a photo for its shape
+# or its pixel size; this is how an editor finds out what it will look like.
+PHOTO_HELP = (
+    "The site crops this photo to fit. Check the preview. A bigger photo looks sharper. "
+    "If something important is cut off or it looks soft, upload a better one."
 )
 
 # A tall modern phone screen held upright. Full-screen photos are cropped to
@@ -33,19 +33,27 @@ def is_stored(photo):
     return bool(photo) and getattr(photo, "_committed", True)
 
 
+def photo_size_text(width, height):
+    """ "1600 × 900" for a photo whose pixel size is known, otherwise "". Information only, never a check. """
+    return f"{width} × {height}" if width and height else ""
+
+
 def photo_previews(url, alt, width, height, ratio, phone=False):
     """
-    The stored photo three ways for the admin change form: as uploaded, cropped
-    to the shape the site shows it at (`ratio`, a (w, h) pair), and, for
-    full-screen placements, cropped to a phone screen.
+    The stored photo three ways for the admin change form: as uploaded (with
+    its pixel size, when known), cropped to the shape the site shows it at
+    (`ratio`, a (w, h) pair), and, for full-screen placements, cropped to a
+    phone screen.
     """
+    size = photo_size_text(width, height)
     original = format_html(
         '<figure class="photo-preview">'
         "<figcaption>Your photo</figcaption>"
         '<a href="{0}" target="_blank" rel="noopener"><img class="photo-preview__original" src="{0}" alt="{1}"></a>'
-        '<div class="photo-preview__meta">{2}×{3} pixels</div>'
+        "{2}"
         "</figure>",
-        url, alt, width, height,
+        url, alt,
+        format_html('<div class="photo-preview__meta">Current photo: {} px</div>', size) if size else "",
     )
     return format_html(
         '<div class="photo-previews">{}{}{}</div>',

@@ -63,7 +63,6 @@ class SiteImage(models.Model):
     def image_spec(self):
         return ImageSpec(
             ratio_w=self.ratio_w, ratio_h=self.ratio_h,
-            min_width=self.min_width,
             max_mb=self.max_mb,
         )
 

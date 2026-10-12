@@ -15,17 +15,17 @@ RATIO_LABELS = {(7, 3): "21:9"}
 @dataclass(frozen=True)
 class ImageSpec:
     """
-    How a photo is used: the shape the site shows it at, and the two limits an
-    upload has to meet (wide enough to stay sharp, small enough to load).
+    How a photo is used: the shape the site shows it at, and the largest file
+    an upload may be.
 
-    The shape is not a rule. The public site crops every photo to fit with
-    object-cover, so any shape is accepted and the editor judges the crop from
-    the preview in the admin.
+    Shape and pixel size are not rules. The public site crops every photo to
+    fit with object-cover, so any photo is accepted; the editor judges the crop
+    and the sharpness from the preview in the admin and uploads a better one
+    if need be.
     """
 
     ratio_w: int
     ratio_h: int
-    min_width: int
     max_mb: Decimal
 
     @property
@@ -38,13 +38,13 @@ class ImageSpec:
         return format(self.max_mb.normalize(), "f")
 
     @property
-    def limits(self):
-        """The two things an upload is checked against."""
-        return f"at least {self.min_width} px wide · max {self.max_mb_label} MB"
+    def cap(self):
+        """The one size limit an upload is checked against."""
+        return f"max {self.max_mb_label} MB"
 
     @property
     def line(self):
-        return f"Shown at {self.ratio_label}, cropped to fit · {self.limits}"
+        return f"Shown at {self.ratio_label}, cropped to fit · {self.cap}"
 
 
 def read_image(upload):
@@ -62,30 +62,34 @@ def read_image(upload):
     return image.format, image.width, image.height
 
 
+def size_problem(spec, size, subject="This slot"):
+    """The sentence for a file over the spec's cap, or None when `size` (in bytes) is within it."""
+    if size <= spec.max_mb * BYTES_PER_MB:
+        return None
+    return f"{subject} allows files up to {spec.max_mb_label} MB. Your file is {size / BYTES_PER_MB:.2f} MB."
+
+
 def upload_problems(spec, upload, subject="This slot"):
     """
     Everything wrong with a freshly uploaded file for this spec, as sentences
     an editor can act on. An empty list means the file is fine. `subject`
-    starts each sentence, e.g. "This slot allows files up to 3 MB."
+    starts the size sentence, e.g. "This slot allows files up to 3 MB."
+
+    Only the file's format and weight are checked. Its pixel size and shape
+    are the editor's call.
     """
     facts = read_image(upload)
     if facts is None:
         return ["This file isn't an image we can read. Upload a JPEG, PNG or WebP file."]
 
-    image_format, width, _height = facts
+    image_format = facts[0]
     problems = []
 
     if image_format not in ALLOWED_FORMATS:
         problems.append(f"Upload a JPEG, PNG or WebP file. Yours is a {image_format} file.")
 
-    if upload.size > spec.max_mb * BYTES_PER_MB:
-        problems.append(
-            f"{subject} allows files up to {spec.max_mb_label} MB. Your file is {upload.size / BYTES_PER_MB:.2f} MB."
-        )
-
-    # Width is the sharpness guard. Height and shape are deliberately not
-    # checked: the site crops to fit.
-    if width < spec.min_width:
-        problems.append(f"Upload a photo at least {spec.min_width} px wide. Yours is {width} px wide.")
+    too_heavy = size_problem(spec, upload.size, subject)
+    if too_heavy:
+        problems.append(too_heavy)
 
     return problems

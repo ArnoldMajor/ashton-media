@@ -3,7 +3,7 @@ from django.utils.html import format_html
 from unfold.admin import ModelAdmin, TabularInline
 from unfold.decorators import display
 
-from sitecontent.previews import is_stored, photo_previews, without_preview
+from sitecontent.previews import is_stored, photo_previews, photo_size_text, without_preview
 from users.admin_mixins import RoleBasedAdminMixin
 from .forms import CaseStudyForm
 from .models import MAX_METRICS, PHOTO_SPEC, CaseStudy, CaseStudyMetric
@@ -42,7 +42,7 @@ class CaseStudyAdmin(RoleBasedAdminMixin, ModelAdmin):
     form = CaseStudyForm
     inlines = [CaseStudyMetricInline]
 
-    list_display = ("thumbnail", "brand", "headline", "format_label", "status", "order")
+    list_display = ("thumbnail", "brand", "headline", "format_label", "photo_size", "status", "order")
     list_display_links = ["brand"]
     list_filter = ("published",)
     search_fields = ("brand", "headline")
@@ -78,6 +78,10 @@ class CaseStudyAdmin(RoleBasedAdminMixin, ModelAdmin):
             '<img src="{}" alt="" loading="lazy" style="width:64px;height:48px;object-fit:cover;border-radius:4px;">',
             obj.image.url,
         )
+
+    @admin.display(description="Photo size")
+    def photo_size(self, obj):
+        return (obj.image and photo_size_text(obj.image_width, obj.image_height)) or "—"
 
     @display(description="Status", label={PUBLISHED: "success", DRAFT: "warning"})
     def status(self, obj):

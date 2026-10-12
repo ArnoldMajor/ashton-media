@@ -7,7 +7,7 @@ from unfold.decorators import display
 from users.admin_mixins import RoleBasedAdminMixin
 from .forms import SiteImageForm
 from .models import SiteImage
-from .previews import is_stored, photo_previews, without_preview
+from .previews import is_stored, photo_previews, photo_size_text, without_preview
 
 CUSTOM = "Custom image"
 DEFAULT = "Using default image"
@@ -17,7 +17,7 @@ DEFAULT = "Using default image"
 class SiteImageAdmin(RoleBasedAdminMixin, ModelAdmin):
     form = SiteImageForm
 
-    list_display = ("thumbnail", "title", "section", "spec", "status", "updated_at")
+    list_display = ("thumbnail", "title", "section", "spec", "photo_size", "status", "updated_at")
     list_display_links = ["title"]
     list_filter = ("section",)
     search_fields = ("title",)
@@ -70,6 +70,10 @@ class SiteImageAdmin(RoleBasedAdminMixin, ModelAdmin):
     @admin.display(description="Spec")
     def spec(self, obj):
         return obj.spec_line
+
+    @admin.display(description="Photo size")
+    def photo_size(self, obj):
+        return (obj.image and photo_size_text(obj.image_width, obj.image_height)) or "—"
 
     @display(description="Status", label={CUSTOM: "success", DEFAULT: "info"})
     def status(self, obj):

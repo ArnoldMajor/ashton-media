@@ -7,7 +7,7 @@ from django.core.management.base import BaseCommand, CommandError
 from django.db import connection
 
 from sitecontent.models import SiteImage
-from sitecontent.validation import BYTES_PER_MB, read_image, upload_problems
+from sitecontent.validation import BYTES_PER_MB, read_image, size_problem
 
 LEGACY_PHOTO_BASE = "https://www.ashtonmedia.net/uploads/1/4/4/1/144182232/"
 DOWNLOAD_TIMEOUT_SECONDS = 30
@@ -69,8 +69,8 @@ class Command(BaseCommand):
         self.stdout.write(f"Storage:  {describe_storage(storages['default'])}")
         self.stdout.write(f"Photos:   {source_dir or LEGACY_PHOTO_BASE}")
         self.stdout.write(
-            "Spec:     each photo's width and file size are compared with its slot's limits; "
-            "shortfalls are reported, never blocking"
+            "Spec:     each photo's file size is compared with its slot's cap and reported, never blocking; "
+            "pixel size is shown for information"
         )
         if force:
             self.stdout.write(self.style.WARNING("Force:    slots that already have an image WILL BE REPLACED."))
@@ -139,7 +139,7 @@ class Command(BaseCommand):
 
         _, width, height = facts
         row["size"] = f"{width}×{height}"
-        row["notes"] = upload_problems(slot.image_spec, photo) or [f"OK ({len(data) / BYTES_PER_MB:.2f} MB)"]
+        row["notes"] = [size_problem(slot.image_spec, len(data)) or f"OK ({len(data) / BYTES_PER_MB:.2f} MB)"]
         row["result"] = result
 
         if dry_run:

@@ -20,14 +20,17 @@ from casestudies import forms as case_study_forms
 from casestudies.management.commands import seed_case_studies as seed
 from casestudies.models import PHOTO_SPEC, CaseStudy, CaseStudyMetric
 from core.nav_permissions import can_view_case_studies
-from sitecontent.previews import CROP_HELP
+from sitecontent.previews import PHOTO_HELP
 
 User = get_user_model()
 
 
-def mentions_ratio(text):
-    """True if the text talks about an aspect ratio or a tolerance. Whole words, so "duration" doesn't count."""
-    return bool(re.search(r"\bratio\b|\bwithin \d+%", text, re.IGNORECASE))
+def mentions_size_or_shape_rule(text):
+    """
+    True if the text compares a photo with a ratio, a tolerance or a pixel
+    minimum. Whole words, so "duration" doesn't count as "ratio".
+    """
+    return bool(re.search(r"\bratio\b|\bwithin \d+%|px wide|\bat least \d", text, re.IGNORECASE))
 
 CHANGELIST = "admin:casestudies_casestudy_changelist"
 ADD = "admin:casestudies_casestudy_add"
@@ -185,6 +188,10 @@ class TestAdminAccess:
         assert "Vodacom Tanzania" in html and "CRDB Bank" in html
         assert "Published" in html and "Draft" in html
         assert 'data-ordering-field="order"' in html
+        # Photo size: the one with a photo shows it, the draft without shows a dash.
+        assert "Photo size" in html
+        assert html.count("1200 × 900") == 1
+        assert len(re.findall(r'class="field-photo_size[^"]*"[^>]*>\s*—', html)) == 1
 
     def test_sales_role_cannot_open_the_changelist(self, client, sales_user):
         client.force_login(as_staff(sales_user))
@@ -218,8 +225,9 @@ class TestAdminAccess:
 
         html = client.get(reverse(ADD)).content.decode()
 
-        assert "Shown at 4:3, cropped to fit · at least 1200 px wide · max 1 MB" in html
-        assert CROP_HELP in html
+        assert "Shown at 4:3, cropped to fit · max 1 MB" in html
+        assert not mentions_size_or_shape_rule(html)
+        assert PHOTO_HELP in html
         assert "bottom-left corner" in html
         # Nothing to preview on a blank form.
         assert "photo-preview" not in html and "How it appears on the site" not in html
@@ -245,30 +253,15 @@ class TestValidation:
         assert self.add(client, image=make_upload(1200, 900, "PNG")).status_code == 302
         assert self.add(client, image=make_upload(1200, 900, "WEBP")).status_code == 302
 
-    # Shape is the editor's call: the site crops to fit. Width is the only size rule.
-    @pytest.mark.parametrize("width, height", [(2400, 600), (1200, 2400), (1200, 1200)], ids=["wide", "tall", "square"])
-    def test_any_shape_is_accepted(self, client, width, height):
+    # Shape and pixel size are the editor's call: the site crops to fit. None of
+    # these is 4:3, and the last is far below the old 1200 px minimum.
+    @pytest.mark.parametrize("width, height", [(2400, 600), (800, 2400), (1000, 1000), (200, 150)], ids=["wide", "tall", "square", "tiny"])
+    def test_any_size_and_shape_is_accepted(self, client, width, height):
         response = self.add(client, image=make_upload(width, height), alt_text="A screen", published=True)
 
         assert response.status_code == 302, response.context and response.context["adminform"].form.errors
         study = CaseStudy.objects.get()
         assert (study.image_width, study.image_height) == (width, height)
-
-    def test_narrower_than_the_minimum_is_rejected(self, client):
-        errors = form_errors(self.add(client, image=make_upload(800, 600)))
-
-        assert errors["image"] == ["Upload a photo at least 1200 px wide. Yours is 800 px wide."]
-        assert CaseStudy.objects.count() == 0
-
-    def test_tall_enough_does_not_make_up_for_too_narrow(self, client):
-        errors = form_errors(self.add(client, image=make_upload(900, 1200)))
-
-        assert errors["image"] == ["Upload a photo at least 1200 px wide. Yours is 900 px wide."]
-
-    def test_height_is_not_checked(self, client):
-        # The old rule wanted 900 px of height. 1200×500 is wide enough, and that is all that counts.
-        assert self.add(client, image=make_upload(1200, 500)).status_code == 302
-        assert CaseStudy.objects.get().image_height == 500
 
     def test_over_one_mb_is_rejected(self, client):
         upload = make_upload(1200, 900, "PNG", noisy=True)
@@ -280,18 +273,18 @@ class TestValidation:
         assert errors["image"][0].startswith("A case study photo allows files up to 1 MB. Your file is ")
 
     def test_every_problem_is_reported_together(self, client):
-        # Wrong format, too heavy, too narrow, and published with no alt text, all in one go.
+        # Wrong format, too heavy, and published with no alt text, all in one go. It is
+        # also small and square, which nobody complains about.
         upload = make_upload(800, 800, "BMP")
         assert upload.size > 1024 * 1024
 
         errors = form_errors(self.add(client, image=upload, alt_text="", published=True))
 
-        assert len(errors["image"]) == 3
+        assert len(errors["image"]) == 2
         assert errors["image"][0] == "Upload a JPEG, PNG or WebP file. Yours is a BMP file."
         assert errors["image"][1].startswith("A case study photo allows files up to 1 MB. Your file is ")
-        assert errors["image"][2] == "Upload a photo at least 1200 px wide. Yours is 800 px wide."
         assert errors["alt_text"][0].startswith("A published case study needs alt text.")
-        assert not any("4:3" in message or mentions_ratio(message) for message in errors["image"])
+        assert not any("4:3" in message or mentions_size_or_shape_rule(message) for message in errors["image"])
 
     def test_draft_saves_without_image_or_alt(self, client):
         response = self.add(client)
@@ -318,9 +311,9 @@ class TestValidation:
         assert CaseStudy.objects.count() == 0
 
     def test_rejected_upload_is_not_also_reported_as_missing(self, client):
-        errors = form_errors(self.add(client, image=make_upload(800, 600), alt_text="A screen", published=True))
+        errors = form_errors(self.add(client, image=make_upload(1200, 900, "GIF"), alt_text="A screen", published=True))
 
-        assert errors["image"] == ["Upload a photo at least 1200 px wide. Yours is 800 px wide."]
+        assert errors["image"] == ["Upload a JPEG, PNG or WebP file. Yours is a GIF file."]
 
     def test_description_over_500_characters_is_rejected(self, client):
         errors = form_errors(self.add(client, description="x" * 501))
@@ -362,11 +355,11 @@ class TestCropPreview:
         html = self.change_form(client, study)
 
         assert "Your photo" in html
-        assert "1200×900 pixels" in html
+        assert "Current photo: 1200 × 900 px" in html
         assert "How it appears on the site" in html
         assert 'class="photo-preview__frame" style="aspect-ratio: 4 / 3;"' in html
         assert "On a phone" not in html
-        assert CROP_HELP in html
+        assert PHOTO_HELP in html
 
     def test_nothing_is_drawn_for_a_draft_without_a_photo(self, client):
         study = make_study(published=False, with_image=False)
@@ -375,11 +368,12 @@ class TestCropPreview:
 
         assert "photo-preview" not in html
         assert "Your photo" not in html
+        assert "Current photo" not in html
         assert "How it appears on the site" not in html
-        assert CROP_HELP in html
+        assert PHOTO_HELP in html
 
     def test_spec_line_wording(self):
-        assert PHOTO_SPEC.line == "Shown at 4:3, cropped to fit · at least 1200 px wide · max 1 MB"
+        assert PHOTO_SPEC.line == "Shown at 4:3, cropped to fit · max 1 MB"
 
 
 @pytest.mark.django_db
@@ -542,8 +536,8 @@ class TestSeed:
 
         assert "4 would be created, 0 skipped" in output
         assert "would download https://www.ashtonmedia.net/uploads/1/4/4/1/144182232/campaign-2-2x.png" in output
-        assert "Spec:     at least 1200 px wide · max 1 MB" in output
-        assert not mentions_ratio(output) and "4:3" not in output
+        assert "Spec:     max 1 MB (file size is reported" in output
+        assert not mentions_size_or_shape_rule(output) and "4:3" not in output
         assert CaseStudy.objects.count() == 0
         assert list(local_media.iterdir()) == []
 
@@ -565,24 +559,27 @@ class TestSeed:
         assert "FAILED: could not get slp-1144-copy.jpg (connection reset)" in out.getvalue()
         assert "3 created, 0 skipped, 1 failed" in out.getvalue()
 
-    def test_too_narrow_photo_is_a_warning_not_a_block(self, monkeypatch):
-        monkeypatch.setattr(seed, "download", lambda url: image_bytes(800, 450))
+    def test_a_file_over_the_cap_is_a_warning_not_a_block(self, monkeypatch):
+        heavy = image_bytes(1200, 900, "PNG", noisy=True)
+        assert len(heavy) > 1024 * 1024
+        monkeypatch.setattr(seed, "download", lambda url: heavy)
 
         output = self.run("--yes")
 
         assert CaseStudy.objects.count() == 4
-        assert output.count("WARNING Upload a photo at least 1200 px wide. Yours is 800 px wide.") == 4
-        assert not mentions_ratio(output) and "4:3" not in output
+        assert output.count("WARNING A case study photo allows files up to 1 MB. Your file is ") == 4
+        assert not mentions_size_or_shape_rule(output) and "4:3" not in output
 
-    def test_shape_is_not_reported(self, monkeypatch):
-        # 1600×900 is 16:9, not the 4:3 the page shows. It is wide enough, so it is simply OK.
-        monkeypatch.setattr(seed, "download", lambda url: image_bytes(1600, 900))
+    def test_a_tiny_photo_is_ok_and_its_pixel_size_is_only_shown(self, monkeypatch):
+        # 200×150 is far below the old 1200 px minimum. It is under the cap, so it is simply OK.
+        monkeypatch.setattr(seed, "download", lambda url: image_bytes(200, 150))
 
         output = self.run("--yes")
 
+        assert CaseStudy.objects.count() == 4
         assert output.count("spec:  OK") == 4
-        assert "photo: campaign-2-2x.png, JPEG, 1600×900, " in output
-        assert not mentions_ratio(output) and "16:9" not in output and "4:3" not in output
+        assert "photo: campaign-2-2x.png, JPEG, 200×150, " in output
+        assert not mentions_size_or_shape_rule(output) and "4:3" not in output
 
     def test_source_dir_is_used_instead_of_the_network(self, monkeypatch, tmp_path_factory):
         folder = tmp_path_factory.mktemp("legacy-photos")
