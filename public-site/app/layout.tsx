@@ -13,10 +13,18 @@ const montserrat = Montserrat({
 });
 
 const siteMetadata: Metadata = {
-  title: "Ashton Media — Tanzania's #1 OOH Network",
+  title: "Ashton Media - Tanzania's #1 OOH Network",
   description:
     "Tanzania's largest out-of-home advertising network — 500+ sites across roads, malls, bus stands and airports.",
   keywords: ["OOH advertising", "Tanzania", "billboard", "digital signage"],
+  icons: {
+    icon: [
+      { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
+      { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },
+    ],
+    apple: { url: "/apple-touch-icon.png", sizes: "180x180" },
+  },
+  manifest: "/site.webmanifest",
 };
 
 /**
