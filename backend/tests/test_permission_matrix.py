@@ -38,9 +38,19 @@ class TestJobPermissions:
         }, format="json")
         assert response.status_code == 403
 
-    def test_operations_can_write_jobs(self, operations_user, billboard):
+    def test_operations_cannot_create_jobs(self, operations_user, billboard):
+        # Field crew update the status of jobs assigned to them; they don't create jobs.
         api = APIClient()
         api.force_authenticate(user=operations_user)
+        response = api.post("/api/jobs/", {
+            "billboard": billboard.id, "job_type": "installation",
+            "status": "pending", "priority": "medium", "scheduled_date": "2026-09-01",
+        }, format="json")
+        assert response.status_code == 403
+
+    def test_admin_can_create_jobs(self, admin_user, billboard):
+        api = APIClient()
+        api.force_authenticate(user=admin_user)
         response = api.post("/api/jobs/", {
             "billboard": billboard.id, "job_type": "installation",
             "status": "pending", "priority": "medium", "scheduled_date": "2026-09-01",

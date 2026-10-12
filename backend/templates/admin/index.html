@@ -13,21 +13,26 @@
         <p style="font-size: 13px; opacity: 0.7; margin: 0;">Available Billboards</p>
         <p style="font-size: 32px; font-weight: bold; margin: 4px 0 0;">{{ available_billboards }} / {{ total_billboards }}</p>
     </div>
+    {% if show_sales_data %}
     <div style="background: #111; color: #fff; padding: 20px; border-radius: 8px;">
         <p style="font-size: 13px; opacity: 0.7; margin: 0;">Active Contracts</p>
         <p style="font-size: 32px; font-weight: bold; margin: 4px 0 0;">{{ active_contracts }}</p>
     </div>
+    {% endif %}
     <div style="background: #111; color: #fff; padding: 20px; border-radius: 8px;">
         <p style="font-size: 13px; opacity: 0.7; margin: 0;">Jobs This Week</p>
         <p style="font-size: 32px; font-weight: bold; margin: 4px 0 0;">{{ jobs_this_week }}</p>
         <p style="font-size: 12px; opacity: 0.6; margin: 4px 0 0;">{{ pending_jobs }} pending overall</p>
     </div>
+    {% if show_sales_data %}
     <div style="background: #111; color: #fff; padding: 20px; border-radius: 8px;">
         <p style="font-size: 13px; opacity: 0.7; margin: 0;">New Inquiries</p>
         <p style="font-size: 32px; font-weight: bold; margin: 4px 0 0;">{{ new_inquiries }}</p>
     </div>
+    {% endif %}
 </div>
 
+{% if show_sales_data %}
 <div style="padding: 0 24px 24px;">
     <h2 style="font-size: 16px; margin-bottom: 12px;">Recent Inquiries</h2>
     <table style="width: 100%; border-collapse: collapse;">
@@ -53,4 +58,5 @@
         </tbody>
     </table>
 </div>
+{% endif %}
 {% endblock %}

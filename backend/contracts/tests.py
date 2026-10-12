@@ -65,10 +65,11 @@ class TestContractPermissions:
         }, format="json")
         assert response.status_code == 403
 
-    def test_operations_can_read_but_not_write(self, operations_user, billboard, test_client_obj):
+    def test_operations_can_neither_read_nor_write(self, operations_user, billboard, test_client_obj):
         api = APIClient()
         api.force_authenticate(user=operations_user)
-        assert api.get("/api/contracts/").status_code == 200
+        # Contracts are for admin and sales only, reads included.
+        assert api.get("/api/contracts/").status_code == 403
         response = api.post("/api/contracts/", {
             "billboard": billboard.id, "client": test_client_obj.id,
             "date_range": {"lower": "2026-11-01", "upper": "2026-11-05"},

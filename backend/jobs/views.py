@@ -4,7 +4,7 @@ from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
-from users.permissions import IsOperationsOrReadOnly
+from users.permissions import JobPermission
 from .models import Job
 from .serializers import JobSerializer
 
@@ -12,10 +12,18 @@ from .serializers import JobSerializer
 class JobViewSet(viewsets.ModelViewSet):
     queryset = Job.objects.select_related("billboard", "contract", "assigned_to", "created_by").all()
     serializer_class = JobSerializer
-    permission_classes = [IsOperationsOrReadOnly]
+    permission_classes = [JobPermission]
 
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ["status", "job_type", "priority", "assigned_to", "billboard"]
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        if self.request.user.is_authenticated and self.request.user.role == "operations":
+            # Field crew work only from their own jobs. Anyone else's is a 404
+            # for them, not a 403: they are not told it exists.
+            return queryset.filter(assigned_to=self.request.user)
+        return queryset
 
     def perform_create(self, serializer):
         serializer.save(created_by=self.request.user)

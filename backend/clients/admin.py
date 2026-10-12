@@ -2,6 +2,7 @@ from django.contrib import admin
 from unfold.admin import ModelAdmin
 
 from users.admin_mixins import RoleBasedAdminMixin
+from users.permissions import SALES_DATA_ROLES
 from .models import Client
 
 
@@ -13,5 +14,5 @@ class ClientAdmin(RoleBasedAdminMixin, ModelAdmin):
     search_fields = ("company_name", "contact_name", "email", "phone")
     autocomplete_fields = ("account_manager",)
 
-    allowed_view_roles = ["admin", "sales"]
+    allowed_view_roles = SALES_DATA_ROLES
     allowed_write_roles = ["admin", "sales"]

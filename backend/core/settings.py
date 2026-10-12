@@ -262,11 +262,13 @@ UNFOLD = {
                         "title": "Clients",
                         "icon": "groups",
                         "link": reverse_lazy("admin:clients_client_changelist"),
+                        "permission": "core.nav_permissions.can_view_clients",
                     },
                     {
                         "title": "Contracts",
                         "icon": "description",
                         "link": reverse_lazy("admin:contracts_contract_changelist"),
+                        "permission": "core.nav_permissions.can_view_contracts",
                     },
                     {
                         "title": "Inquiries",
