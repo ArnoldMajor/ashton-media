@@ -7,6 +7,7 @@ from unfold.decorators import display
 from users.admin_mixins import RoleBasedAdminMixin
 from .forms import SiteImageForm
 from .models import SiteImage
+from .previews import is_stored, photo_previews, without_preview
 
 CUSTOM = "Custom image"
 DEFAULT = "Using default image"
@@ -24,7 +25,7 @@ class SiteImageAdmin(RoleBasedAdminMixin, ModelAdmin):
 
     fieldsets = (
         (None, {"fields": ("title", "section", "spec", "note", "key_display")}),
-        ("Image", {"fields": ("preview", "image", "alt_text")}),
+        ("Image", {"fields": ("image", "preview", "alt_text")}),
     )
     readonly_fields = ("title", "section", "spec", "note", "key_display", "preview")
 
@@ -48,6 +49,10 @@ class SiteImageAdmin(RoleBasedAdminMixin, ModelAdmin):
         # A slot dropped from the registry is kept in the table but no longer
         # appears on the site, so there is nothing for an editor to do with it.
         return super().get_queryset(request).filter(active=True)
+
+    def get_fieldsets(self, request, obj=None):
+        fieldsets = super().get_fieldsets(request, obj)
+        return fieldsets if obj and obj.image else without_preview(fieldsets)
 
     def save_model(self, request, obj, form, change):
         obj.updated_by = request.user
@@ -74,14 +79,13 @@ class SiteImageAdmin(RoleBasedAdminMixin, ModelAdmin):
     def key_display(self, obj):
         return format_html('<code style="font-size:0.75rem;opacity:0.65;">{}</code>', obj.key)
 
-    @admin.display(description="Current image")
+    @admin.display(description="Preview")
     def preview(self, obj):
-        if not obj.image:
-            return "No custom image yet. The site is showing its built-in default."
-        return format_html(
-            '<a href="{0}" target="_blank" rel="noopener">'
-            '<img src="{0}" alt="{1}" style="max-width:min(100%,640px);max-height:420px;border-radius:6px;">'
-            "</a>"
-            '<div style="font-size:0.75rem;opacity:0.65;margin-top:6px;">{2}×{3} pixels</div>',
+        # get_fieldsets drops this row when the slot has no image. An upload
+        # that has just failed validation isn't in storage yet, so it isn't drawn.
+        if not is_stored(obj.image):
+            return ""
+        return photo_previews(
             obj.image.url, obj.alt_text, obj.image_width, obj.image_height,
+            ratio=(obj.ratio_w, obj.ratio_h), phone=obj.is_hero,
         )

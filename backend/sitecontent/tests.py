@@ -1,6 +1,7 @@
 import copy
 import io
 import os
+import re
 import urllib.request
 from io import StringIO
 from pathlib import Path
@@ -22,13 +23,20 @@ from core.nav_permissions import can_view_site_images
 from sitecontent import registry
 from sitecontent.management.commands import seed_site_images as seed
 from sitecontent.models import SiteImage
+from sitecontent.previews import CROP_HELP
 
 User = get_user_model()
 
+
+def mentions_ratio(text):
+    """True if the text talks about an aspect ratio or a tolerance. Whole words, so "duration" doesn't count."""
+    return bool(re.search(r"\bratio\b|\bwithin \d+%", text, re.IGNORECASE))
+
 CHANGELIST = "admin:sitecontent_siteimage_changelist"
-HERO_KEY = "home.hero.ooh"  # 16:9, at least 2560×1440, max 3 MB, alt required
-SHARE_KEY = "site.share"  # 40:21, at least 1200×630, max 1 MB, alt not required
-TILE_KEY = "networks.static"  # 3:4, at least 1200×1600, alt not required
+HERO_KEY = "home.hero.ooh"  # shown at 16:9, at least 2560 px wide, max 3 MB, alt required
+BANNER_KEY = "traditional.banner"  # shown at 21:9, at least 2400 px wide, max 3 MB, alt required
+SHARE_KEY = "site.share"  # shown at 40:21, at least 1200 px wide, max 1 MB, alt not required
+TILE_KEY = "networks.static"  # shown at 3:4, at least 1200 px wide, max 1.5 MB, alt not required
 
 
 @pytest.fixture(autouse=True)
@@ -86,7 +94,7 @@ def image_bytes(width, height, fmt="JPEG", noisy=False):
 
 
 def make_upload(width, height, fmt="JPEG", noisy=False):
-    extension = {"JPEG": "jpg", "PNG": "png", "WEBP": "webp", "GIF": "gif"}[fmt]
+    extension = {"JPEG": "jpg", "PNG": "png", "WEBP": "webp", "GIF": "gif", "BMP": "bmp"}[fmt]
     return SimpleUploadedFile(
         f"photo.{extension}", image_bytes(width, height, fmt, noisy), content_type=f"image/{fmt.lower()}",
     )
@@ -204,8 +212,9 @@ class TestAdminAccess:
 
         assert response.status_code == 200
         assert "Home → Hero slideshow → Slide 1 (Out-of-Home Advertising)" in html
-        assert "16:9 · at least 2560×1440 · max 3 MB" in html
-        assert "21:9 · at least 2400×1029 · max 3 MB" in html
+        assert "Shown at 16:9, cropped to fit · at least 2560 px wide · max 3 MB" in html
+        assert "Shown at 21:9, cropped to fit · at least 2400 px wide · max 3 MB" in html
+        assert "Shown at 40:21, cropped to fit · at least 1200 px wide · max 1 MB" in html
         assert "Using default image" in html
 
     def test_design_role_sees_the_changelist(self, client, design_user, slots):
@@ -259,9 +268,81 @@ class TestAdminAccess:
 
         assert response.status_code == 200
         assert list(response.context["adminform"].form.fields) == ["image", "alt_text"]
-        assert "21:9 · at least 2400×1029 · max 3 MB. JPEG, PNG or WebP." in html
+        assert "Shown at 21:9, cropped to fit · at least 2400 px wide · max 3 MB. JPEG, PNG or WebP." in html
+        assert CROP_HELP in html
         assert "traditional.banner" in html
         assert "Use a photo that matches the caption." in html
+
+    def test_spec_line_wording(self, slots):
+        assert slots[HERO_KEY].spec_line == "Shown at 16:9, cropped to fit · at least 2560 px wide · max 3 MB"
+        assert slots[BANNER_KEY].spec_line == "Shown at 21:9, cropped to fit · at least 2400 px wide · max 3 MB"
+        assert slots[TILE_KEY].spec_line == "Shown at 3:4, cropped to fit · at least 1200 px wide · max 1.5 MB"
+        assert slots[SHARE_KEY].spec_line == "Shown at 40:21, cropped to fit · at least 1200 px wide · max 1 MB"
+
+
+@pytest.mark.django_db
+class TestCropPreview:
+    @pytest.fixture(autouse=True)
+    def login(self, client, design_user):
+        client.force_login(as_staff(design_user))
+
+    def change_form(self, client, slot):
+        response = client.get(reverse("admin:sitecontent_siteimage_change", args=[slot.pk]))
+        assert response.status_code == 200
+        return response.content.decode()
+
+    def with_image(self, slot, width, height):
+        slot.image = make_upload(width, height)
+        slot.save()
+        return slot
+
+    def test_nothing_is_drawn_without_an_image(self, client, slots):
+        html = self.change_form(client, slots[HERO_KEY])
+
+        assert "photo-preview" not in html
+        assert "Your photo" not in html
+        assert "How it appears on the site" not in html
+        assert "On a phone" not in html
+        # The note about cropping is help text on the field, so it is there from the start.
+        assert CROP_HELP in html
+
+    def test_hero_slot_gets_the_site_box_and_the_phone_box(self, client, slots):
+        slot = self.with_image(slots[HERO_KEY], 2560, 1440)
+
+        html = self.change_form(client, slot)
+
+        assert "Your photo" in html
+        assert "2560×1440 pixels" in html
+        assert "How it appears on the site" in html
+        assert 'class="photo-preview__frame" style="aspect-ratio: 16 / 9;"' in html
+        assert "On a phone" in html
+        assert 'class="photo-preview__frame" style="aspect-ratio: 9 / 19.5;"' in html
+        assert html.count(slot.image.url) >= 3
+
+    @pytest.mark.parametrize("key, shape", [
+        (BANNER_KEY, "7 / 3"), (TILE_KEY, "3 / 4"), (SHARE_KEY, "40 / 21"),
+    ])
+    def test_other_slots_get_the_site_box_only(self, client, slots, key, shape):
+        slot = self.with_image(slots[key], 2400, 1600)
+
+        html = self.change_form(client, slot)
+
+        assert "How it appears on the site" in html
+        assert f'class="photo-preview__frame" style="aspect-ratio: {shape};"' in html
+        assert "On a phone" not in html
+
+    def test_an_upload_that_failed_validation_is_not_previewed(self, client, slots):
+        slot = self.with_image(slots[HERO_KEY], 2560, 1440)
+        stored_url = slot.image.url
+
+        # A good photo, but the required alt text is missing: the save is refused.
+        response = post_change(client, slot, make_upload(3000, 2000), alt_text="")
+        html = response.content.decode()
+
+        assert response.status_code == 200
+        assert "photo-preview__frame" not in html
+        slot.refresh_from_db()
+        assert slot.image.url == stored_url
 
 
 @pytest.mark.django_db
@@ -290,23 +371,62 @@ class TestUploadValidation:
         assert post_change(client, slots[HERO_KEY], make_upload(2560, 1440, "PNG")).status_code == 302
         assert post_change(client, slots["home.hero.digital"], make_upload(2560, 1440, "WEBP")).status_code == 302
 
-    def test_near_ratio_is_accepted(self, client, slots):
-        # 2800×1440 is about 9% wider than 16:9, inside the 10% tolerance.
-        assert post_change(client, slots[HERO_KEY], make_upload(2800, 1440)).status_code == 302
+    # Shape is the editor's call: the site crops to fit. Width is the only size rule.
+    @pytest.mark.parametrize("key, min_width", [
+        (HERO_KEY, 2560), (BANNER_KEY, 2400), (TILE_KEY, 1200), (SHARE_KEY, 1200),
+    ])
+    @pytest.mark.parametrize("shape", ["wide", "tall", "square"])
+    def test_any_shape_is_accepted(self, client, slots, key, min_width, shape):
+        width, height = {
+            "wide": (min_width * 2, min_width // 2),
+            "tall": (min_width, min_width * 2),
+            "square": (min_width, min_width),
+        }[shape]
+        slot = slots[key]
 
-    def test_wrong_ratio_is_rejected(self, client, slots):
-        slot = slots[HERO_KEY]
-
-        errors = form_errors(post_change(client, slot, make_upload(2560, 1920)))
+        response = post_change(client, slot, make_upload(width, height))
         slot.refresh_from_db()
 
-        assert errors["image"] == ["This slot needs 16:9. Your image is 4:3."]
+        assert response.status_code == 302, response.context and response.context["adminform"].form.errors
+        assert (slot.image_width, slot.image_height) == (width, height)
+
+    def test_narrower_than_the_minimum_is_rejected(self, client, slots):
+        slot = slots[HERO_KEY]
+
+        errors = form_errors(post_change(client, slot, make_upload(1280, 720)))
+        slot.refresh_from_db()
+
+        assert errors["image"] == ["Upload a photo at least 2560 px wide. Yours is 1280 px wide."]
         assert not slot.image
 
-    def test_too_small_is_rejected(self, client, slots):
-        errors = form_errors(post_change(client, slots[HERO_KEY], make_upload(1280, 720)))
+    def test_tall_enough_does_not_make_up_for_too_narrow(self, client, slots):
+        errors = form_errors(post_change(client, slots[HERO_KEY], make_upload(1440, 2560)))
 
-        assert errors["image"] == ["This slot needs an image at least 2560×1440 pixels. Yours is 1280×720."]
+        assert errors["image"] == ["Upload a photo at least 2560 px wide. Yours is 1440 px wide."]
+
+    def test_height_is_not_checked(self, client, slots):
+        # The hero's stored min_height is 1440. A 2560×900 photo is wide enough, and that is all that counts.
+        slot = slots[HERO_KEY]
+        assert slot.min_height == 1440
+
+        response = post_change(client, slot, make_upload(2560, 900))
+        slot.refresh_from_db()
+
+        assert response.status_code == 302
+        assert (slot.image_width, slot.image_height) == (2560, 900)
+
+    def test_every_problem_is_reported_together(self, client, slots):
+        # Wrong format, too heavy, too narrow and no alt text, all in one go.
+        upload = make_upload(1000, 1100, "BMP")
+        assert upload.size > 3 * 1024 * 1024
+
+        errors = form_errors(post_change(client, slots[HERO_KEY], upload, alt_text=""))
+
+        assert len(errors["image"]) == 3
+        assert errors["image"][0] == "Upload a JPEG, PNG or WebP file. Yours is a BMP file."
+        assert errors["image"][1].startswith("This slot allows files up to 3 MB. Your file is ")
+        assert errors["image"][2] == "Upload a photo at least 2560 px wide. Yours is 1000 px wide."
+        assert not any("16:9" in message or mentions_ratio(message) for message in errors["image"])
 
     def test_over_the_size_limit_is_rejected(self, client, slots):
         upload = make_upload(1200, 630, "PNG", noisy=True)
@@ -527,6 +647,8 @@ class TestSeed:
         plan = {line.split()[0]: line for line in output.splitlines() if line.split() and line.split()[0] in MAPPED_KEYS}
         assert "would skip" in plan["digital.banner"]
         assert "would fill" in plan["home.hero.ooh"] and "slp-1144-copy.jpg" in plan["home.hero.ooh"]
+        assert "width and file size are compared" in output
+        assert not mentions_ratio(output)
 
     def test_alt_text_comes_from_the_default_only_when_blank_and_required(self, slots, downloads):
         SiteImage.objects.filter(key="home.hero.ooh").update(alt_text="")
@@ -548,9 +670,17 @@ class TestSeed:
         slot = SiteImage.objects.get(key=HERO_KEY)
         assert (slot.image_width, slot.image_height) == (1280, 720)
         assert "6 filled (0 replacing an existing image), 0 skipped, 0 failed" in output
-        assert "This slot needs an image at least 2560×1440 pixels. Yours is 1280×720." in output
-        # The same photo is the wrong shape for a 21:9 banner, and that is said too.
-        assert "This slot needs 21:9. Your image is 16:9." in output
+        assert output.count("Upload a photo at least 2560 px wide. Yours is 1280 px wide.") == 3
+        assert output.count("Upload a photo at least 2400 px wide. Yours is 1280 px wide.") == 3
+        # Shape is not compared any more, for the hero or the 21:9 banner.
+        assert "21:9" not in output and not mentions_ratio(output)
+
+    def test_a_wide_enough_photo_is_ok_for_every_slot_whatever_its_shape(self, slots, downloads):
+        # 2560×1440 is 16:9: right for a hero, the wrong shape for a 21:9 banner. Both are OK now.
+        output = self.run("--yes")
+
+        assert output.count("OK (") == 6
+        assert not mentions_ratio(output)
 
     def test_anything_but_yes_at_the_prompt_aborts(self, slots, downloads, monkeypatch, local_media):
         monkeypatch.setattr("builtins.input", lambda prompt: "y")

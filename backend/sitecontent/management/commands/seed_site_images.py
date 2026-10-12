@@ -7,7 +7,7 @@ from django.core.management.base import BaseCommand, CommandError
 from django.db import connection
 
 from sitecontent.models import SiteImage
-from sitecontent.validation import BYTES_PER_MB, RATIO_TOLERANCE, read_image, upload_problems
+from sitecontent.validation import BYTES_PER_MB, read_image, upload_problems
 
 LEGACY_PHOTO_BASE = "https://www.ashtonmedia.net/uploads/1/4/4/1/144182232/"
 DOWNLOAD_TIMEOUT_SECONDS = 30
@@ -69,7 +69,7 @@ class Command(BaseCommand):
         self.stdout.write(f"Storage:  {describe_storage(storages['default'])}")
         self.stdout.write(f"Photos:   {source_dir or LEGACY_PHOTO_BASE}")
         self.stdout.write(
-            f"Spec:     each photo is compared with its slot (ratio within {RATIO_TOLERANCE:.0%}); "
+            "Spec:     each photo's width and file size are compared with its slot's limits; "
             "shortfalls are reported, never blocking"
         )
         if force:

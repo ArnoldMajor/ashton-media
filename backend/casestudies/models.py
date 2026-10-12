@@ -7,7 +7,7 @@ from django.db import models
 from sitecontent.validation import ImageSpec
 
 # How the public site draws a case study photo: a 4:3 panel, half the page wide.
-PHOTO_SPEC = ImageSpec(ratio_w=4, ratio_h=3, min_width=1200, min_height=900, max_mb=Decimal("1.0"))
+PHOTO_SPEC = ImageSpec(ratio_w=4, ratio_h=3, min_width=1200, max_mb=Decimal("1.0"))
 
 DESCRIPTION_MAX_LENGTH = 500
 MAX_METRICS = 3

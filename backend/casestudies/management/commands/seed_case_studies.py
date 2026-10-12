@@ -7,7 +7,7 @@ from django.core.management.base import BaseCommand, CommandError
 from django.db import connection, transaction
 
 from casestudies.models import PHOTO_SPEC, CaseStudy, CaseStudyMetric
-from sitecontent.validation import BYTES_PER_MB, describe_ratio, read_image, upload_problems
+from sitecontent.validation import BYTES_PER_MB, read_image, upload_problems
 
 LEGACY_PHOTO_BASE = "https://www.ashtonmedia.net/uploads/1/4/4/1/144182232/"
 DOWNLOAD_TIMEOUT_SECONDS = 30
@@ -92,7 +92,7 @@ class Command(BaseCommand):
         self.stdout.write(f"Database: {database['NAME']} on {database['HOST'] or 'local socket'}")
         self.stdout.write(f"Storage:  {type(storage).__module__}.{type(storage).__qualname__}")
         self.stdout.write(f"Photos:   {source_dir or LEGACY_PHOTO_BASE}")
-        self.stdout.write(f"Spec:     {PHOTO_SPEC.line} (reported only, never blocks)")
+        self.stdout.write(f"Spec:     {PHOTO_SPEC.limits} (width and file size are reported, never blocking)")
         if dry_run:
             self.stdout.write("Dry run:  nothing is downloaded and nothing is written.")
         self.stdout.write("")
@@ -169,8 +169,7 @@ class Command(BaseCommand):
             return False
         image_format, width, height = facts
         self.stdout.write(
-            f"   photo: {photo.name}, {image_format}, {width}×{height} ({describe_ratio(width, height)}), "
-            f"{photo.size / BYTES_PER_MB:.2f} MB"
+            f"   photo: {photo.name}, {image_format}, {width}×{height}, {photo.size / BYTES_PER_MB:.2f} MB"
         )
         problems = upload_problems(PHOTO_SPEC, photo, subject="A case study photo")
         if not problems:

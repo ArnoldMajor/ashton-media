@@ -63,10 +63,15 @@ class SiteImage(models.Model):
     def image_spec(self):
         return ImageSpec(
             ratio_w=self.ratio_w, ratio_h=self.ratio_h,
-            min_width=self.min_width, min_height=self.min_height,
+            min_width=self.min_width,
             max_mb=self.max_mb,
         )
 
     @property
     def spec_line(self):
         return self.image_spec.line
+
+    @property
+    def is_hero(self):
+        """A home-page hero slide: full-screen, so it is cropped very differently on a phone."""
+        return self.key.startswith("home.hero.")

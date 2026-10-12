@@ -3,9 +3,10 @@ from django.utils.html import format_html
 from unfold.admin import ModelAdmin, TabularInline
 from unfold.decorators import display
 
+from sitecontent.previews import is_stored, photo_previews, without_preview
 from users.admin_mixins import RoleBasedAdminMixin
 from .forms import CaseStudyForm
-from .models import MAX_METRICS, CaseStudy, CaseStudyMetric
+from .models import MAX_METRICS, PHOTO_SPEC, CaseStudy, CaseStudyMetric
 
 EDITOR_ROLES = ["admin", "design"]
 
@@ -53,13 +54,17 @@ class CaseStudyAdmin(RoleBasedAdminMixin, ModelAdmin):
 
     fieldsets = (
         (None, {"fields": ("brand", "format_label", "headline", "description")}),
-        ("Photo", {"fields": ("preview", "image", "alt_text")}),
+        ("Photo", {"fields": ("image", "preview", "alt_text")}),
         ("Visibility", {"fields": ("published",)}),
     )
     readonly_fields = ("preview",)
 
     allowed_view_roles = EDITOR_ROLES
     allowed_write_roles = EDITOR_ROLES
+
+    def get_fieldsets(self, request, obj=None):
+        fieldsets = super().get_fieldsets(request, obj)
+        return fieldsets if obj and obj.image else without_preview(fieldsets)
 
     def save_model(self, request, obj, form, change):
         obj.updated_by = request.user
@@ -78,14 +83,13 @@ class CaseStudyAdmin(RoleBasedAdminMixin, ModelAdmin):
     def status(self, obj):
         return PUBLISHED if obj.published else DRAFT
 
-    @admin.display(description="Current photo")
+    @admin.display(description="Preview")
     def preview(self, obj):
-        if not obj or not obj.image:
-            return "No photo yet. A case study can be saved as a draft without one."
-        return format_html(
-            '<a href="{0}" target="_blank" rel="noopener">'
-            '<img src="{0}" alt="{1}" style="max-width:min(100%,640px);max-height:480px;border-radius:6px;">'
-            "</a>"
-            '<div style="font-size:0.75rem;opacity:0.65;margin-top:6px;">{2}×{3} pixels</div>',
+        # get_fieldsets drops this row when there is no photo. An upload that
+        # has just failed validation isn't in storage yet, so it isn't drawn.
+        if not is_stored(obj.image):
+            return ""
+        return photo_previews(
             obj.image.url, obj.alt_text, obj.image_width, obj.image_height,
+            ratio=(PHOTO_SPEC.ratio_w, PHOTO_SPEC.ratio_h),
         )
