@@ -13,8 +13,9 @@ const OFFICE_HOURS = [
   { days: "Sunday", hours: "Closed" },
 ];
 
-const inputClass = "w-full bg-card-alt border border-white/12 rounded-lg text-white text-sm py-3.25 px-4 outline-none";
-const labelClass = "text-[11px] font-bold tracking-[1.5px] uppercase text-white/40 block mb-2";
+// 16px on phones: anything smaller makes iOS zoom the page when the field is focused.
+const inputClass = "w-full bg-card-alt border border-white/12 rounded-lg text-white text-base md:text-sm py-3.25 px-4 outline-none";
+const labelClass = "text-[12px] md:text-[11px] font-bold tracking-[1.5px] uppercase text-white/40 block mb-2";
 
 export default function ContactPage() {
   const [submitted, setSubmitted] = useState(false);
@@ -28,7 +29,7 @@ export default function ContactPage() {
       <PageHero title="Get in Touch" tag="Contact" sub="Ready to put your brand in front of millions? Tell us about your campaign and we'll build the perfect package." />
 
       <div className="max-w-300 mx-auto py-15 px-2.5 sm:px-4 md:px-6 lg:px-8">
-        <div className="grid grid-cols-2 gap-10 sm:gap-14 lg:gap-20 items-start">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 sm:gap-14 lg:gap-20 items-start">
 
           <div>
             <h2 className="font-black text-[28px] mb-8 tracking-[-1px]">Start a Campaign</h2>
@@ -41,27 +42,27 @@ export default function ContactPage() {
               </div>
             ) : (
               <div className="flex flex-col gap-4">
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                   <div>
-                    <label className={labelClass}>Your Name</label>
-                    <input className={inputClass} value={form.name} onChange={set("name")} placeholder="Jane Doe" />
+                    <label className={labelClass} htmlFor="contact-name">Your Name</label>
+                    <input id="contact-name" name="name" autoComplete="name" className={inputClass} value={form.name} onChange={set("name")} placeholder="Jane Doe" />
                   </div>
                   <div>
-                    <label className={labelClass}>Company</label>
-                    <input className={inputClass} value={form.company} onChange={set("company")} placeholder="Acme Ltd" />
+                    <label className={labelClass} htmlFor="contact-company">Company</label>
+                    <input id="contact-company" name="company" autoComplete="organization" className={inputClass} value={form.company} onChange={set("company")} placeholder="Acme Ltd" />
                   </div>
                 </div>
                 <div>
-                  <label className={labelClass}>Email Address</label>
-                  <input className={inputClass} type="email" value={form.email} onChange={set("email")} placeholder="jane@company.com" />
+                  <label className={labelClass} htmlFor="contact-email">Email Address</label>
+                  <input id="contact-email" name="email" autoComplete="email" inputMode="email" className={inputClass} type="email" value={form.email} onChange={set("email")} placeholder="jane@company.com" />
                 </div>
                 <div>
-                  <label className={labelClass}>Phone</label>
-                  <input className={inputClass} type="tel" value={form.phone} onChange={set("phone")} placeholder="+255 7xx xxx xxx" />
+                  <label className={labelClass} htmlFor="contact-phone">Phone</label>
+                  <input id="contact-phone" name="phone" autoComplete="tel" inputMode="tel" className={inputClass} type="tel" value={form.phone} onChange={set("phone")} placeholder="+255 7xx xxx xxx" />
                 </div>
                 <div>
-                  <label className={labelClass}>Monthly Budget</label>
-                  <select className={`${inputClass} cursor-pointer`} value={form.budget} onChange={set("budget")}>
+                  <label className={labelClass} htmlFor="contact-budget">Monthly Budget</label>
+                  <select id="contact-budget" name="budget" className={`${inputClass} cursor-pointer`} value={form.budget} onChange={set("budget")}>
                     <option value="" className="bg-card-alt">Select a range</option>
                     <option value="under-1k" className="bg-card-alt">Under USD 1,000</option>
                     <option value="1k-5k" className="bg-card-alt">USD 1,000 – 5,000</option>
@@ -70,8 +71,10 @@ export default function ContactPage() {
                   </select>
                 </div>
                 <div>
-                  <label className={labelClass}>Tell us about your campaign</label>
+                  <label className={labelClass} htmlFor="contact-message">Tell us about your campaign</label>
                   <textarea
+                    id="contact-message"
+                    name="message"
                     rows={5}
                     className={`${inputClass} resize-y`}
                     value={form.message}
@@ -94,13 +97,13 @@ export default function ContactPage() {
 
             {CONTACT_DETAILS.map((c) => (
               <div key={c.label} className="mb-6">
-                <div className="text-[10px] font-bold tracking-[2px] uppercase text-white/30 mb-2">{c.label}</div>
-                <a href={c.href} className="text-lg font-bold text-white no-underline">{c.value}</a>
+                <div className="text-[12px] md:text-[10px] font-bold tracking-[2px] uppercase text-white/30 mb-2">{c.label}</div>
+                <a href={c.href} className="inline-flex items-center min-h-11 md:inline md:min-h-0 text-lg font-bold text-white no-underline">{c.value}</a>
               </div>
             ))}
 
             <div className="mb-10">
-              <div className="text-[10px] font-bold tracking-[2px] uppercase text-white/30 mb-2">Office</div>
+              <div className="text-[12px] md:text-[10px] font-bold tracking-[2px] uppercase text-white/30 mb-2">Office</div>
               <p className="text-[15px] text-white/60 leading-[1.7]">Dar es Salaam, Tanzania</p>
             </div>
 

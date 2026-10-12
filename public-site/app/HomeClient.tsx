@@ -10,11 +10,14 @@ import CampaignProcess from "@/components/campaign/CampaignProcess";
 import CTABlock from "@/components/CTABlock";
 import { billboardToLocation } from "@/lib/locations";
 import type { Billboard } from "@/types/billboard";
+import type { HeroSlot, SiteImage } from "@/types/site-content";
 
-const HERO_SLIDES = [
-  { tag: "Out-of-Home Advertising", headline: "Make Your\nBrand\nUnmissable.", sub: "Tanzania's largest OOH network — 500+ sites across roads, malls, bus stands and airports.", photoIndex: 4 },
-  { tag: "Digital Out-of-Home", headline: "Dynamic.\nBold.\nAlways On.", sub: "20 high-resolution LED screens across Tanzania's highest-traffic corridors.", photoIndex: 0 },
-  { tag: "Airport Advertising", headline: "Own the\nAirport\nExperience.", sub: "Exclusive advertising rights across Julius Nyerere International Airport Terminal 3.", photoIndex: 3 },
+// `slot` names the image an editor can set for the slide (home.hero.<slot> in
+// the admin); `photoIndex` is the stock photo shown until they do.
+const HERO_SLIDES: { tag: string; headline: string; sub: string; slot: HeroSlot; photoIndex: number }[] = [
+  { tag: "Out-of-Home Advertising", headline: "Make Your\nBrand\nUnmissable.", sub: "Tanzania's largest OOH network — 500+ sites across roads, malls, bus stands and airports.", slot: "ooh", photoIndex: 4 },
+  { tag: "Digital Out-of-Home", headline: "Dynamic.\nBold.\nAlways On.", sub: "20 high-resolution LED screens across Tanzania's highest-traffic corridors.", slot: "digital", photoIndex: 0 },
+  { tag: "Airport Advertising", headline: "Own the\nAirport\nExperience.", sub: "Exclusive advertising rights across Julius Nyerere International Airport Terminal 3.", slot: "airport", photoIndex: 3 },
 ];
 
 const STAT_TARGETS = [500, 20, 8, 2005];
@@ -41,11 +44,13 @@ const BRANDS = ["Vodacom", "Airtel", "CRDB Bank", "Azam", "NMB Bank", "TBL", "Co
 interface Props {
   billboards: Billboard[];
   usingFallback: boolean;
+  /** Hero photos set in the admin, fetched on the server. A null slide keeps its stock photo. */
+  heroImages: Record<HeroSlot, SiteImage | null>;
   /** Server-rendered "Our network" section, slotted in below the stats bar. */
   networkShowcase: React.ReactNode;
 }
 
-export default function HomeClient({ billboards, usingFallback, networkShowcase }: Props) {
+export default function HomeClient({ billboards, usingFallback, heroImages, networkShowcase }: Props) {
   const [heroIdx, setHeroIdx] = useState(0);
   const [counts, setCounts] = useState([0, 0, 0, 0]);
   const [countVisible, setCountVisible] = useState(false);
@@ -81,23 +86,35 @@ export default function HomeClient({ billboards, usingFallback, networkShowcase 
   return (
     <div className="bg-canvas text-white">
 
-      <section className="relative min-h-screen overflow-hidden">
+      {/* svh, not vh: on a phone 100vh is the height with the address bar hidden, which pushes the buttons and dots off screen. */}
+      <section className="relative min-h-svh overflow-hidden">
         <div className="absolute inset-0 z-0">
           {HERO_SLIDES.map((s, i) => (
             <div key={i} className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${heroIdx === i ? "opacity-100" : "opacity-0"}`}>
               <div className="absolute inset-0 overflow-hidden">
-                <PhotoPlaceholder ratio="1/1" overlay={false} photoIndex={s.photoIndex} fill />
+                {/* Only the first slide is on screen at load, so only it is preloaded. */}
+                <PhotoPlaceholder
+                  ratio="1/1"
+                  overlay={false}
+                  photoIndex={s.photoIndex}
+                  src={heroImages[s.slot]?.url}
+                  alt={heroImages[s.slot]?.alt || undefined}
+                  sizes="100vw"
+                  preload={i === 0}
+                  fill
+                />
               </div>
-              <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(0,0,0,0.88)_0%,rgba(0,0,0,0.55)_55%,rgba(0,0,0,0.25)_100%)]" />
+              {/* On a phone the text runs the full width, so the scrim stays dark to the right edge; from md up it fades out as designed. */}
+              <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(0,0,0,0.88)_0%,rgba(0,0,0,0.72)_100%)] md:bg-[linear-gradient(90deg,rgba(0,0,0,0.88)_0%,rgba(0,0,0,0.55)_55%,rgba(0,0,0,0.25)_100%)]" />
             </div>
           ))}
         </div>
 
-        <div className="relative z-1 min-h-screen flex flex-col justify-center pt-25 sm:pt-30 md:pt-35 lg:pt-40 px-2.5 sm:px-4 md:px-6 lg:px-8 pb-20 max-w-300 mx-auto">
+        <div className="relative z-1 min-h-svh flex flex-col justify-center pt-25 sm:pt-30 md:pt-35 lg:pt-40 px-2.5 sm:px-4 md:px-6 lg:px-8 pb-20 max-w-300 mx-auto">
           <div className="max-w-140">
             <div className="flex items-center gap-2.5 mb-7">
               <div className="w-6 h-px bg-white/45" />
-              <span className="text-[11px] font-semibold tracking-[3px] text-white/50 uppercase">{slide.tag}</span>
+              <span className="text-[12px] md:text-[11px] font-semibold tracking-[3px] text-white/50 uppercase">{slide.tag}</span>
             </div>
             <h1 className="font-black text-[44px] sm:text-[64px] lg:text-[88px] leading-none mb-6 tracking-[-2px] whitespace-pre-line">{slide.headline}</h1>
             <p className="text-[14px] sm:text-[15px] lg:text-[17px] font-normal text-white/55 leading-[1.75] mb-10 max-w-105">{slide.sub}</p>
@@ -105,13 +122,18 @@ export default function HomeClient({ billboards, usingFallback, networkShowcase 
               <Link href="/contact" className="bg-white text-black text-[13px] font-bold py-3.5 px-5 sm:px-6 lg:px-7 rounded-md no-underline inline-flex items-center">Start a Campaign</Link>
               <Link href="/gallery" className="bg-transparent border border-white/30 text-white/85 text-[13px] font-semibold py-3.5 px-5 sm:px-6 lg:px-7 rounded-md no-underline inline-flex items-center">View Locations →</Link>
             </div>
-            <div className="flex gap-2">
+            {/* Below md each dot sits in a 44px tap area; from md up the button is just the bar, as before. */}
+            <div className="flex md:gap-2">
               {[0, 1, 2].map((i) => (
                 <button
                   key={i}
                   onClick={() => setHeroIdx(i)}
-                  className={`h-1 rounded-sm border-none cursor-pointer p-0 min-h-0 transition-all duration-350 ${i === heroIdx ? "w-7 bg-white" : "w-2 bg-white/25"}`}
-                />
+                  aria-label={`Show slide ${i + 1}`}
+                  aria-current={i === heroIdx ? "true" : undefined}
+                  className="flex items-center h-11 min-w-11 md:h-auto md:min-w-0 bg-transparent border-none cursor-pointer p-0 min-h-0"
+                >
+                  <span className={`block h-1 rounded-sm transition-all duration-350 ${i === heroIdx ? "w-7 bg-white" : "w-2 bg-white/25"}`} />
+                </button>
               ))}
             </div>
           </div>
@@ -134,9 +156,9 @@ export default function HomeClient({ billboards, usingFallback, networkShowcase 
       <section className="py-15 sm:py-18 md:py-22 lg:py-25 px-2.5 sm:px-4 md:px-6 lg:px-8 max-w-300 mx-auto">
         <div className="grid grid-cols-[repeat(auto-fit,minmax(300px,1fr))] gap-10 sm:gap-14 lg:gap-20 items-start">
           <div>
-            <div className="text-[11px] font-semibold tracking-[3px] text-white/40 uppercase mb-3">Coverage</div>
+            <div className="text-[12px] md:text-[11px] font-semibold tracking-[3px] text-white/40 uppercase mb-3">Coverage</div>
             <SectionHeading lead="Nationwide" accent="Network" className="text-[26px] sm:text-[36px] lg:text-[48px] mb-5 tracking-[-1.5px] leading-[1.05]" />
-            <p className="text-[15px] text-white/45 leading-[1.8] mb-8 max-w-95">From Dar es Salaam to Arusha, Mwanza to Dodoma — Ashton Media covers Tanzania's most important markets.</p>
+            <p className="text-[15px] text-white/45 leading-[1.8] mb-8 max-w-95">From Dar es Salaam to Arusha, Mwanza to Dodoma — Ashton Media covers Tanzania&apos;s most important markets.</p>
             <div className="border-t border-t-white/8">
               {COVERAGE.map((loc) => (
                 <div key={loc.city} className="py-3.5 border-b border-b-white/6 flex justify-between gap-4 flex-wrap">
@@ -156,9 +178,9 @@ export default function HomeClient({ billboards, usingFallback, networkShowcase 
       <section className="py-15 sm:py-18 md:py-22 lg:py-25 px-2.5 sm:px-4 md:px-6 lg:px-8 max-w-300 mx-auto">
         <div className="grid grid-cols-[repeat(auto-fit,minmax(300px,1fr))] gap-10 sm:gap-14 lg:gap-20 items-start">
           <div>
-            <div className="text-[11px] font-semibold tracking-[3px] text-white/40 uppercase mb-3">Why Choose Us</div>
+            <div className="text-[12px] md:text-[11px] font-semibold tracking-[3px] text-white/40 uppercase mb-3">Why Choose Us</div>
             <SectionHeading lead="Tanzania's #1" accent="OOH Company" className="text-[26px] sm:text-[36px] lg:text-[48px] mb-5 tracking-[-1.5px] leading-[1.05]" />
-            <p className="text-[15px] text-white/45 leading-[1.8] mb-8 max-w-95">Founded in 2005, Ashton Media has built Tanzania's most comprehensive out-of-home network — award-winning creative, strategy and execution under one roof.</p>
+            <p className="text-[15px] text-white/45 leading-[1.8] mb-8 max-w-95">Founded in 2005, Ashton Media has built Tanzania&apos;s most comprehensive out-of-home network — award-winning creative, strategy and execution under one roof.</p>
             <Link href="/contact" className="inline-block bg-white text-black text-[13px] font-bold py-3.25 px-6.5 rounded-md no-underline">Request a Proposal</Link>
           </div>
           <div className="grid grid-cols-2 gap-3">
@@ -179,7 +201,7 @@ export default function HomeClient({ billboards, usingFallback, networkShowcase 
         <div className="max-w-300 mx-auto">
           <div className="flex justify-between items-end mb-9 flex-wrap gap-4">
             <div>
-              <div className="text-[11px] font-semibold tracking-[3px] text-white/40 uppercase mb-2.5">Inventory</div>
+              <div className="text-[12px] md:text-[11px] font-semibold tracking-[3px] text-white/40 uppercase mb-2.5">Inventory</div>
               <h2 className="font-black text-[24px] sm:text-[32px] lg:text-[40px] tracking-[-1.5px] leading-[1.05]">Available Now</h2>
             </div>
             <Link href="/gallery" className="text-[13px] font-semibold text-white/50 no-underline">View all sites →</Link>
@@ -196,7 +218,7 @@ export default function HomeClient({ billboards, usingFallback, networkShowcase 
 
       <section className="py-14 px-2.5 sm:px-4 md:px-6 lg:px-8 border-t border-t-white/6 bg-raised">
         <div className="max-w-300 mx-auto text-center">
-          <p className="text-[11px] font-semibold tracking-[3px] text-white/22 uppercase mb-8">Trusted by Tanzania's leading brands</p>
+          <p className="text-[12px] md:text-[11px] font-semibold tracking-[3px] text-white/22 uppercase mb-8">Trusted by Tanzania&apos;s leading brands</p>
           <div className="flex gap-6 sm:gap-10 lg:gap-14 justify-center flex-wrap items-center">
             {BRANDS.map((b) => (
               <span key={b} className="font-extrabold text-[12px] sm:text-[13px] lg:text-[14px] text-white/18 transition-colors hover:text-white/60">{b}</span>

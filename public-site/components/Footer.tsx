@@ -25,12 +25,12 @@ export default function Footer() {
               <Image src={AshtonWhiteLogo} width={140} alt="Ashton Media Logo" />
             </div>
             <p className="text-[13px] text-white/35 leading-[1.7] max-w-50">
-              Tanzania's #1 out-of-home advertising network since 2005.
+              Tanzania&apos;s #1 out-of-home advertising network since 2005.
             </p>
           </div>
 
           <div>
-            <div className="text-[10px] font-bold tracking-[2px] text-white/25 uppercase mb-4">
+            <div className="text-[12px] md:text-[10px] font-bold tracking-[2px] text-white/25 uppercase mb-4">
               Solutions
             </div>
             {SOLUTIONS.map((l) => (
@@ -41,7 +41,7 @@ export default function Footer() {
           </div>
 
           <div>
-            <div className="text-[10px] font-bold tracking-[2px] text-white/25 uppercase mb-4">
+            <div className="text-[12px] md:text-[10px] font-bold tracking-[2px] text-white/25 uppercase mb-4">
               Company
             </div>
             {COMPANY.map((l) => (
@@ -52,7 +52,7 @@ export default function Footer() {
           </div>
 
           <div>
-            <div className="text-[10px] font-bold tracking-[2px] text-white/25 uppercase mb-4">
+            <div className="text-[12px] md:text-[10px] font-bold tracking-[2px] text-white/25 uppercase mb-4">
               Get in Touch
             </div>
             <a href="tel:+255758880088" className="block text-[13px] text-white/45 no-underline mb-2.5">

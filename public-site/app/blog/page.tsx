@@ -18,9 +18,9 @@ export default function BlogPage() {
 
       <div className="max-w-300 mx-auto py-15 px-2.5 sm:px-4 md:px-6 lg:px-8">
 
-        <div className="mb-12 bg-card border border-white/7 rounded-xl overflow-hidden grid grid-cols-2">
+        <div className="mb-12 bg-card border border-white/7 rounded-xl overflow-hidden grid grid-cols-1 md:grid-cols-2">
           <PhotoPlaceholder ratio="4/3" overlay photoIndex={POSTS[0].photoIndex} />
-          <div className="py-10 px-12 flex flex-col justify-center">
+          <div className="py-6 px-5 md:py-10 md:px-12 flex flex-col justify-center">
             <div className="flex items-center gap-3 mb-4">
               <FormatBadge format={POSTS[0].category} small />
               <span className="text-xs text-white/35">{POSTS[0].date} · {POSTS[0].read} read</span>
@@ -41,7 +41,7 @@ export default function BlogPage() {
               <div className="p-5">
                 <div className="flex items-center gap-2.5 mb-3">
                   <FormatBadge format={post.category} small />
-                  <span className="text-[11px] text-white/30">{post.date} · {post.read}</span>
+                  <span className="text-[12px] md:text-[11px] text-white/30">{post.date} · {post.read}</span>
                 </div>
                 <h3 className="font-bold text-[15px] mb-2 leading-[1.35] tracking-[-0.3px]">{post.title}</h3>
                 <p className="text-[13px] text-white/40 leading-[1.6]">{post.desc}</p>

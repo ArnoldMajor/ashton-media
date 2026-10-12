@@ -3,6 +3,7 @@ import CTABlock from "@/components/CTABlock";
 import PhotoPlaceholder from "@/components/PhotoPlaceholder";
 import BillboardCard from "@/components/BillboardCard";
 import { getBillboardsByFormat } from "@/lib/api/billboards";
+import { getSiteContent, slotImage } from "@/lib/api/site-content";
 import Link from "next/link";
 
 const ADVANTAGES = [
@@ -20,7 +21,10 @@ const SCHEDULE = [
 ];
 
 export default async function DigitalPage() {
-  const digitalSites = (await getBillboardsByFormat()).digital;
+  const [byFormat, content] = await Promise.all([getBillboardsByFormat(), getSiteContent()]);
+  const digitalSites = byFormat.digital;
+  // Set in the admin (Site Images). Until it is, the banner keeps its stock photo.
+  const banner = slotImage(content, "digital.banner");
 
   return (
     <div className="bg-canvas text-white">
@@ -33,22 +37,22 @@ export default async function DigitalPage() {
       <div className="max-w-300 mx-auto py-15 px-2.5 sm:px-4 md:px-6 lg:px-8">
 
         <div className="rounded-xl overflow-hidden mb-15 border border-accent/15">
-          <PhotoPlaceholder ratio="21/9" overlay label="Digital LED Screen — New Bagamoyo Road" photoIndex={0} />
+          <PhotoPlaceholder ratio="21/9" overlay label="Digital LED Screen — New Bagamoyo Road" photoIndex={0} src={banner?.url} alt={banner?.alt || undefined} sizes="(max-width: 1200px) 100vw, 1136px" />
         </div>
 
         <div className="grid grid-cols-[repeat(auto-fit,minmax(220px,1fr))] gap-4 mb-15">
           {ADVANTAGES.map((f) => (
             <div key={f.label} className="bg-card border border-accent/10 rounded-[10px] py-7 px-6">
               <div className="font-black text-4xl text-accent mb-1 tracking-[-1px]">{f.stat}</div>
-              <div className="text-[11px] font-bold tracking-[2px] uppercase text-accent/60 mb-3">{f.label}</div>
+              <div className="text-[12px] md:text-[11px] font-bold tracking-[2px] uppercase text-accent/60 mb-3">{f.label}</div>
               <p className="text-[13px] text-white/40 leading-[1.65]">{f.desc}</p>
             </div>
           ))}
         </div>
 
-        <div className="bg-card border border-white/8 rounded-xl py-10 px-12 mb-15 grid grid-cols-2 gap-10 items-center">
+        <div className="bg-card border border-white/8 rounded-xl py-6 px-5 md:py-10 md:px-12 mb-15 grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10 items-center">
           <div>
-            <div className="text-[11px] font-semibold tracking-[3px] text-accent/60 uppercase mb-3">Smart Scheduling</div>
+            <div className="text-[12px] md:text-[11px] font-semibold tracking-[3px] text-accent/60 uppercase mb-3">Smart Scheduling</div>
             <h2 className="font-black text-[22px] sm:text-[28px] lg:text-[36px] mb-4 tracking-[-1px]">Right Message,<br />Right Time</h2>
             <p className="text-sm text-white/45 leading-[1.75]">
               Schedule your ads by time of day. Morning commute? Evening rush? Weekend crowd? Target your audience at peak attention moments.

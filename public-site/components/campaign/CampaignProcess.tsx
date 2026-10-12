@@ -34,7 +34,7 @@ export default function CampaignProcess({ variant = "full" }: Props) {
       <div className="max-w-300 mx-auto">
         <div className="flex justify-between items-end flex-wrap gap-x-10 gap-y-5 mb-9 sm:mb-12">
           <div>
-            <div className="text-[11px] font-semibold tracking-[3px] text-white/40 uppercase mb-4">How it works</div>
+            <div className="text-[12px] md:text-[11px] font-semibold tracking-[3px] text-white/40 uppercase mb-4">How it works</div>
             <SectionHeading lead="From brief" accent="to proof it ran." className="text-[26px] sm:text-[36px] lg:text-[46px] tracking-[-1.5px] leading-[1.08]" />
           </div>
           {condensed && (

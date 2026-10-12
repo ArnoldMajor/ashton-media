@@ -10,9 +10,21 @@ interface Props {
   photoIndex?: number;
   /** A specific photo to show instead of the stock one at `photoIndex`. */
   src?: string | null;
+  /** Alt text. Defaults to `label`, or "Billboard" when there is no label. */
+  alt?: string | null;
+  /** The `sizes` hint for next/image. Defaults to half the viewport above 768px. */
+  sizes?: string;
+  /**
+   * Preload this image in the document head: pass true for the one image that
+   * is above the fold. Left unset, the image keeps the older rule of being
+   * prioritised when it is stock photo 4.
+   */
+  preload?: boolean;
   fill?: boolean;
   className?: string;
 }
+
+const DEFAULT_SIZES = "(max-width: 768px) 100vw, 50vw";
 
 export default function PhotoPlaceholder({
   label = null,
@@ -20,12 +32,17 @@ export default function PhotoPlaceholder({
   overlay = true,
   photoIndex = 0,
   src = null,
+  alt = null,
+  sizes = DEFAULT_SIZES,
+  preload,
   fill = false,
   className = "",
 }: Props) {
   const [loaded, setLoaded] = useState(false);
   const [failed, setFailed] = useState(false);
   const photoSrc = src || REAL_PHOTOS[photoIndex % REAL_PHOTOS.length];
+  // next/image rejects `priority` and `preload` together, so it gets exactly one.
+  const loadingHint = preload === undefined ? { priority: photoIndex === 4 } : { preload };
 
   return (
     <div
@@ -37,13 +54,13 @@ export default function PhotoPlaceholder({
       {!failed && (
         <Image
           src={photoSrc}
-          alt={label || "Billboard"}
+          alt={alt ?? (label || "Billboard")}
           fill
-          sizes="(max-width: 768px) 100vw, 50vw"
+          sizes={sizes}
           className={`object-cover transition-opacity duration-500 ${loaded ? "opacity-100" : "opacity-0"}`}
           onLoad={() => setLoaded(true)}
           onError={() => setFailed(true)}
-          priority={photoIndex === 4}
+          {...loadingHint}
         />
       )}
 
@@ -70,7 +87,7 @@ export default function PhotoPlaceholder({
       )}
 
       {label && (
-        <div className="absolute bottom-3 left-3.5 text-[10px] font-semibold tracking-[2px] uppercase text-white/55 z-1">
+        <div className="absolute bottom-3 left-3.5 right-3.5 wrap-break-word text-[12px] md:text-[10px] font-semibold tracking-[2px] uppercase text-white/55 z-1">
           {label}
         </div>
       )}

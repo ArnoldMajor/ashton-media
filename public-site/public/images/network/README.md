@@ -1,5 +1,7 @@
 # Network showcase tiles
 
+Tiles are now managed in the admin (Marketing → Site Images); this folder is only the fallback for a tile with no image set there.
+
 Photos for the "Our network" section on the homepage
 (`components/home/NetworkShowcase.tsx`). Drop a file in with one of the names
 below and the tile picks it up on the next build; until then the tile shows a

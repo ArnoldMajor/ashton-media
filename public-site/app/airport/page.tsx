@@ -3,6 +3,7 @@ import CTABlock from "@/components/CTABlock";
 import PhotoPlaceholder from "@/components/PhotoPlaceholder";
 import BillboardCard from "@/components/BillboardCard";
 import { getBillboardsByFormat } from "@/lib/api/billboards";
+import { getSiteContent, slotImage } from "@/lib/api/site-content";
 import Link from "next/link";
 
 const STATS = [
@@ -20,7 +21,10 @@ const POSITIONS = [
 ];
 
 export default async function AirportPage() {
-  const airportSites = (await getBillboardsByFormat()).airport;
+  const [byFormat, content] = await Promise.all([getBillboardsByFormat(), getSiteContent()]);
+  const airportSites = byFormat.airport;
+  // Set in the admin (Site Images). Until it is, the banner keeps its stock photo.
+  const banner = slotImage(content, "airport.banner");
 
   return (
     <div className="bg-canvas text-white">
@@ -33,17 +37,17 @@ export default async function AirportPage() {
       <div className="max-w-300 mx-auto py-15 px-2.5 sm:px-4 md:px-6 lg:px-8">
 
         <div className="rounded-xl overflow-hidden mb-15">
-          <PhotoPlaceholder ratio="21/9" overlay label="JNIA Terminal 3" photoIndex={3} />
+          <PhotoPlaceholder ratio="21/9" overlay label="JNIA Terminal 3" photoIndex={3} src={banner?.url} alt={banner?.alt || undefined} sizes="(max-width: 1200px) 100vw, 1136px" />
         </div>
 
-        <div className="grid grid-cols-2 gap-10 sm:gap-14 lg:gap-20 mb-15 items-center">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 sm:gap-14 lg:gap-20 mb-15 items-center">
           <div>
-            <div className="text-[11px] font-semibold tracking-[3px] text-white/40 uppercase mb-3">Why Airport</div>
+            <div className="text-[12px] md:text-[11px] font-semibold tracking-[3px] text-white/40 uppercase mb-3">Why Airport</div>
             <h2 className="font-black text-[24px] sm:text-[34px] lg:text-[44px] mb-5 tracking-[-1.5px] leading-[1.05]">
               Captive. Premium.<br />Unmatched.
             </h2>
             <p className="text-[15px] text-white/45 leading-[1.8] mb-6">
-              Airport audiences are uniquely captive — they dwell for an average of 90 minutes. They're high-income, decision-making professionals. And they're already primed to notice.
+              Airport audiences are uniquely captive — they dwell for an average of 90 minutes. They&apos;re high-income, decision-making professionals. And they&apos;re already primed to notice.
             </p>
             <div className="flex flex-col gap-3">
               {STATS.map(([n, l]) => (

@@ -57,7 +57,7 @@ export default function GalleryClient({ billboards, usingFallback }: Props) {
             <button
               key={f.key}
               onClick={() => setFilter(f.key)}
-              className={`border py-2.25 px-5 rounded-full text-xs font-bold cursor-pointer transition-all min-h-0 ${
+              className={`border py-2.25 px-5 rounded-full text-xs font-bold cursor-pointer transition-all min-h-11 md:min-h-0 ${
                 filter === f.key ? "bg-white border-text text-black" : "bg-transparent border-white/15 text-white/60"
               }`}
             >
@@ -69,8 +69,13 @@ export default function GalleryClient({ billboards, usingFallback }: Props) {
             <input
               value={search}
               onChange={(e) => setSearch(e.target.value)}
+              inputMode="search"
+              name="q"
+              aria-label="Search locations"
+              autoComplete="off"
+              enterKeyHint="search"
               placeholder="Search locations..."
-              className="bg-card-alt border border-white/12 rounded-lg text-white text-[13px] py-2.5 pl-9 pr-4 outline-none w-55"
+              className="bg-card-alt border border-white/12 rounded-lg text-white text-[16px] md:text-[13px] py-2.5 pl-9 pr-4 outline-none w-55"
             />
             <svg className="absolute left-3 top-1/2 -translate-y-1/2 opacity-40 pointer-events-none" width="14" height="14" viewBox="0 0 14 14" fill="none">
               <circle cx="6" cy="6" r="4.5" stroke="white" strokeWidth="1.2" />
@@ -95,9 +100,9 @@ export default function GalleryClient({ billboards, usingFallback }: Props) {
           ))}
         </div>
 
-        <div className="grid grid-cols-2 gap-10 items-start">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-start">
           <div>
-            <div className="text-[11px] font-semibold tracking-[3px] text-white/40 uppercase mb-3">Map View</div>
+            <div className="text-[12px] md:text-[11px] font-semibold tracking-[3px] text-white/40 uppercase mb-3">Map View</div>
             <h2 className="font-black text-[22px] sm:text-[28px] lg:text-[36px] mb-4 tracking-[-1px]">Tanzania Coverage</h2>
             <p className="text-sm text-white/40 leading-[1.7] max-w-80">
               Circles are digital screens, squares are static billboards, diamonds are airport positions. Numbered circles are clusters — click one to zoom in. Faded markers are currently booked.

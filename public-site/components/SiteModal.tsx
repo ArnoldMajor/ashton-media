@@ -36,7 +36,7 @@ export default function SiteModal({ site, onClose }: Props) {
       onClick={onClose}
     >
       <div
-        className="bg-sheet border border-white/10 rounded-t-2xl w-full max-w-170 max-h-[92vh] overflow-y-auto"
+        className="bg-sheet border border-white/10 rounded-t-2xl w-full max-w-170 max-h-[92dvh] overflow-y-auto pb-[env(safe-area-inset-bottom)]"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex justify-center pt-3 pb-1">
@@ -47,11 +47,12 @@ export default function SiteModal({ site, onClose }: Props) {
           <PhotoPlaceholder label={site.name} ratio="16/7" overlay src={site.imageUrl} photoIndex={stockPhotoIndex(site.format)} />
           <button
             onClick={onClose}
-            className="absolute top-3 right-3 bg-black/65 border border-white/15 rounded-full w-8.5 h-8.5 cursor-pointer text-white text-base flex items-center justify-center min-h-0"
+            aria-label="Close"
+            className="absolute top-3 right-3 bg-black/65 border border-white/15 rounded-full w-11 h-11 md:w-8.5 md:h-8.5 cursor-pointer text-white text-base flex items-center justify-center min-h-0"
           >
             ×
           </button>
-          <div className="absolute bottom-3 left-4">
+          <div className="absolute top-3 left-4">
             <FormatBadge format={site.format} label={site.formatLabel} small />
           </div>
         </div>
@@ -63,28 +64,28 @@ export default function SiteModal({ site, onClose }: Props) {
               <div className="text-[13px] text-white/40">{[site.address, site.region, "Tanzania"].filter(Boolean).join(", ")}</div>
             </div>
             <div className={`rounded-lg py-2.5 px-4 text-center shrink-0 border ${site.isAvailable ? "bg-white border-white" : "bg-white/4 border-white/8"}`}>
-              <div className={`text-[11px] font-bold tracking-[1px] uppercase ${site.isAvailable ? "text-black" : "text-white/35"}`}>
+              <div className={`text-[12px] md:text-[11px] font-bold tracking-[1px] uppercase ${site.isAvailable ? "text-black" : "text-white/35"}`}>
                 {site.statusLabel}
               </div>
             </div>
           </div>
 
-          <div className="grid grid-cols-3 gap-2 mb-5">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-2 mb-5">
             {STATS_ROW(site).map((s) => (
               <div key={s.label} className="bg-stat border border-white/7 rounded-lg p-3">
-                <div className="text-[9px] font-bold tracking-[1.5px] uppercase text-white/30 mb-1.5">{s.label}</div>
+                <div className="text-[12px] md:text-[9px] font-bold tracking-[1.5px] uppercase text-white/30 mb-1.5">{s.label}</div>
                 <div className="text-sm font-bold">{s.value}</div>
               </div>
             ))}
           </div>
 
           <div className="bg-stat border border-white/7 rounded-lg p-4 mb-5">
-            <div className="text-[10px] font-bold tracking-[1.5px] uppercase text-white/30 mb-3">Weekly Traffic Pattern</div>
+            <div className="text-[12px] md:text-[10px] font-bold tracking-[1.5px] uppercase text-white/30 mb-3">Weekly Traffic Pattern</div>
             <div className="flex gap-[5px] items-end h-13">
               {WEEKLY_TRAFFIC.map((h, i) => (
                 <div key={i} className="flex-1 flex flex-col items-center gap-1">
                   <div className={`w-full rounded-t-sm ${i >= 5 ? "bg-white/12" : "bg-white/65"}`} style={{ height: `${h}%` }} />
-                  <div className="text-[9px] text-white/30 font-bold">{DAYS[i]}</div>
+                  <div className="text-[12px] md:text-[9px] text-white/30 font-bold">{DAYS[i]}</div>
                 </div>
               ))}
             </div>

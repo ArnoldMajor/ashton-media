@@ -126,7 +126,7 @@ export default function TanzaniaMap({ locations, interactive = false, onSelect, 
       )}
 
       {ready && usingFallback && (
-        <p className="absolute bottom-2 right-2 text-[9px] tracking-[1px] uppercase text-white/30">Showing sample data</p>
+        <p className="absolute bottom-2 right-2 text-[12px] md:text-[9px] tracking-[1px] uppercase text-white/30">Showing sample data</p>
       )}
     </div>
   );

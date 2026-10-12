@@ -10,7 +10,7 @@ export function PageHero({ title, sub, tag }: PageHeroProps) {
       <div className="max-w-300 mx-auto">
         <div className="flex items-center gap-3 mb-5">
           <div className="w-7 h-px bg-white/40" />
-          <span className="text-[11px] font-semibold tracking-[3px] text-white/40 uppercase">
+          <span className="text-[12px] md:text-[11px] font-semibold tracking-[3px] text-white/40 uppercase">
             {tag}
           </span>
         </div>

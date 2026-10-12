@@ -5,6 +5,12 @@ interface Props {
   /** Display name from the API (`format_display`); falls back to a built-in label. */
   label?: string;
   small?: boolean;
+  /**
+   * Let a long label wrap inside the badge below lg, where a 40-character
+   * label is wider than its column. For editor-written labels; the built-in
+   * ones are short and stay on one line everywhere.
+   */
+  wrapOnMobile?: boolean;
 }
 
 const DEFAULT_VARIANT = "text-white/85 bg-white/7 border-white/15";
@@ -24,13 +30,15 @@ const LABELS: Record<BillboardFormat, string> = {
   other: "Other",
 };
 
-export default function FormatBadge({ format, label, small = false }: Props) {
+export default function FormatBadge({ format, label, small = false, wrapOnMobile = false }: Props) {
   const variant = VARIANT_CLASSES[format] ?? DEFAULT_VARIANT;
 
   return (
     <span
-      className={`font-bold uppercase tracking-[1.5px] rounded whitespace-nowrap shrink-0 border ${
-        small ? "text-[10px] py-[3px] px-2" : "text-[11px] py-1 px-2.5"
+      className={`font-bold uppercase tracking-[1.5px] rounded shrink-0 border ${
+        wrapOnMobile ? "inline-block max-w-full lg:inline lg:max-w-none lg:whitespace-nowrap" : "whitespace-nowrap"
+      } ${
+        small ? "text-[12px] md:text-[10px] py-[3px] px-2" : "text-[12px] md:text-[11px] py-1 px-2.5"
       } ${variant}`}
     >
       {/* Digital is marked by a dot, the same shape the map gives it — no hue involved. */}

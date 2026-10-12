@@ -42,10 +42,15 @@ export default function Nav() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  useEffect(() => {
+  // Close both menus when the route changes. Done during render, by comparing
+  // with the last path seen, rather than in an effect: the menus are already
+  // closed in the first frame of the new page.
+  const [lastPathname, setLastPathname] = useState(pathname);
+  if (lastPathname !== pathname) {
+    setLastPathname(pathname);
     setMenuOpen(false);
     setSolutionsOpen(false);
-  }, [pathname]);
+  }
 
   const isSolutionActive = ["/traditional", "/digital", "/airport"].includes(pathname);
 
@@ -55,10 +60,11 @@ export default function Nav() {
         }`}
     >
       <div className="w-full max-w-300 mx-auto px-2.5 sm:px-4 md:px-6 lg:px-8 flex items-center justify-between">
-        <Link href="/" className="font-extrabold text-lg text-white tracking-[0.5px] no-underline flex items-center gap-2.5">
+        <Link href="/" className="font-extrabold text-lg text-white tracking-[0.5px] no-underline flex items-center gap-2.5 min-h-11">
           <Image src={AshtonWhiteLogo} width={150} alt="Ashton Media Logo" />
         </Link>
 
+        {/* From md to lg the bar is tight, so the items take less padding there and never wrap. */}
         <div className="hidden md:flex items-center gap-1">
           <div
             className="relative"
@@ -66,7 +72,10 @@ export default function Nav() {
             onMouseLeave={() => setSolutionsOpen(false)}
           >
             <button
-              className={`bg-transparent border-none cursor-pointer text-[13px] font-medium py-2 px-3.5 flex items-center gap-1.25 transition-colors min-h-0 ${isSolutionActive ? "text-white" : "text-white/65"
+              aria-haspopup="true"
+              aria-expanded={solutionsOpen}
+              onClick={() => setSolutionsOpen(true)}
+              className={`bg-transparent border-none cursor-pointer text-[13px] font-medium py-2 px-2 lg:px-3.5 flex items-center gap-1.25 whitespace-nowrap transition-colors min-h-11 ${isSolutionActive ? "text-white" : "text-white/65"
                 }`}
             >
               Solutions
@@ -75,8 +84,9 @@ export default function Nav() {
               </svg>
             </button>
 
+            {/* The button is 44px tall for touch, 8px more than its label needs, so the panel is pulled up 4px to sit where it always did. */}
             {solutionsOpen && (
-              <div className="absolute top-full left-0 bg-card-alt border border-white/10 rounded-[10px] p-1.5 min-w-52.5 shadow-[0_24px_48px_rgba(0,0,0,0.8)]">
+              <div className="absolute top-[calc(100%-4px)] left-0 bg-card-alt border border-white/10 rounded-[10px] p-1.5 min-w-52.5 shadow-[0_24px_48px_rgba(0,0,0,0.8)]">
                 {SOLUTIONS.map((s) => (
                   <Link
                     key={s.href}
@@ -95,7 +105,7 @@ export default function Nav() {
             <Link
               key={link.href}
               href={link.href}
-              className={`text-[13px] font-medium py-2 px-3.5 no-underline transition-colors min-h-0 ${pathname === link.href ? "text-white" : "text-white/65"
+              className={`text-[13px] font-medium py-2 px-2 lg:px-3.5 no-underline whitespace-nowrap transition-colors flex items-center min-h-11 ${pathname === link.href ? "text-white" : "text-white/65"
                 }`}
             >
               {link.label}
@@ -104,14 +114,14 @@ export default function Nav() {
 
           <Link
             href="/contact"
-            className="bg-white text-black text-[13px] font-bold py-2.5 px-5.5 rounded-[7px] ml-3 no-underline transition-opacity min-h-0 inline-flex items-center hover:opacity-85"
+            className="bg-white text-black text-[13px] font-bold py-2.5 px-4 lg:px-5.5 rounded-[7px] ml-3 no-underline whitespace-nowrap transition-opacity min-h-0 inline-flex items-center hover:opacity-85"
           >
             Advertise Now
           </Link>
         </div>
 
         <button
-          className="flex md:hidden bg-transparent border-none cursor-pointer text-white p-2 min-h-0"
+          className="flex md:hidden bg-transparent border-none cursor-pointer text-white p-2.75 -mr-0.75 min-h-0"
           onClick={() => setMenuOpen((o) => !o)}
           aria-label="Toggle menu"
         >
@@ -126,7 +136,7 @@ export default function Nav() {
       </div>
 
       {menuOpen && (
-        <div className="fixed top-15 left-0 right-0 bg-raised border-b border-b-white/7 pt-4 px-8 pb-7 flex flex-col gap-0.5 z-999">
+        <div className="fixed top-15 left-0 right-0 max-h-[calc(100dvh-3.75rem)] overflow-y-auto bg-raised border-b border-b-white/7 pt-4 px-8 pb-7 flex flex-col gap-0.5 z-999">
           {MOBILE_LINKS.map(({ label, href }) => (
             <Link
               key={href}

@@ -3,6 +3,7 @@ import CTABlock from "@/components/CTABlock";
 import PhotoPlaceholder from "@/components/PhotoPlaceholder";
 import BillboardCard from "@/components/BillboardCard";
 import { getBillboardsByFormat } from "@/lib/api/billboards";
+import { getSiteContent, slotImage } from "@/lib/api/site-content";
 import Link from "next/link";
 
 const FEATURES = [
@@ -13,7 +14,10 @@ const FEATURES = [
 ];
 
 export default async function TraditionalPage() {
-  const traditionalSites = (await getBillboardsByFormat()).static;
+  const [byFormat, content] = await Promise.all([getBillboardsByFormat(), getSiteContent()]);
+  const traditionalSites = byFormat.static;
+  // Set in the admin (Site Images). Until it is, the banner keeps its stock photo.
+  const banner = slotImage(content, "traditional.banner");
 
   return (
     <div className="bg-canvas text-white">
@@ -26,7 +30,7 @@ export default async function TraditionalPage() {
       <div className="max-w-300 mx-auto py-15 px-2.5 sm:px-4 md:px-6 lg:px-8">
 
         <div className="rounded-xl overflow-hidden mb-15">
-          <PhotoPlaceholder ratio="21/9" overlay label="Traditional Billboard — Morogoro Road" photoIndex={4} />
+          <PhotoPlaceholder ratio="21/9" overlay label="Traditional Billboard — Morogoro Road" photoIndex={4} src={banner?.url} alt={banner?.alt || undefined} sizes="(max-width: 1200px) 100vw, 1136px" />
         </div>
 
         <div className="grid grid-cols-[repeat(auto-fit,minmax(220px,1fr))] gap-4 mb-15">
