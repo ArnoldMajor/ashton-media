@@ -156,7 +156,9 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+# Where the business is. "Today" on the admin's Availability page and the
+# dashboard is the date here, not in UTC, which is three hours behind.
+TIME_ZONE = 'Africa/Dar_es_Salaam'
 
 USE_I18N = True
 
@@ -267,7 +269,18 @@ UNFOLD = {
         },
     },
     "SITE_LOGO": lambda request: static("branding/ashton-logo-white.svg"),
-    "SITE_ICON": lambda request: static("branding/favicon.ico"),
+    "SITE_ICON": lambda request: static("branding/ashton-boxed-a-black.svg"),
+    # The browser-tab icon. The same files, declared the same way, as the
+    # public site (public-site/public and the `icons` in its app/layout.tsx);
+    # replace both sets together. favicon.ico is listed too because the admin
+    # is on its own host, where nothing answers the browser's default request
+    # for /favicon.ico.
+    "SITE_FAVICONS": [
+        {"rel": "icon", "sizes": "any", "href": lambda request: static("branding/favicon.ico")},
+        {"rel": "icon", "sizes": "32x32", "type": "image/png", "href": lambda request: static("branding/favicon-32x32.png")},
+        {"rel": "icon", "sizes": "16x16", "type": "image/png", "href": lambda request: static("branding/favicon-16x16.png")},
+        {"rel": "apple-touch-icon", "sizes": "180x180", "href": lambda request: static("branding/apple-touch-icon.png")},
+    ],
     "STYLES": [
         lambda request: static("admin/sidebar-collapse.css"),
         lambda request: static("css/admin-overrides.css"),
@@ -295,6 +308,13 @@ UNFOLD = {
                         "title": "Billboards",
                         "icon": "photo_size_select_large",
                         "link": reverse_lazy("admin:billboards_billboard_changelist"),
+                        "active": "core.nav_permissions.billboards_link_is_active",
+                    },
+                    {
+                        "title": "Availability",
+                        "icon": "event_available",
+                        "link": reverse_lazy("admin:billboards_billboard_availability"),
+                        "permission": "core.nav_permissions.can_view_availability",
                     },
                     {
                         "title": "Clients",

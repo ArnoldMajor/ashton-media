@@ -1,10 +1,9 @@
 from django.http import HttpResponse
-from django.template.loader import render_to_string
-from weasyprint import HTML
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import viewsets
+from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from .pdf import TooManySitesError, check_site_count, render_availability_pdf
 from .services import get_available_billboards
 
 from users.permissions import IsAdminOrReadOnly
@@ -44,21 +43,14 @@ class BillboardViewSet(viewsets.ModelViewSet):
 
         billboards = get_available_billboards(start, end)
 
-        template_name = (
-            "billboards/availability_report_detailed.html"
-            if report_type == "detailed"
-            else "billboards/availability_report.html"
-        )
+        try:
+            check_site_count(billboards.count(), report_type)
+        except TooManySitesError as error:
+            return Response({"detail": str(error)}, status=status.HTTP_400_BAD_REQUEST)
 
-        html_string = render_to_string(template_name, {
-            "billboards": billboards,
-            "start": start,
-            "end": end,
-        })
-        pdf_bytes = HTML(
-            string=html_string,
-            base_url=request.build_absolute_uri("/"),
-        ).write_pdf()
+        pdf_bytes = render_availability_pdf(
+            billboards, start, end, report_type, base_url=request.build_absolute_uri("/"),
+        )
 
         response = HttpResponse(pdf_bytes, content_type="application/pdf")
         response["Content-Disposition"] = (

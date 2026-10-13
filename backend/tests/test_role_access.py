@@ -43,6 +43,7 @@ GROUPS = ["Overview", "Sales & Bookings", "Operations", "Marketing", "Administra
 SIDEBAR = {
     "Dashboard": "/admin/",
     "Billboards": "/admin/billboards/billboard/",
+    "Availability": "/admin/billboards/billboard/availability/",
     "Clients": "/admin/clients/client/",
     "Contracts": "/admin/contracts/contract/",
     "Inquiries": "/admin/inquiries/inquiry/",
@@ -659,11 +660,11 @@ def sidebar(html):
 
 EXPECTED_SIDEBAR = {
     "admin": {
-        "Sales & Bookings": ["Billboards", "Clients", "Contracts", "Inquiries"], "Operations": ["Jobs"],
+        "Sales & Bookings": ["Billboards", "Availability", "Clients", "Contracts", "Inquiries"], "Operations": ["Jobs"],
         "Marketing": ["Blog Posts", "Site Images", "Case Studies"], "Administration": ["Staff Accounts"],
     },
     "sales": {
-        "Sales & Bookings": ["Billboards", "Clients", "Contracts", "Inquiries"], "Operations": ["Jobs"],
+        "Sales & Bookings": ["Billboards", "Availability", "Clients", "Contracts", "Inquiries"], "Operations": ["Jobs"],
         "Marketing": [], "Administration": [],
     },
     "operations": {"Sales & Bookings": ["Billboards"], "Operations": ["Jobs"], "Marketing": [], "Administration": []},

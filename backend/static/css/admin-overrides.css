@@ -46,8 +46,12 @@ html.dark input[type="checkbox"]:checked::after {
 
 /* --- Dark mode: the canvas.
    Unfold paints every dark surface with base-900. The public site's canvas
-   is #080808, which is base-950, so that is used for those surfaces. */
-html.dark .dark\:bg-base-900 {
+   is #080808, which is base-950, so that is used for those surfaces.
+
+   A ticked checkbox and a selected radio button carry that class too, and are
+   left out: Unfold fills them with primary-600, and painted as canvas a
+   ticked box is a dark tick on a dark square, which reads as unticked. */
+html.dark .dark\:bg-base-900:not(:checked) {
     background-color: var(--color-base-950);
 }
 
@@ -483,4 +487,243 @@ html.dark .photo-preview__meta {
 html.dark .photo-preview__frame {
     border-color: var(--color-base-700);
     background-color: var(--color-base-800);
+}
+
+
+/*
+ * The Availability page (templates/admin/billboards/billboard/availability.html).
+ * Layout and type only: every colour is one of the neutral tokens above.
+ * Light values first, html.dark overrides after. "md" here is Tailwind's
+ * 768px, the width Unfold itself switches layout at.
+ */
+
+/* Text for screen readers only: the tick boxes' labels. Unfold's build has no such utility. */
+.availability__sr {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+}
+
+/* The filters: one row on a wide screen, wrapping down to one field per line. */
+.availability__filters {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+    gap: 0 1rem;
+    align-items: start;
+    margin-bottom: 0.5rem;
+}
+
+/* Unfold caps a field at max-w-2xl and gives a date field a 14rem minimum;
+   inside the grid each field fills its own column instead. */
+.availability__filters .form-field :is(div, input, select) {
+    max-width: none;
+    min-width: 0;
+}
+
+/* The button sits on the fields' baseline when it shares their row: its
+   bottom margin is the one Unfold puts under each field. */
+.availability__submit {
+    align-self: end;
+    margin-bottom: 1rem;
+}
+
+.availability__counts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem 0.625rem;
+    font-size: 1rem;
+    line-height: 1.5rem;
+    color: var(--color-font-default-light);
+}
+
+.availability__counts strong {
+    font-weight: 600;
+    color: var(--color-font-important-light);
+}
+
+.availability__note {
+    margin-top: 0.25rem;
+    margin-bottom: 1.25rem;
+    font-size: 0.8125rem;
+    color: var(--color-font-subtle-light);
+}
+
+.availability__empty {
+    padding: 2.5rem 1rem;
+    border: 1px solid var(--ashton-rule);
+    border-radius: var(--border-radius, 6px);
+    text-align: center;
+    color: var(--color-font-default-light);
+}
+
+.availability__toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 0.75rem 1.5rem;
+    margin-bottom: 0.75rem;
+}
+
+.availability__summary {
+    font-size: 0.8125rem;
+    color: var(--color-font-subtle-light);
+}
+
+.availability__select {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.25rem 1rem;
+    margin-top: 0.375rem;
+}
+
+.availability__select[hidden] {
+    display: none;
+}
+
+.availability__select button {
+    padding: 0.25rem 0;
+    font-weight: 500;
+    color: var(--color-font-important-light);
+    cursor: pointer;
+    text-decoration-line: underline;
+    text-decoration-thickness: 1px;
+    text-decoration-color: color-mix(in oklab, currentColor 40%, transparent);
+    text-underline-offset: 3px;
+}
+
+.availability__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.availability__table-wrap {
+    border: 1px solid var(--ashton-rule);
+    border-radius: var(--border-radius, 6px);
+}
+
+.availability__table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.875rem;
+    color: var(--color-font-default-light);
+}
+
+.availability__table :is(th, td) {
+    padding: 0.625rem 0.75rem;
+    text-align: left;
+    vertical-align: middle;
+    white-space: nowrap;
+}
+
+.availability__table th {
+    font-weight: 600;
+    color: var(--color-font-important-light);
+    background-color: var(--color-base-50);
+    border-bottom: 1px solid var(--ashton-rule-strong);
+}
+
+.availability__table tbody tr + tr td {
+    border-top: 1px solid var(--ashton-rule);
+}
+
+.availability__table tbody tr:hover td {
+    background-color: var(--color-base-50);
+}
+
+/* The tick box. Its label is the tap target, so the padding is on the label. */
+.availability__table td.availability__check {
+    padding: 0;
+    width: 1%;
+}
+
+.availability__check label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.625rem 0.75rem;
+    cursor: pointer;
+}
+
+/* Same treatment as a changelist row link: weight and an underline, no colour. */
+.availability__table td > a[href] {
+    color: var(--color-font-important-light);
+    font-weight: 500;
+    border-radius: 2px;
+    text-decoration-line: underline;
+    text-decoration-thickness: 1px;
+    text-decoration-color: color-mix(in oklab, currentColor 40%, transparent);
+    text-underline-offset: 3px;
+}
+
+.availability__table td > a[href]:hover,
+.availability__table td > a[href]:focus-visible,
+.availability__select button:hover,
+.availability__select button:focus-visible {
+    text-decoration-thickness: 2px;
+    text-decoration-color: currentColor;
+}
+
+/* One focus ring for everything on the page that Unfold's field styles do not already ring. */
+.availability :is(a[href], button, input[type="checkbox"]):focus-visible {
+    outline: 2px solid var(--color-font-important-light);
+    outline-offset: 2px;
+}
+
+html.dark .availability__counts,
+html.dark .availability__empty,
+html.dark .availability__table {
+    color: var(--color-font-default-dark);
+}
+
+html.dark .availability__counts strong,
+html.dark .availability__select button,
+html.dark .availability__table th,
+html.dark .availability__table td > a[href] {
+    color: var(--color-font-important-dark);
+}
+
+html.dark .availability__note,
+html.dark .availability__summary {
+    color: var(--color-font-subtle-dark);
+}
+
+html.dark .availability__table th,
+html.dark .availability__table tbody tr:hover td {
+    background-color: var(--color-base-900);
+}
+
+html.dark .availability :is(a[href], button, input[type="checkbox"]):focus-visible {
+    outline-color: var(--color-font-important-dark);
+}
+
+/* Below md: a 44px tap target for each tick box, and buttons the full width. */
+@media (width < 48rem) {
+    .availability__check label {
+        min-width: 2.75rem;
+        min-height: 2.75rem;
+    }
+
+    .availability__submit > button,
+    .availability__actions,
+    .availability__actions > button {
+        width: 100%;
+        min-height: 2.75rem;
+    }
+
+    .availability__select button {
+        min-height: 2.75rem;
+    }
+}
+
+/* On a phone the filters stack, one to a line: two to a row leaves a date field too narrow to read. */
+@media (width < 40rem) {
+    .availability__filters {
+        grid-template-columns: 1fr;
+    }
 }

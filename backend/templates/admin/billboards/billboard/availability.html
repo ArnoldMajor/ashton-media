@@ -1,0 +1,114 @@
+{% extends "admin/base_site.html" %}
+{% load unfold %}
+{% comment %}
+The Availability page (billboards/admin_availability.py). Unfold draws the
+breadcrumb in the header from `model_admin` and `title`. Layout and the
+monochrome styling are the .availability rules in static/css/admin-overrides.css.
+{% endcomment %}
+
+{% block content %}
+<div class="availability">
+    <form method="get" class="availability__filters" novalidate>
+        {% include "unfold/helpers/field.html" with field=form.start %}
+        {% include "unfold/helpers/field.html" with field=form.end %}
+        {% include "unfold/helpers/field.html" with field=form.format %}
+        {% include "unfold/helpers/field.html" with field=form.region %}
+        {% include "unfold/helpers/field.html" with field=form.q %}
+        <div class="availability__submit">
+            {% component "unfold/components/button.html" with submit=1 %}Check availability{% endcomponent %}
+        </div>
+    </form>
+
+    {% if results %}
+        <p class="availability__counts">
+            <span>Available <strong>{{ results.available }}</strong></span>
+            <span aria-hidden="true">·</span>
+            <span>Booked <strong>{{ results.booked }}</strong></span>
+            <span aria-hidden="true">·</span>
+            <span>Not for sale <strong>{{ results.not_for_sale }}</strong></span>
+        </p>
+        <p class="availability__note">Draft contracts also count as bookings. Sites under maintenance or unavailable are never listed.</p>
+
+        {% if results.rows %}
+            <form method="post" action="{% url 'admin:billboards_billboard_availability' %}" id="availability-report">
+                {% csrf_token %}
+                {% for name, value in filters.items %}<input type="hidden" name="{{ name }}" value="{{ value }}">{% endfor %}
+
+                <div class="availability__toolbar">
+                    <div class="availability__summary">
+                        <p>{% if results.without_photo %}{{ results.without_photo }} of the {{ results.available }} listed site{{ results.available|pluralize }} {{ results.without_photo|pluralize:"has,have" }} no photo. The detailed PDF shows a blank panel for {{ results.without_photo|pluralize:"it,them" }}.{% else %}Every listed site has a photo.{% endif %}</p>
+                        {# Shown by the script below; with no script every box stays ticked and the form still works. #}
+                        <p class="availability__select" hidden>
+                            <button type="button" data-availability-select="all">Select all</button>
+                            <button type="button" data-availability-select="none">Select none</button>
+                            <span data-availability-count aria-live="polite"></span>
+                        </p>
+                    </div>
+                    <div class="availability__actions">
+                        {% component "unfold/components/button.html" with submit=1 name="report_type" value="list" variant="default" %}Download list PDF{% endcomponent %}
+                        {% component "unfold/components/button.html" with submit=1 name="report_type" value="detailed" %}Download detailed PDF{% endcomponent %}
+                    </div>
+                </div>
+
+                <div class="availability__table-wrap overflow-x-auto">
+                    <table class="availability__table">
+                        <thead>
+                            <tr>
+                                <th scope="col"><span class="availability__sr">Include in the PDF</span></th>
+                                <th scope="col">Site code</th>
+                                <th scope="col">Name</th>
+                                <th scope="col">Side</th>
+                                <th scope="col">Format</th>
+                                <th scope="col">Region</th>
+                                <th scope="col">Size</th>
+                                <th scope="col">Photo</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for row in results.rows %}
+                            <tr>
+                                <td class="availability__check">
+                                    <label>
+                                        <input type="checkbox" name="ids" value="{{ row.billboard.pk }}" class="{{ checkbox_class }}" checked>
+                                        <span class="availability__sr">Include {{ row.billboard.site_code }}</span>
+                                    </label>
+                                </td>
+                                <td>{{ row.billboard.site_code }}</td>
+                                <td><a href="{{ row.url }}">{{ row.billboard.name }}</a></td>
+                                <td>{{ row.billboard.side|default:"—" }}</td>
+                                <td>{{ row.billboard.get_format_display }}</td>
+                                <td>{{ row.billboard.region }}</td>
+                                <td>{{ row.size }}</td>
+                                <td>{% if row.has_photo %}Yes{% else %}No photo{% endif %}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </form>
+
+            <script>
+                (function () {
+                    var form = document.getElementById("availability-report");
+                    var boxes = form.querySelectorAll('input[name="ids"]');
+                    var count = form.querySelector("[data-availability-count]");
+                    function update() {
+                        count.textContent = form.querySelectorAll('input[name="ids"]:checked').length + " of " + boxes.length + " selected";
+                    }
+                    form.querySelectorAll("[data-availability-select]").forEach(function (button) {
+                        button.addEventListener("click", function () {
+                            boxes.forEach(function (box) { box.checked = button.dataset.availabilitySelect === "all"; });
+                            update();
+                        });
+                    });
+                    form.addEventListener("change", update);
+                    form.querySelector(".availability__select").hidden = false;
+                    update();
+                })();
+            </script>
+        {% else %}
+            <p class="availability__empty">No sites are available for these dates.</p>
+        {% endif %}
+    {% endif %}
+</div>
+{% endblock %}
