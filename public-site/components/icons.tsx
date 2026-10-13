@@ -70,3 +70,27 @@ export function BarChartIcon(props: SVGProps<SVGSVGElement>) {
     </Icon>
   );
 }
+
+// A telephone handset, outlined on a 2–22 box. PhoneIcon and WhatsAppIcon both
+// draw it scaled down, so each sets a stroke width that comes out at 1.5.
+const HANDSET_PATH =
+  "M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z";
+
+/** A telephone handset: call us. */
+export function PhoneIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <Icon {...props}>
+      <path d={HANDSET_PATH} transform="translate(12 12) scale(0.84) translate(-12 -12)" strokeWidth={1.5 / 0.84} />
+    </Icon>
+  );
+}
+
+/** A speech bubble with a handset in it: message us on WhatsApp. */
+export function WhatsAppIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <Icon {...props}>
+      <path d="M9.4 19.4A8.25 8.25 0 1 0 4.6 14.6L3.75 20.25z" />
+      <path d={HANDSET_PATH} transform="translate(12.3 11.7) scale(0.36) translate(-12 -12)" fill="currentColor" stroke="none" />
+    </Icon>
+  );
+}

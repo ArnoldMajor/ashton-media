@@ -1,9 +1,6 @@
 import Link from "next/link";
+import { DEFAULT_WHATSAPP_TEXT, PHONE_DISPLAY, PHONE_HREF, whatsappHref } from "@/lib/contact";
 import SectionHeading from "./SectionHeading";
-
-const PHONE_DISPLAY = "+255 758 880 088";
-const PHONE_HREF = "tel:+255758880088";
-const WHATSAPP_NUMBER = "255758880088";
 
 interface Props {
   heading?: string;
@@ -25,10 +22,8 @@ export default function CTABlock({
   body = "A real person replies with sites, photographs and a quote — usually within a few hours on business days.",
   primaryLabel = "Plan a campaign",
   primaryHref = "/plan-a-campaign",
-  whatsappText = "Hello Ashton Media, I'd like to plan a campaign.",
+  whatsappText = DEFAULT_WHATSAPP_TEXT,
 }: Props) {
-  const whatsappHref = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(whatsappText)}`;
-
   return (
     <section className="bg-canvas border-t border-t-white/6 py-20 sm:py-24 lg:py-30 px-(--gutter) md:px-6 lg:px-8 text-center text-white">
       <div className="max-w-220 mx-auto">
@@ -38,7 +33,7 @@ export default function CTABlock({
           <Link href={primaryHref} className={`${BUTTON_CLASSES} bg-accent text-canvas font-bold hover:bg-accent/85`}>
             {primaryLabel}
           </Link>
-          <a href={whatsappHref} target="_blank" rel="noopener noreferrer" className={`${BUTTON_CLASSES} border border-white/20 text-white/75 font-semibold hover:border-white/45 hover:text-white`}>
+          <a href={whatsappHref(whatsappText)} target="_blank" rel="noopener noreferrer" className={`${BUTTON_CLASSES} border border-white/20 text-white/75 font-semibold hover:border-white/45 hover:text-white`}>
             WhatsApp us
           </a>
         </div>

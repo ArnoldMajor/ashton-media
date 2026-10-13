@@ -3,6 +3,7 @@ import { Montserrat } from "next/font/google";
 import "./globals.css";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
+import ContactDock from "@/components/ContactDock";
 import { getSiteContent, slotImage } from "@/lib/api/site-content";
 
 const montserrat = Montserrat({
@@ -62,6 +63,7 @@ export default function RootLayout({
         <Nav />
         <main>{children}</main>
         <Footer />
+        <ContactDock />
       </body>
     </html>
   );
