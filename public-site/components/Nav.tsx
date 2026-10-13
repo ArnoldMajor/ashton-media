@@ -54,11 +54,17 @@ export default function Nav() {
 
   const isSolutionActive = ["/traditional", "/digital", "/airport"].includes(pathname);
 
+  // While the mobile menu is open the bar takes the menu's background, so the
+  // two read as one panel wherever the page is scrolled to. It switches at
+  // once, not over 300ms, because the menu appears at once.
+  const barBackground = menuOpen
+    ? "bg-raised duration-0"
+    : scrolled
+      ? "bg-nav-scrolled backdrop-blur-[20px] border-b-white/7 duration-300"
+      : "bg-transparent duration-300";
+
   return (
-    <nav
-      className={`fixed top-0 left-0 right-0 z-1000 flex items-center transition-all duration-300 ${scrolled ? "h-15 bg-nav-scrolled backdrop-blur-[20px] border-b-white/7" : "h-18 bg-transparent"
-        }`}
-    >
+    <nav className={`fixed top-0 left-0 right-0 z-1000 flex items-center transition-all ${scrolled ? "h-15" : "h-18"} ${barBackground}`}>
       <div className="w-full max-w-300 mx-auto px-(--gutter) md:px-6 lg:px-8 flex items-center justify-between">
         <Link href="/" className="font-extrabold text-lg text-white tracking-[0.5px] no-underline flex items-center gap-2.5 min-h-11">
           <Image src={AshtonWhiteLogo} width={150} alt="Ashton Media Logo" />
@@ -135,8 +141,9 @@ export default function Nav() {
         </button>
       </div>
 
+      {/* Hangs off the bottom of the bar, whichever of its two heights the bar is at. */}
       {menuOpen && (
-        <div className="fixed top-15 left-0 right-0 max-h-[calc(100dvh-3.75rem)] overflow-y-auto bg-raised border-b border-b-white/7 pt-4 px-(--gutter) pb-7 flex flex-col gap-0.5 z-999">
+        <div className="absolute top-full left-0 right-0 max-h-[calc(100dvh-100%)] overflow-y-auto bg-raised border-b border-b-white/7 pt-4 px-(--gutter) pb-7 flex flex-col gap-0.5 z-999">
           {MOBILE_LINKS.map(({ label, href }) => (
             <Link
               key={href}
