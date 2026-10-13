@@ -267,7 +267,7 @@ UNFOLD = {
         },
     },
     "SITE_LOGO": lambda request: static("branding/ashton-logo-white.svg"),
-    "SITE_ICON": lambda request: static("branding/ashton-logo-white.svg"),
+    "SITE_ICON": lambda request: static("branding/favicon.ico"),
     "STYLES": [
         lambda request: static("admin/sidebar-collapse.css"),
         lambda request: static("css/admin-overrides.css"),
