@@ -125,7 +125,8 @@ export default function HomeClient({ billboards, previewSites, usingFallback, he
           ))}
         </div>
 
-        <div className="relative z-1 min-h-svh flex flex-col justify-center pt-25 sm:pt-30 md:pt-35 lg:pt-40 px-(--gutter) md:px-6 lg:px-8 pb-20 max-w-300 mx-auto">
+        {/* Below md the copy sits at the bottom of the screen, clear of the subject of the photo; from md up it is centred vertically. */}
+        <div className="relative z-1 min-h-svh flex flex-col justify-end md:justify-center pt-25 sm:pt-30 md:pt-35 lg:pt-40 px-(--gutter) md:px-6 lg:px-8 pb-8 md:pb-20 max-w-300 mx-auto">
           {/* Centred below md, left-aligned from md up. */}
           <div className="max-w-140 mx-auto text-center md:mx-0 md:text-left">
             <div className="flex items-center justify-center md:justify-start gap-2.5 mb-7">
@@ -135,11 +136,12 @@ export default function HomeClient({ billboards, previewSites, usingFallback, he
             <h1 className="font-black text-[44px] sm:text-[64px] lg:text-[88px] leading-none mb-6 tracking-[-2px] whitespace-pre-line text-balance md:text-wrap">{slide.headline}</h1>
             <p className="text-[14px] sm:text-[15px] lg:text-[17px] font-normal text-white/55 leading-[1.75] mb-10 max-w-105 mx-auto md:mx-0">{slide.sub}</p>
             {/* Below md the two buttons share the row equally; if they can't fit side by side they stack, each full width. */}
-            <div className="flex gap-3 flex-wrap justify-center mb-15 max-w-88 mx-auto md:justify-start md:max-w-none md:mx-0">
+            <div className="flex gap-3 flex-wrap justify-center mb-6 md:mb-15 max-w-88 mx-auto md:justify-start md:max-w-none md:mx-0">
               <Link href="/contact" className="bg-white text-black text-[13px] font-bold py-3.5 px-5 sm:px-6 lg:px-7 rounded-md no-underline inline-flex items-center grow basis-[calc(50%-0.375rem)] justify-center whitespace-nowrap md:grow-0 md:basis-auto md:justify-start md:whitespace-normal">Start a Campaign</Link>
               <Link href="/gallery" className="bg-transparent border border-white/30 text-white/85 text-[13px] font-semibold py-3.5 px-5 sm:px-6 lg:px-7 rounded-md no-underline inline-flex items-center grow basis-[calc(50%-0.375rem)] justify-center whitespace-nowrap md:grow-0 md:basis-auto md:justify-start md:whitespace-normal">View Locations →</Link>
             </div>
-            {/* Below md each dot sits in a 44px tap area; from md up the button is just the bar, as before. */}
+            {/* Below md each dot gets a 44px-tall tap area and 6px either side, so the bars are an even 12px apart
+                whichever is the wide one; from md up the button is just the bar, 8px apart. */}
             <div className="flex justify-center md:justify-start md:gap-2">
               {[0, 1, 2].map((i) => (
                 <button
@@ -147,7 +149,7 @@ export default function HomeClient({ billboards, previewSites, usingFallback, he
                   onClick={() => setHeroIdx(i)}
                   aria-label={`Show slide ${i + 1}`}
                   aria-current={i === heroIdx ? "true" : undefined}
-                  className="flex items-center justify-center h-11 min-w-11 md:justify-start md:h-auto md:min-w-0 bg-transparent border-none cursor-pointer p-0 min-h-0"
+                  className="flex items-center h-11 px-1.5 py-0 md:h-auto md:px-0 bg-transparent border-none cursor-pointer min-h-0"
                 >
                   <span className={`block h-1 rounded-sm transition-all duration-350 ${i === heroIdx ? "w-7 bg-white" : "w-2 bg-white/25"}`} />
                 </button>
