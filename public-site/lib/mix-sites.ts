@@ -25,6 +25,10 @@ function rotate<T>(items: T[], by: number): T[] {
  * and the photo part is rotated by `seed`. The queues are then read one site
  * at a time in FORMAT_ORDER, round after round, so the formats interleave.
  *
+ * With more formats than `count`, the first round can't reach them all, so
+ * reading starts `seed` formats into the order and wraps around: each format
+ * takes its turn at being the one left out.
+ *
  * Both sides of one structure can be picked together: `Billboard` carries no
  * structure code to tell them apart.
  */
@@ -43,10 +47,12 @@ export function mixSites(sites: readonly Billboard[], count: number, seed: numbe
       ...group.filter((site) => !site.imageUrl),
     ]);
 
+  const order = queues.length > count ? rotate(queues, seed) : queues;
+
   const picked: Billboard[] = [];
   const longest = Math.max(0, ...queues.map((queue) => queue.length));
   for (let round = 0; round < longest; round++) {
-    for (const queue of queues) {
+    for (const queue of order) {
       if (picked.length >= count) return picked;
       if (round < queue.length) picked.push(queue[round]);
     }

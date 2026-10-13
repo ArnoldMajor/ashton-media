@@ -5,7 +5,7 @@ import { mixSites } from "@/lib/mix-sites";
 import HomeClient from "./HomeClient";
 
 /** Cards in the home page's "Available Now" preview. */
-const PREVIEW_COUNT = 3;
+const PREVIEW_COUNT = 4;
 
 const MS_PER_DAY = 86_400_000;
 

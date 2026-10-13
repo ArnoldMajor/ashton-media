@@ -211,9 +211,10 @@ export default function HomeClient({ billboards, previewSites, usingFallback, he
             </div>
             <Link href="/gallery" className="text-[13px] font-semibold text-white/50 no-underline">View all sites →</Link>
           </div>
-          <div className="grid grid-cols-[repeat(auto-fill,minmax(280px,1fr))] gap-3">
+          <div className="grid grid-cols-[repeat(auto-fill,minmax(280px,1fr))] md:grid-cols-2 xl:grid-cols-4 gap-3">
             {previewSites.map((site) => (
-              <button key={site.id} onClick={() => setSelectedSite(site)} className="bg-card border border-white/7 rounded-[10px] overflow-hidden text-left cursor-pointer text-white w-full p-0 hover:border-white/18">
+              // flex-col: cards in a row stretch to the tallest, and a plain button would centre a shorter card's content in the spare height.
+              <button key={site.id} onClick={() => setSelectedSite(site)} className="flex flex-col bg-card border border-white/7 rounded-[10px] overflow-hidden text-left cursor-pointer text-white w-full p-0 hover:border-white/18">
                 <BillboardCard billboard={site} />
               </button>
             ))}
