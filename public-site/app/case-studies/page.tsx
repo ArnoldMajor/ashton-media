@@ -3,6 +3,7 @@ import CTABlock from "@/components/CTABlock";
 import PhotoPlaceholder from "@/components/PhotoPlaceholder";
 import FormatBadge from "@/components/FormatBadge";
 import { getCaseStudies } from "@/lib/api/case-studies";
+import { coverScale } from "@/lib/photos";
 import type { BillboardFormat } from "@/types/billboard";
 import type { CaseStudy, CaseStudyMetric } from "@/types/case-study";
 
@@ -18,8 +19,12 @@ const CASE_STUDIES = [
   { brand: "Airtel Tanzania", type: "digital" as const, headline: "Dynamic Daypart Campaign", desc: "Time-of-day targeted content on 8 LED screens — morning commute messages drove 24% higher response rate vs. static creative.", metric1: { n: "24%", l: "higher CTR" }, metric2: { n: "8", l: "screens" }, photoIndex: 1 },
 ];
 
-// The photo is half of the 1136px content column.
-const PHOTO_SIZES = "(max-width: 768px) 100vw, 568px";
+// The photo's frame is half of the 1136px content column, at 4:3. A wider
+// photo is cropped to the frame's height and drawn wider than it: see coverScale.
+function photoSizes(photo?: Parameters<typeof coverScale>[0]): string {
+  const scale = coverScale(photo, 4 / 3);
+  return `(min-width: 768px) ${Math.ceil(568 * scale)}px, ${Math.ceil(100 * scale)}vw`;
+}
 
 /** What one card draws, whichever source it came from. */
 interface Card {
@@ -31,7 +36,7 @@ interface Card {
   description: string;
   metrics: CaseStudyMetric[];
   /** `src` is the editor's photo; without one the stock photo at `photoIndex` is used. */
-  photo: { src?: string; alt?: string; photoIndex?: number };
+  photo: { src?: string; alt?: string; photoIndex?: number; sizes: string };
 }
 
 const FALLBACK_CARDS: Card[] = CASE_STUDIES.map((cs) => ({
@@ -41,7 +46,7 @@ const FALLBACK_CARDS: Card[] = CASE_STUDIES.map((cs) => ({
   headline: cs.headline,
   description: cs.desc,
   metrics: [cs.metric1, cs.metric2].map((m) => ({ value: m.n, label: m.l })),
-  photo: { photoIndex: cs.photoIndex },
+  photo: { photoIndex: cs.photoIndex, sizes: photoSizes() },
 }));
 
 function toCard(study: CaseStudy): Card {
@@ -52,7 +57,7 @@ function toCard(study: CaseStudy): Card {
     headline: study.headline,
     description: study.description,
     metrics: study.metrics,
-    photo: { src: study.image.url, alt: study.image.alt || study.brand },
+    photo: { src: study.image.url, alt: study.image.alt || study.brand, sizes: photoSizes(study.image) },
   };
 }
 
@@ -83,7 +88,7 @@ export default async function CaseStudiesPage() {
               >
                 {i % 2 !== 0 && <CaseStudyContent card={card} />}
                 {/* On phones the card stacks and the photo always leads; from md up it alternates sides. */}
-                <PhotoPlaceholder ratio="4/3" overlay label={card.brand} sizes={PHOTO_SIZES} className="order-first md:order-none" {...card.photo} />
+                <PhotoPlaceholder ratio="4/3" overlay label={card.brand} className="order-first md:order-none" {...card.photo} />
                 {i % 2 === 0 && <CaseStudyContent card={card} />}
               </div>
             ))}

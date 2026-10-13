@@ -5,6 +5,7 @@ import Link from "next/link";
 import { getBillboardCounts } from "@/lib/api/billboards";
 import { getSiteContent, slotImage } from "@/lib/api/site-content";
 import SectionHeading from "@/components/SectionHeading";
+import { PHOTO_QUALITY, coverScale } from "@/lib/photos";
 import type { BillboardFormat } from "@/types/billboard";
 import type { SiteImageKey } from "@/types/site-content";
 
@@ -47,6 +48,18 @@ const MEDIA_CLASSES =
   "group-focus-visible:scale-[1.045] group-focus-visible:grayscale-0 group-focus-visible:brightness-92 " +
   "motion-reduce:transition-[filter] motion-reduce:group-hover:scale-100 motion-reduce:group-focus-visible:scale-100";
 
+/**
+ * The `sizes` hint for one tile's photo. A tile is a quarter of the viewport
+ * wide from lg up and half below, in a portrait frame (3:4, or 4:5 below sm).
+ * Editors mostly upload landscape photos, which are cropped to the frame's
+ * height and so drawn far wider than the tile: see coverScale.
+ */
+function tileSizes(photo: Parameters<typeof coverScale>[0]): string {
+  const scale = coverScale(photo, 3 / 4);
+  const phoneScale = coverScale(photo, 4 / 5);
+  return `(min-width: 1024px) ${Math.ceil(25 * scale)}vw, (min-width: 640px) ${Math.ceil(50 * scale)}vw, ${Math.ceil(50 * phoneScale)}vw`;
+}
+
 const PILL_CLASSES = "inline-flex items-center rounded-full border py-2 px-4.5 text-xs font-semibold no-underline transition-colors duration-350";
 
 export default async function NetworkShowcase() {
@@ -72,7 +85,7 @@ export default async function NetworkShowcase() {
               className="group relative block aspect-4/5 sm:aspect-3/4 overflow-hidden bg-canvas text-white no-underline outline-none"
             >
               {src ? (
-                <Image src={src} alt={adminImage?.alt ?? ""} fill sizes="(min-width: 1024px) 25vw, 50vw" className={`object-cover ${MEDIA_CLASSES}`} />
+                <Image src={src} alt={adminImage?.alt ?? ""} fill sizes={tileSizes(adminImage)} quality={PHOTO_QUALITY} className={`object-cover ${MEDIA_CLASSES}`} />
               ) : (
                 <div aria-hidden className={`absolute inset-0 ${tile.placeholder} ${MEDIA_CLASSES}`} />
               )}

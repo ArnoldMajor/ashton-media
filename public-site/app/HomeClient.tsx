@@ -40,6 +40,18 @@ const WHY_FEATURES = [
   { n: "04", title: "Verified Data", desc: "Traffic counts at every site so you know your campaign's reach and ROI." },
 ];
 
+/**
+ * The `sizes` hint for a hero photo. The hero fills the screen, so on a screen
+ * taller than the photo's shape (a tablet held upright) the photo is cropped to
+ * the screen's height and drawn wider than the viewport. Phones keep 100vw:
+ * there the photo sits under a 76% scrim, and the file that would be sharp is
+ * several times the download.
+ */
+function heroSizes(photo: SiteImage | null): string {
+  if (!photo?.width || !photo?.height) return "100vw";
+  return `(min-width: 768px) max(100vw, ${Math.ceil((photo.width / photo.height) * 100)}vh), 100vw`;
+}
+
 interface Props {
   billboards: Billboard[];
   /** The "Available Now" cards, already chosen on the server (see app/page.tsx). */
@@ -100,7 +112,7 @@ export default function HomeClient({ billboards, previewSites, usingFallback, he
                   photoIndex={s.photoIndex}
                   src={heroImages[s.slot]?.url}
                   alt={heroImages[s.slot]?.alt || undefined}
-                  sizes="100vw"
+                  sizes={heroSizes(heroImages[s.slot])}
                   preload={i === 0}
                   fill
                 />
@@ -145,8 +157,8 @@ export default function HomeClient({ billboards, previewSites, usingFallback, he
         </div>
       </section>
 
-      <section ref={countRef} className="bg-raised border-t border-t-white/6 border-b border-b-white/6 py-14 px-(--gutter) md:px-6 lg:px-8">
-        <div className="max-w-300 mx-auto grid grid-cols-[repeat(auto-fit,minmax(140px,1fr))] gap-8">
+      <section ref={countRef} className="bg-raised border-t border-t-white/6 border-b border-b-white/6 py-14">
+        <div className="max-w-300 mx-auto px-(--gutter) md:px-6 lg:px-8 grid grid-cols-[repeat(auto-fit,minmax(140px,1fr))] gap-8">
           {counts.map((count, i) => (
             <div key={i} className="text-center">
               <div className="font-black text-[36px] sm:text-[46px] lg:text-[56px] tracking-[-2px] leading-none">{count}{STAT_SUFFIX[i]}</div>
@@ -202,8 +214,8 @@ export default function HomeClient({ billboards, previewSites, usingFallback, he
 
       <CampaignProcess variant="condensed" />
 
-      <section className="py-15 sm:py-18 md:py-22 lg:py-25 px-(--gutter) md:px-6 lg:px-8 bg-raised">
-        <div className="max-w-300 mx-auto">
+      <section className="py-15 sm:py-18 md:py-22 lg:py-25 bg-raised">
+        <div className="max-w-300 mx-auto px-(--gutter) md:px-6 lg:px-8">
           <div className="flex justify-between items-end mb-9 flex-wrap gap-4">
             <div>
               <div className="text-[12px] md:text-[11px] font-semibold tracking-[3px] text-white/40 uppercase mb-2.5">Inventory</div>
@@ -224,10 +236,8 @@ export default function HomeClient({ billboards, previewSites, usingFallback, he
 
       {/* The heading keeps the page gutter; the banner below it runs edge to edge. */}
       <section className="py-14 border-t border-t-white/6 bg-raised">
-        <div className="px-(--gutter) md:px-6 lg:px-8">
-          <div className="max-w-300 mx-auto text-center">
-            <p className="text-[12px] md:text-[11px] font-semibold tracking-[3px] text-white/22 uppercase mb-8">Trusted by Tanzania&apos;s leading brands</p>
-          </div>
+        <div className="max-w-300 mx-auto px-(--gutter) md:px-6 lg:px-8 text-center">
+          <p className="text-[12px] md:text-[11px] font-semibold tracking-[3px] text-white/22 uppercase mb-8">Trusted by Tanzania&apos;s leading brands</p>
         </div>
         <BrandMarquee />
       </section>

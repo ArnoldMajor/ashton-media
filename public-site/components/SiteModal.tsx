@@ -44,7 +44,7 @@ export default function SiteModal({ site, onClose }: Props) {
         </div>
 
         <div className="relative">
-          <PhotoPlaceholder label={site.name} ratio="16/7" overlay src={site.imageUrl} photoIndex={stockPhotoIndex(site.format)} />
+          <PhotoPlaceholder label={site.name} ratio="16/7" overlay sizes="(max-width: 680px) 100vw, 680px" src={site.imageUrl} photoIndex={stockPhotoIndex(site.format)} />
           <button
             onClick={onClose}
             aria-label="Close"

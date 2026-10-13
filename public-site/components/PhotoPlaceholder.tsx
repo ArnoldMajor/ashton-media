@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import Image from "next/image";
-import { REAL_PHOTOS } from "@/lib/photos";
+import { PHOTO_QUALITY, REAL_PHOTOS } from "@/lib/photos";
 
 interface Props {
   label?: string | null;
@@ -57,6 +57,7 @@ export default function PhotoPlaceholder({
           alt={alt ?? (label || "Billboard")}
           fill
           sizes={sizes}
+          quality={PHOTO_QUALITY}
           className={`object-cover transition-opacity duration-500 ${loaded ? "opacity-100" : "opacity-0"}`}
           onLoad={() => setLoaded(true)}
           onError={() => setFailed(true)}
